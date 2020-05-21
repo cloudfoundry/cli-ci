@@ -6,7 +6,7 @@ if [[ "$WORKSPACE" -eq "" ]]; then
   WORKSPACE="$HOME/workspace"
 fi
 
-CLI_OPS_DIR=$GOPATH/src/code.cloudfoundry.org/cli/ci/local-integration-env/operations
+CLI_OPS_DIR=$WORKSPACE/cli-ci/ci/local-integration-env/operations
 CLI_BOSHLITE_DIR=$WORKSPACE/cli-lite # created by this script for storing BOSH Lite credentials
 BOSH_DEPLOYMENT=$WORKSPACE/bosh-deployment # location where this script clones the cloudfoundry/bosh-deployment repository
 CF_DEPLOYMENT=$WORKSPACE/cf-deployment # location where this script clones the cloudfoundry/cf-deployment repository
