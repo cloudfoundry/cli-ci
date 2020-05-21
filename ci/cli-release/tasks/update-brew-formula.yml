@@ -8,6 +8,7 @@ image_resource:
 
 inputs:
 - name: cli
+- name: cli-ci
 - name: homebrew-tap
 
 outputs:
@@ -62,7 +63,7 @@ run:
       def install
         bin.install 'cf'
         (bash_completion/"cf-cli").write <<-completion
-    $(cat ../cli/ci/installers/completion/cf)
+    $(cat ../cli-ci/ci/installers/completion/cf)
         completion
         doc.install 'LICENSE'
         doc.install 'NOTICE'

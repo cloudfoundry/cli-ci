@@ -8,6 +8,7 @@ image_resource:
     tag: bosh-lite
 
 inputs:
+  - name: cli-ci
   - name: cli
   - name: env-pool
 
@@ -15,7 +16,7 @@ outputs:
   - name: updated-env-pool
 
 run:
-  path: cli/ci/cli-dev-bosh-lite/tasks/check-pool-size.sh
+  path: cli-ci/ci/cli-dev-bosh-lite/tasks/check-pool-size.sh
 
 params:
   POOL_NAME: ""

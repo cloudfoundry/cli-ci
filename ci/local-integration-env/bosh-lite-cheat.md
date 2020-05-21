@@ -40,7 +40,7 @@ Make sure the bosh-lite VM is running in VirtualBox.
 
 Edit `~/workspace/cli-lite/state.json` and remove the `current_manifest_sha` key.
 
-Run `$GOPATH/src/code.cloudfoundry.org/cli/ci/local-integration-env/deploy_bosh_lite.sh`. This
+Run `cli-ci/ci/local-integration-env/deploy_bosh_lite.sh`. This
 will recreate the bosh-lite but not the containers.
 
 `bosh delete-deployment -d cf --force -n`
@@ -57,7 +57,7 @@ bosh cancel-task <task number from task list>
 bosh update-resurrection off
 ```
 
-Run `$GOPATH/src/code.cloudfoundry.org/cli/ci/local-integration-env/deploy_bosh_lite.sh` again
+Run `cli-ci/ci/local-integration-env/deploy_bosh_lite.sh` again
 to recreate the cf deployment. Add the `clean` argument to clean up old
 bosh-lite deployment when restarting the machine puts VirtualBox in a weird
 state.

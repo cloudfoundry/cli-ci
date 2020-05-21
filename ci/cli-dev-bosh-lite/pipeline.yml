@@ -34,6 +34,11 @@ resources:
       branch: master
       uri: git@github.com:cloudfoundry/cli.git
       private_key: ((bosh-lite-pools-github-private-key))
+  - name: cli-ci
+    type: git
+    source:
+      branch: master
+      uri: git@github.com:cloudfoundry/cli-ci.git
   - name: capi-ci
     type: git
     source:
@@ -171,11 +176,11 @@ jobs:
                   - cf-deployment/operations/test/add-persistent-isolation-segment-diego-cell-bosh-lite.yml
                   - cf-deployment/operations/use-internal-lookup-for-route-services.yml
                   - capi-ci/cf-deployment-operations/seed-credhub-asg.yml
-                  - cli/ci/infrastructure/operations/default-app-memory.yml
-                  - cli/ci/infrastructure/operations/add-oidc-provider.yml
-                  - cli/ci/infrastructure/operations/add-uaa-client-cf-custom.yml
-                  - cli/ci/infrastructure/operations/give-cf-admin-clients-read-scope.yml
-                  - cli/ci/infrastructure/operations/use-edge-capi.yml
+                  - cli-ci/ci/infrastructure/operations/default-app-memory.yml
+                  - cli-ci/ci/infrastructure/operations/add-oidc-provider.yml
+                  - cli-ci/ci/infrastructure/operations/add-uaa-client-cf-custom.yml
+                  - cli-ci/ci/infrastructure/operations/give-cf-admin-clients-read-scope.yml
+                  - cli-ci/ci/infrastructure/operations/use-edge-capi.yml
               - task: upload-to-gcs
                 file: capi-ci/ci/gcs/upload-to-gcs.yml
                 input_mapping:
@@ -287,6 +292,7 @@ jobs:
     plan:
       - in_parallel:
         - get: capi-ci
+        - get: cli-ci
         - get: pool-repo
         - get: 5m
           trigger: true

@@ -6,6 +6,7 @@ params:
 
 inputs:
 - name: cli
+- name: cli-ci
 - name: extracted-binaries
 - name: winstallers
 
@@ -29,8 +30,8 @@ run:
     }
 
     # transform the `LICENSE` & `NOTICE` files to include Windows's CRLF https://en.wikipedia.org/wiki/Newline#Representation
-    Get-Content .\cli\ci\license\NOTICE | Set-Content NOTICE
-    Get-Content .\cli\ci\license\LICENSE-WITH-3RD-PARTY-LICENSES | Set-Content LICENSE
+    Get-Content .\cli-ci\ci\license\NOTICE | Set-Content NOTICE
+    Get-Content .\cli-ci\ci\license\LICENSE-WITH-3RD-PARTY-LICENSES | Set-Content LICENSE
 
     New-Item -Name win32 -Type "Directory"
     New-Item -Name winx64 -Type "Directory"
