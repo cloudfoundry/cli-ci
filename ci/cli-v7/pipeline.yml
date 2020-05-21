@@ -277,7 +277,7 @@ jobs:
           text: *slack_notification_text
     - task: units-windows
       tags: [vat-windows]
-      file: cli-ci/cli-v7/tasks/units-windows.yml
+      file: cli-ci/ci/cli-v7/tasks/units-windows.yml
       on_failure:
         put: slack-alert
         params:
