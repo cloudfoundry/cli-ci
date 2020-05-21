@@ -569,6 +569,7 @@ jobs:
   serial: true
   plan:
   - in_parallel:
+    - get: cli-ci
     - get: cli
       passed:
       - integration-linux
