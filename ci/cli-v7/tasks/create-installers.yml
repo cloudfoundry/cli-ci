@@ -39,7 +39,7 @@ run:
           mkdir -p cf/usr/bin cf/usr/share/doc/cf7-cli/ cf/DEBIAN cf/usr/share/bash-completion/completions
 
           cp copyright_preamble cf/DEBIAN/copyright
-          sed 's/^$/ ./' ../../../LICENSE >> cf/DEBIAN/copyright
+          sed 's/^$/ ./' $root/cli/LICENSE >> cf/DEBIAN/copyright
           cat copyright_comment_header >> cf/DEBIAN/copyright
           sed 's/^$/ ./' ../../license/3RD-PARTY-LICENSES >> cf/DEBIAN/copyright
 
@@ -71,7 +71,7 @@ run:
           mkdir -p cf/usr/bin cf/usr/share/doc/cf7-cli/ cf/DEBIAN cf/usr/share/bash-completion/completions
 
           cp copyright_preamble cf/DEBIAN/copyright
-          sed 's/^$/ ./' ../../../LICENSE >> cf/DEBIAN/copyright
+          sed 's/^$/ ./' $root/cli/LICENSE >> cf/DEBIAN/copyright
           cat copyright_comment_header >> cf/DEBIAN/copyright
           sed 's/^$/ ./' ../../license/3RD-PARTY-LICENSES >> cf/DEBIAN/copyright
 
