@@ -4,7 +4,6 @@ platform: windows
 inputs:
 - name: cli
   path: go/src/code.cloudfoundry.org/cli
-- name: cli-ci
 
 params:
   # these will be pulled from the environment where the task is executed
@@ -19,4 +18,4 @@ params:
   CF_INT_DOCKER_PASSWORD:
 
 run:
-  path: cli-ci/ci/cli/tasks/integration-windows-oneoff.bat
+  path: go/src/code.cloudfoundry.org/cli/ci/cli/tasks/integration-windows-oneoff.bat

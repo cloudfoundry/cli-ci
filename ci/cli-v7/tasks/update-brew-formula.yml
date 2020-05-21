@@ -9,7 +9,6 @@ image_resource:
 inputs:
 - name: cli
 - name: homebrew-tap
-- name: cli-ci
 
 outputs:
 - name: update-brew-formula-output
@@ -61,7 +60,7 @@ run:
       def install
         bin.install 'cf7'
         (bash_completion/"cf7-cli").write <<-completion
-    $(cat ../cli-ci/ci/installers/completion/cf7)
+    $(cat ../cli/ci/installers/completion/cf7)
         completion
         doc.install 'LICENSE'
         doc.install 'NOTICE'
