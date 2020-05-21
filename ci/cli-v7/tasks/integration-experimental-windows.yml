@@ -6,7 +6,6 @@ inputs:
 - name: cf-cli-binaries
 - name: bosh-lock
 - name: cf-credentials
-- name: cli-ci
 
 params:
   CF_INT_CLIENT_ID:
@@ -16,4 +15,4 @@ params:
   CF_INT_DOCKER_PASSWORD:
 
 run:
-  path: cli-ci/ci/cli/tasks/integration-experimental-windows.bat
+  path: cli/ci/cli/tasks/integration-experimental-windows.bat
