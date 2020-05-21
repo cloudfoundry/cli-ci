@@ -129,6 +129,7 @@ jobs:
         - get: create-bosh-lite-trigger
           trigger: true
         - get: edge-capi-release
+        - get: cli-ci
       - task: generate-fake-env-for-building-pool
         file: capi-ci/ci/bosh-lite/generate-fake-env-for-building-pool.yml
       - put: building-pool
