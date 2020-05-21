@@ -38,7 +38,7 @@ resources:
     type: git
     source:
       branch: master
-      uri: git@github.com:cloudfoundry/cli-ci.git
+      uri: https://github.com/cloudfoundry/cli-ci
   - name: capi-ci
     type: git
     source:
