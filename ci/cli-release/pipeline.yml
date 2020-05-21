@@ -30,10 +30,8 @@ resources:
 - name: cli-ci
   type: git
   source:
-    uri: https://github.com/cloudfoundry/cli
+    uri: https://github.com/cloudfoundry/cli-ci
     branch: master
-    paths:
-    - ci
 
 - name: homebrew-tap
   type: git
