@@ -10,6 +10,7 @@ inputs:
 - name: extracted-binaries
 - name: packaged
 - name: cli
+- name: cli-ci
 
 outputs:
 - name: archives
@@ -25,8 +26,8 @@ run:
     root=$PWD
 
     pushd extracted-binaries
-      cp $root/cli/ci/license/NOTICE .
-      cp $root/cli/ci/license/LICENSE-WITH-3RD-PARTY-LICENSES LICENSE
+      cp $root/cli-ci/ci/license/NOTICE .
+      cp $root/cli-ci/ci/license/LICENSE-WITH-3RD-PARTY-LICENSES LICENSE
 
       tar --transform="flags=r;s|cf7-cli_osx|cf7|" -czf $root/archives/cf7-cli_edge_osx.tgz LICENSE NOTICE cf7-cli_osx
       tar --transform="flags=r;s|cf7-cli_linux_i686|cf7|" -czf $root/archives/cf7-cli_edge_linux_i686.tgz LICENSE NOTICE cf7-cli_linux_i686
