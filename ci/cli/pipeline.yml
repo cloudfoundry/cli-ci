@@ -12,10 +12,8 @@ resources:
   icon: console
   source:
     uri: https://github.com/cloudfoundry/cli
-    branch: release/v6
+    branch: master
     ignore_paths:
-    - bin
-    - ci
     - README.md
     - .github
 
@@ -28,11 +26,8 @@ resources:
 - name: cli-ci
   type: git
   source:
-    uri: https://github.com/cloudfoundry/cli
-    branch: release/v6
-    paths:
-    - bin
-    - ci
+    uri: https://github.com/cloudfoundry/cli-ci
+    branch: master
 
 - name: cf-acceptance-tests
   type: git

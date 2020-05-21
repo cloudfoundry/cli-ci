@@ -17,9 +17,8 @@ resources:
 - name: cli-ci
   type: git
   source:
-    uri: https://github.com/cloudfoundry/cli
+    uri: https://github.com/cloudfoundry/cli-ci
     branch: master
-    path: ci
 - name: cf-deployment
   type: git
   source:

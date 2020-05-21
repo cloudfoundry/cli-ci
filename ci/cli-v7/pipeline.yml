@@ -46,11 +46,8 @@ resources:
 - name: cli-ci
   type: git
   source:
-    uri: https://github.com/cloudfoundry/cli
-    branch: release/v7
-    paths:
-    - bin
-    - ci
+    uri: https://github.com/cloudfoundry/cli-ci
+    branch: master
 
 - name: cf-deployment-concourse-tasks
   type: git
@@ -83,7 +80,7 @@ resources:
   icon: console
   source:
     uri: https://github.com/cloudfoundry/cli
-    branch: release/v7
+    branch: master
 
 - name: cli-i18n
   type: git
