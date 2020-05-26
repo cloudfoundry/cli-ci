@@ -28,12 +28,6 @@ resources:
         bucket: ((bosh-lite-storage-bucket))
         prefix: terraform_state_files/
         credentials: ((bosh-lite-gcp-json-key))
-  - name: cli
-    type: git
-    source:
-      branch: master
-      uri: git@github.com:cloudfoundry/cli.git
-      private_key: ((bosh-lite-pools-github-private-key))
   - name: cli-ci
     type: git
     source:
@@ -125,7 +119,6 @@ jobs:
         - get: capi-ci
         - get: bosh-deployment
         - get: cf-deployment
-        - get: cli
         - get: create-bosh-lite-trigger
           trigger: true
         - get: edge-capi-release
