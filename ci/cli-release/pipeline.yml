@@ -4,7 +4,7 @@ resources:
   type: git
   source:
     uri: https://github.com/cloudfoundry/cli
-    branch: master
+    branch: v6
     tag_filter: "v6*"
     ignore_paths:
     - ci
@@ -13,7 +13,7 @@ resources:
   type: git
   source:
     uri: https://github.com/cloudfoundry/cli
-    branch: master
+    branch: v7
     tag_filter: "v7*"
     ignore_paths:
     - ci

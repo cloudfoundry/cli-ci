@@ -12,7 +12,7 @@ resources:
   icon: console
   source:
     uri: https://github.com/cloudfoundry/cli
-    branch: master
+    branch: v6
     ignore_paths:
     - README.md
     - .github

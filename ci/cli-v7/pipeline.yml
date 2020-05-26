@@ -80,7 +80,7 @@ resources:
   icon: console
   source:
     uri: https://github.com/cloudfoundry/cli
-    branch: master
+    branch: v7
 
 - name: cli-i18n
   type: git
