@@ -26,7 +26,7 @@ run:
 
     tar -zxf edge-linux-binary-64/*.tgz
 
-    LATEST_VERSION=$(cat cli/BUILD_VERSION_V7)
+    LATEST_VERSION=$(cat cli/BUILD_VERSION)
 
     ./cf7 api "$CF_API"
     ./cf7 auth --client-credentials

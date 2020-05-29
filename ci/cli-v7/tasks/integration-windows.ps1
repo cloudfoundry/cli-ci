@@ -22,7 +22,7 @@ Import-Certificate -Filepath "$pwd\cf-credentials\cert_dir\$CF_INT_NAME.router.c
 pushd $pwd\cf-cli-binaries
 	7z e cf-cli-binaries.tgz -y
 	7z x cf-cli-binaries.tar -y
-	Move-Item -Path $pwd\cf7-cli_winx64.exe  -Destination ..\cf.exe -Force
+	Move-Item -Path $pwd\cf-cli_winx64.exe  -Destination ..\cf.exe -Force
 popd
 
 go get -v -u github.com/onsi/ginkgo/ginkgo

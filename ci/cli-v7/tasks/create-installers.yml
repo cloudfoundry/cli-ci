@@ -28,12 +28,12 @@ run:
     CF CLI Team <cf-cli-eng@pivotal.io>
     EOF
 
-    VERSION=$(cat cli/BUILD_VERSION_V7)
+    VERSION=$(cat cli/BUILD_VERSION)
     RPM_VERSION=${VERSION//-/_}
 
     echo "Building 32-bit Debian package"
     (
-        SIZE="$(BLOCKSIZE=1000 du $root/extracted-binaries/cf7-cli_linux_i686 | cut -f 1)"
+        SIZE="$(BLOCKSIZE=1000 du $root/extracted-binaries/cf-cli_linux_i686 | cut -f 1)"
 
         pushd cli-ci/ci/installers/deb
           mkdir -p cf/usr/bin cf/usr/share/doc/cf7-cli/ cf/DEBIAN cf/usr/share/bash-completion/completions
@@ -55,7 +55,7 @@ run:
 
           cp ../completion/cf7 cf/usr/share/bash-completion/completions/cf7
 
-          cp $root/extracted-binaries/cf7-cli_linux_i686 cf/usr/bin/cf7
+          cp $root/extracted-binaries/cf-cli_linux_i686 cf/usr/bin/cf7
 
           fakeroot dpkg --build cf cf7-cli-installer_i686.deb
           mv cf7-cli-installer_i686.deb $root/packaged
@@ -65,7 +65,7 @@ run:
 
     echo "Building 64-bit Debian package"
     (
-        SIZE="$(BLOCKSIZE=1000 du $root/extracted-binaries/cf7-cli_linux_x86-64 | cut -f 1)"
+        SIZE="$(BLOCKSIZE=1000 du $root/extracted-binaries/cf-cli_linux_x86-64 | cut -f 1)"
 
         pushd cli-ci/ci/installers/deb
           mkdir -p cf/usr/bin cf/usr/share/doc/cf7-cli/ cf/DEBIAN cf/usr/share/bash-completion/completions
@@ -87,7 +87,7 @@ run:
 
           cp ../completion/cf7 cf/usr/share/bash-completion/completions/cf7
 
-          cp $root/extracted-binaries/cf7-cli_linux_x86-64 cf/usr/bin/cf7
+          cp $root/extracted-binaries/cf-cli_linux_x86-64 cf/usr/bin/cf7
 
           fakeroot dpkg --build cf cf7-cli-installer_x86-64.deb
           mv cf7-cli-installer_x86-64.deb $root/packaged
@@ -97,7 +97,7 @@ run:
     echo "Building 32-bit RedHat package"
     (
       pushd cli-ci/ci/installers/rpm
-        cp $root/extracted-binaries/cf7-cli_linux_i686 cf7
+        cp $root/extracted-binaries/cf-cli_linux_i686 cf7
         cp ../../license/NOTICE .
         cp ../../license/LICENSE-WITH-3RD-PARTY-LICENSES LICENSE
         cp ../completion/cf7 cf7.bash
@@ -111,7 +111,7 @@ run:
     echo "Building 64-bit RedHat package"
     (
       pushd cli-ci/ci/installers/rpm
-        cp $root/extracted-binaries/cf7-cli_linux_x86-64 cf7
+        cp $root/extracted-binaries/cf-cli_linux_x86-64 cf7
         cp ../../license/NOTICE .
         cp ../../license/LICENSE-WITH-3RD-PARTY-LICENSES LICENSE
         cp ../completion/cf7 cf7.bash
@@ -124,14 +124,14 @@ run:
 
     echo "Building OS X installer"
     (
-      SIZE="$(BLOCKSIZE=1000 du $root/extracted-binaries/cf7-cli_osx | cut -f 1)"
+      SIZE="$(BLOCKSIZE=1000 du $root/extracted-binaries/cf-cli_osx | cut -f 1)"
 
       pushd cli-ci/ci/installers/osx_v7
         sed -i -e "s/VERSION/${VERSION}/g" Distribution
         sed -i -e "s/SIZE/${SIZE}/g" Distribution
         mkdir -p cf-cli/usr/local/bin cf-cli/usr/local/share/doc/cf7-cli
 
-        cp $root/extracted-binaries/cf7-cli_osx cf-cli/usr/local/bin/cf7
+        cp $root/extracted-binaries/cf-cli_osx cf-cli/usr/local/bin/cf7
         cp ../../license/NOTICE cf-cli/usr/local/share/doc/cf7-cli
         cp ../../license/LICENSE-WITH-3RD-PARTY-LICENSES cf-cli/usr/local/share/doc/cf7-cli/LICENSE
         chmod -R go-w cf-cli

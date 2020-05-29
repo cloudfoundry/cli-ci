@@ -23,8 +23,8 @@ resources:
   source:
     driver: git
     uri: git@github.com:cloudfoundry/cli
-    branch: master
-    file: BUILD_VERSION_V7
+    branch: v7
+    file: BUILD_VERSION
     private_key: ((vat-bump-version-github-private-key))
 
 - name: cli-ci

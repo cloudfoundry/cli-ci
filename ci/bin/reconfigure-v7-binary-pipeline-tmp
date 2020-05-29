@@ -1,0 +1,11 @@
+  fly -t ci set-pipeline \
+    -p v7-binary-change-testing \
+    -c $1 \
+    -l <(lpass show "Concourse Credentials" --notes) \
+    -l <(lpass show "Shared-CLI/Concourse/Concourse Credentials" --notes) \
+    -l <(lpass show "VAT Concourse Credentials" --notes) \
+    -v bosh-lite-gcp-json-key="$(lpass show Shared-CLI/bosh-service-account-gcp-creds --notes | jq -c . )" \
+    -v bosh-lite-storage-bucket=bosh-lites \
+    -v bosh-lite-project-id=cf-cli \
+    -v bosh-lite-dns-zone-name=bosh-lite-pool \
+    -v bosh-lite-system-domain-suffix=lite.cli.fun

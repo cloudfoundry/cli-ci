@@ -28,7 +28,7 @@ run:
     set -ex
 
     if [ "$TARGET_V7" == "true" ]; then
-      VERSION=$(cat cli/BUILD_VERSION_V7)
+      VERSION=$(cat cli/BUILD_VERSION)
       SUFFIX="7"
     else
       VERSION=$(cat cli/BUILD_VERSION)

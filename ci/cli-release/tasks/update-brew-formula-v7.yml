@@ -24,7 +24,7 @@ run:
   - |
     set -ex
 
-    VERSION=$(cat cli/BUILD_VERSION_V7)
+    VERSION=$(cat cli/BUILD_VERSION)
 
     mkdir cf7-cli-osx-tarball cf7-cli-linux-tarball
     curl -L "https://packages.cloudfoundry.org/stable?release=macosx64-binary&version=${VERSION}&source=github-rel" > cf7-cli-osx-tarball/cf7-cli_${VERSION}_osx.tgz

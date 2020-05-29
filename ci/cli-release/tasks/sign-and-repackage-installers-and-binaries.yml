@@ -23,7 +23,7 @@ run:
 
     if ($env:TARGET_V7 -eq "true") {
       Set-Variable Suffix "7"
-      type .\cli\BUILD_VERSION_V7 | Set-Variable Version
+      type .\cli\BUILD_VERSION | Set-Variable Version
     } else {
       Set-Variable Suffix ""
       type .\cli\BUILD_VERSION | Set-Variable Version

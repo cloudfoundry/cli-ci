@@ -29,7 +29,7 @@ run:
     set -ex
 
     if [ "$TARGET_V7" == "true" ]; then
-      VERSION=$(cat cli/BUILD_VERSION_V7)
+      VERSION=$(cat cli/BUILD_VERSION)
       BUCKET_PREFIX=v7-
     else
       VERSION=$(cat cli/BUILD_VERSION)
