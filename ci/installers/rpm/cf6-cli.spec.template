@@ -1,0 +1,16 @@
+Summary: Cloud Foundry CLI
+Name: cf6-cli
+Release: 1
+Group: Development/Tools
+License: ASL 2.0
+URL: https://github.com/cloudfoundry/cli
+BugUrl: https://github.com/cloudfoundry/cli/issues
+
+%description
+Cloud Foundry CLI is the official command line client for Cloud Foundry.
+
+%install
+
+%clean
+
+%files
