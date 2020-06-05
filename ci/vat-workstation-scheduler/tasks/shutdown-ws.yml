@@ -7,6 +7,8 @@ image_resource:
     repository: google/cloud-sdk
 
 params:
+  GCP_VM_NAME: ""
+  GCP_PROJECT_NAME: "cf-cli"
   GCP_SERVICE_ACCOUNT_KEY: ""
 
 run:
@@ -18,4 +20,6 @@ run:
 
       gcloud auth activate-service-account --key-file=<(echo $GCP_SERVICE_ACCOUNT_KEY)
 
-      echo "shutting it down!"
+      echo "Shutting down VM $GCP_VM_NAME in project $GCP_PROJECT_NAME..."
+
+      gcloud compute instances stop $GCP_VM_NAME --project $GCP_PROJECT_NAME

@@ -7,6 +7,12 @@ resource_types:
       tag: latest
 
 resources:
+  - name: cli-ci
+    type: git
+    source:
+      branch: master
+      uri: https://github.com/cloudfoundry/cli-ci
+
   - name: slack-alert
     type: slack-notification
     icon: slack
@@ -58,57 +64,69 @@ jobs:
 
   - name: startup-vat-ws-1
     plan:
+      - get: cli-ci
       - get: start-of-work-day
         trigger: true
-
       - task: startup
         file: cli-ci/ci/vat-workstation-scheduler/tasks/startup-ws.yml
+        params:
+          GCP_VM_NAME: vat-ws-1
+          GCP_SERVICE_ACCOUNT_KEY: ((workstation-scheduler-gcp-json-key))
 
   - name: startup-vat-ws-2
     plan:
+      - get: cli-ci
       - get: start-of-work-day
         trigger: true
-
       - task: startup
         file: cli-ci/ci/vat-workstation-scheduler/tasks/startup-ws.yml
+        params:
+          GCP_VM_NAME: vat-ws-1
+          GCP_SERVICE_ACCOUNT_KEY: ((workstation-scheduler-gcp-json-key))
 
   - name: startup-vat-ws-3
     plan:
+      - get: cli-ci
       - get: start-of-work-day
         trigger: true
-
       - task: startup
         file: cli-ci/ci/vat-workstation-scheduler/tasks/startup-ws.yml
+        params:
+          GCP_VM_NAME: vat-ws-1
+          GCP_SERVICE_ACCOUNT_KEY: ((workstation-scheduler-gcp-json-key))
 
   - name: shutdown-vat-ws-1
     plan:
+      - get: cli-ci
       - get: end-of-work-day
         trigger: true
         passed: [alert-and-wait]
-
       - task: shutdown
         file: cli-ci/ci/vat-workstation-scheduler/tasks/shutdown-ws.yml
         params:
+          GCP_VM_NAME: vat-ws-1
           GCP_SERVICE_ACCOUNT_KEY: ((workstation-scheduler-gcp-json-key))
 
   - name: shutdown-vat-ws-2
     plan:
+      - get: cli-ci
       - get: end-of-work-day
         trigger: true
         passed: [alert-and-wait]
-
       - task: shutdown
         file: cli-ci/ci/vat-workstation-scheduler/tasks/shutdown-ws.yml
         params:
+          GCP_VM_NAME: vat-ws-2
           GCP_SERVICE_ACCOUNT_KEY: ((workstation-scheduler-gcp-json-key))
 
   - name: shutdown-vat-ws-3
     plan:
+      - get: cli-ci
       - get: end-of-work-day
         trigger: true
         passed: [alert-and-wait]
-
       - task: shutdown
         file: cli-ci/ci/vat-workstation-scheduler/tasks/shutdown-ws.yml
         params:
+          GCP_VM_NAME: vat-ws-3
           GCP_SERVICE_ACCOUNT_KEY: ((workstation-scheduler-gcp-json-key))
