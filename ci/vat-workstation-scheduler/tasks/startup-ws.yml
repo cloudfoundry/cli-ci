@@ -8,6 +8,7 @@ image_resource:
 
 params:
   GCP_VM_NAME: ""
+  GCP_VM_ZONE: ""
   GCP_PROJECT_NAME: "cf-cli"
   GCP_SERVICE_ACCOUNT_KEY: ""
 
@@ -16,10 +17,10 @@ run:
   args:
     - -c
     - |
-      set -e
+      set -ex
 
       gcloud auth activate-service-account --key-file=<(echo $GCP_SERVICE_ACCOUNT_KEY)
 
-      echo "Starting up VM $GCP_VM_NAME in project $GCP_PROJECT_NAME..."
+      echo "Starting up VM $GCP_VM_NAME in zone $GCP_VM_ZONE for project $GCP_PROJECT_NAME..."
 
-      gcloud compute instances start $GCP_VM_NAME --project $GCP_PROJECT_NAME
+      gcloud compute instances start $GCP_VM_NAME --project $GCP_PROJECT_NAME --zone $GCP_VM_ZONE

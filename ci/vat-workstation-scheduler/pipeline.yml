@@ -21,6 +21,7 @@ resources:
 
   - name: start-of-work-day
     type: time
+    icon: weather-sunset-up
     source:
       location: America/Los_Angeles
       start: 8:00 AM
@@ -29,6 +30,7 @@ resources:
 
   - name: end-of-work-day
     type: time
+    icon: weather-night
     source:
       location: America/Los_Angeles
       start: 6:00 PM
@@ -71,6 +73,7 @@ jobs:
         file: cli-ci/ci/vat-workstation-scheduler/tasks/startup-ws.yml
         params:
           GCP_VM_NAME: vat-ws-1
+          GCP_VM_ZONE: us-central1-a
           GCP_SERVICE_ACCOUNT_KEY: ((workstation-scheduler-gcp-json-key))
 
   - name: startup-vat-ws-2
@@ -81,7 +84,8 @@ jobs:
       - task: startup
         file: cli-ci/ci/vat-workstation-scheduler/tasks/startup-ws.yml
         params:
-          GCP_VM_NAME: vat-ws-1
+          GCP_VM_NAME: vat-ws-2
+          GCP_VM_ZONE: us-central1-a
           GCP_SERVICE_ACCOUNT_KEY: ((workstation-scheduler-gcp-json-key))
 
   - name: startup-vat-ws-3
@@ -92,7 +96,8 @@ jobs:
       - task: startup
         file: cli-ci/ci/vat-workstation-scheduler/tasks/startup-ws.yml
         params:
-          GCP_VM_NAME: vat-ws-1
+          GCP_VM_NAME: vat-ws-3
+          GCP_VM_ZONE: us-west1-b
           GCP_SERVICE_ACCOUNT_KEY: ((workstation-scheduler-gcp-json-key))
 
   - name: shutdown-vat-ws-1
@@ -105,6 +110,7 @@ jobs:
         file: cli-ci/ci/vat-workstation-scheduler/tasks/shutdown-ws.yml
         params:
           GCP_VM_NAME: vat-ws-1
+          GCP_VM_ZONE: us-central1-a
           GCP_SERVICE_ACCOUNT_KEY: ((workstation-scheduler-gcp-json-key))
 
   - name: shutdown-vat-ws-2
@@ -117,6 +123,7 @@ jobs:
         file: cli-ci/ci/vat-workstation-scheduler/tasks/shutdown-ws.yml
         params:
           GCP_VM_NAME: vat-ws-2
+          GCP_VM_ZONE: us-central1-a
           GCP_SERVICE_ACCOUNT_KEY: ((workstation-scheduler-gcp-json-key))
 
   - name: shutdown-vat-ws-3
@@ -129,4 +136,5 @@ jobs:
         file: cli-ci/ci/vat-workstation-scheduler/tasks/shutdown-ws.yml
         params:
           GCP_VM_NAME: vat-ws-3
+          GCP_VM_ZONE: us-west1-b
           GCP_SERVICE_ACCOUNT_KEY: ((workstation-scheduler-gcp-json-key))
