@@ -17,7 +17,7 @@ run:
   args:
     - -c
     - |
-      set -ex
+      set -e
 
       gcloud auth activate-service-account --key-file=<(echo $GCP_SERVICE_ACCOUNT_KEY)
 
