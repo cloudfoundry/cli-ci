@@ -39,10 +39,10 @@ run:
     popd
 
     pushd homebrew-tap
-      cat <<EOF > cf7-cli.rb
+      cat <<EOF > cf-cli@7.rb
     require 'formula'
 
-    class Cf7Cli < Formula
+    class Cf7CliAT7 < Formula
       homepage 'https://code.cloudfoundry.org/cli'
       version '${VERSION}'
 
