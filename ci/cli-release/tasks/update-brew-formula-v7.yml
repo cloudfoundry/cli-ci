@@ -71,7 +71,7 @@ run:
     end
     EOF
 
-    git add cf7-cli.rb
+    git add cf-cli@7.rb
     if ! [ -z "$(git status --porcelain)"];
     then
       git config --global user.email "cf-cli-eng@pivotal.io"
@@ -80,7 +80,7 @@ run:
     else
         echo "no new version to commit"
     fi
-    cat cf7-cli.rb
+    cat cf-cli@7.rb
     popd
 
     cp -R homebrew-tap $OUTPUT_PATH

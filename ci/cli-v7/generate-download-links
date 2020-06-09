@@ -8,7 +8,7 @@ cat <<-NOTES
 # $VERSION
 
 ## Package Manager Installation
-- [homebrew](https://github.com/cloudfoundry/cli#installing-using-a-package-manager) - Note: \`cf7-cli\` is the formula name for the V7 Beta.
+- [homebrew](https://github.com/cloudfoundry/cli#installing-using-a-package-manager) - Note: \`cf-cli@7\` is the formula name for the V7 Beta.
 
 ## Installers
 - Debian [64 bit](https://packages.cloudfoundry.org/stable?release=debian64&version=$VERSION&source=github-rel) / [32 bit](https://packages.cloudfoundry.org/stable?release=debian32&version=$VERSION&source=github-rel) (deb)
