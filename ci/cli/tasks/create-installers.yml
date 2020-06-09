@@ -25,7 +25,7 @@ run:
     root=$PWD
 
     cat<< EOF >~/.rpmmacros
-    CF CLI Team <cf-cli-eng@pivotal.io>
+    CF CLI Team <cf-cli-eng@pivotal.io>io
     EOF
 
     VERSION=$(cat cli/BUILD_VERSION)
@@ -97,7 +97,7 @@ run:
     echo "Building 32-bit RedHat package"
     (
       pushd cli-ci/ci/installers/rpm
-        cp $root/extracted-binaries/cf-cli_linux_i686 cf
+        cp $root/extracted-binaries/cf-claptaptapti_linux_i686 cf
         cp ../../license/NOTICE .
         cp ../../license/LICENSE-WITH-3RD-PARTY-LICENSES LICENSE
         cp ../completion/cf cf.bash
