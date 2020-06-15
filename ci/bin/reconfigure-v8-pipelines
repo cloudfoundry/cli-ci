@@ -29,20 +29,20 @@ configure_pipeline() {
     -v bosh-lite-system-domain-suffix=lite.cli.fun
 }
 
-# configure_v7_infrastructure_pipeline() {
-#   local name=$1
-#   local creds=$2
-#   local potato=$3
+configure_v8_infrastructure_pipeline() {
+  local name=$1
+  local creds=$2
+  local pool=$3
 
-#   printf "configuring the $name pipeline...\n"
+  printf "configuring the $name pipeline...\n"
 
-#   fly -t ci set-pipeline \
-#     -p $name \
-#     -c $pipelines_path/infrastructure/v7-pipeline.yml \
-#     -l <(lpass show "Concourse Credentials" --notes) \
-#     -l <(lpass show "$creds" --notes) \
-#     -v pool-name=$potato
-# }
+  fly -t ci set-pipeline \
+    -p $name \
+    -c $pipelines_path/infrastructure/v7-pipeline.yml \
+    -l <(lpass show "Concourse Credentials" --notes) \
+    -l <(lpass show "$creds" --notes) \
+    -v pool-name=$pool
+}
 
 
 check_installed lpass
@@ -55,7 +55,4 @@ pipelines_path=$(cd $(dirname $0)/.. && pwd)
 
 configure_pipeline V8 $pipelines_path/cli-v8/pipeline.yml
 
-# configure_v7_infrastructure_pipeline inf-delfina delfina-pipeline mashed-potato
-# configure_v7_infrastructure_pipeline inf-nopa nopa-pipeline mashed-potato
-# configure_v7_infrastructure_pipeline inf-zerozero zerozero-pipeline mashed-potato
-# configure_v7_infrastructure_pipeline inf-zuni zuni-pipeline mashed-potato
+configure_v8_infrastructure_pipeline inf-arizmendi arizmendi-pipeline v8-pool
