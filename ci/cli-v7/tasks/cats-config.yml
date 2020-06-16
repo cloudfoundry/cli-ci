@@ -73,6 +73,7 @@ run:
       "include_ssh": true,
       "include_sso": false,
       "include_tasks": true,
+      "include_tcp_routing": true,
       "include_v3": ${INCLUDE_V3},
       "include_zipkin": true
     }
