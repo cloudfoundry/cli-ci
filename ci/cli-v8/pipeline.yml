@@ -13,7 +13,7 @@ resources:
     uri: git@github.com:cloudfoundry/cli-pools
     private_key: ((cli-pools-github-private-key))
     branch: master
-    pool: mashed-potato
+    pool: v8-pool
 
 - name: cli-ci
   type: git
