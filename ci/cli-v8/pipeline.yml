@@ -192,3 +192,56 @@ jobs:
     put: gcp-bosh-pool
     params:
       release: bosh-lock
+
+- name: integration-linux-client-creds
+  serial: true
+  plan:
+  - in_parallel: *integration_resources
+  - do:
+    - task: cleanup-integration
+      file: cli-ci/ci/cli-v8/tasks/cleanup-integration.yml
+    - task: integration
+      file: cli-ci/ci/cli-v8/tasks/integration-linux.yml
+      on_failure:
+        put: slack-alert
+        params:
+          channel: '#v3-acceleration-team'
+          text: *slack_notification_text
+      ensure:
+        task: cleanup-integration
+        file: cli-ci/ci/cli-v8/tasks/cleanup-integration.yml
+      params:
+        <<: *integration_params
+        CF_INT_CLIENT_CREDENTIALS_TEST_MODE: true
+  ensure:
+    put: gcp-bosh-pool
+    params:
+      release: bosh-lock
+
+- name: integration-windows-client-creds
+  serial: true
+  plan:
+  - in_parallel: *integration_resources
+  - do:
+    - task: cleanup-integration
+      file: cli-ci/ci/cli-v8/tasks/cleanup-integration.yml
+    - task: integration
+      tags: [vat-windows]
+      file: cli-ci/ci/cli-v8/tasks/integration-windows.yml
+      params:
+        <<: *integration_params
+        CF_INT_CLIENT_CREDENTIALS_TEST_MODE: true
+      input_mapping:
+        cf-credentials: cleanup-integration-outputs
+      on_failure:
+        put: slack-alert
+        params:
+          channel: '#v3-acceleration-team'
+          text: *slack_notification_text
+      ensure:
+        task: cleanup-integration
+        file: cli-ci/ci/cli-v8/tasks/cleanup-integration.yml
+  ensure:
+    put: gcp-bosh-pool
+    params:
+      release: bosh-lock
