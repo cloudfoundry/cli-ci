@@ -22,6 +22,13 @@ Source: CF_NOTICE; DestDir: "{app}"
 Source: CF_SOURCE; DestDir: "{app}"
 Source: CF_ICON; DestDir: "{app}"
 
+[Run]
+Filename: "{cmd}"; Parameters: "/C mklink ""{app}\cf.exe"" ""{app}\cf7.exe"""
+
+[UninstallDelete]
+Type: files; Name: "{app}\cf.exe"
+Type: dirifempty; Name: "{app}"
+
 [Code]
 function Uninstall32Bit(): Boolean;
 var
