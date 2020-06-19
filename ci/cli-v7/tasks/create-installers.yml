@@ -56,6 +56,7 @@ run:
           cp ../completion/cf7 cf/usr/share/bash-completion/completions/cf7
 
           cp $root/extracted-binaries/cf-cli_linux_i686 cf/usr/bin/cf7
+          ln -frs cf/usr/bin/cf7 cf/usr/bin/cf
 
           fakeroot dpkg --build cf cf7-cli-installer_i686.deb
           mv cf7-cli-installer_i686.deb $root/packaged
@@ -88,6 +89,7 @@ run:
           cp ../completion/cf7 cf/usr/share/bash-completion/completions/cf7
 
           cp $root/extracted-binaries/cf-cli_linux_x86-64 cf/usr/bin/cf7
+          ln -frs cf/usr/bin/cf7 cf/usr/bin/cf
 
           fakeroot dpkg --build cf cf7-cli-installer_x86-64.deb
           mv cf7-cli-installer_x86-64.deb $root/packaged
@@ -132,6 +134,7 @@ run:
         mkdir -p cf-cli/usr/local/bin cf-cli/usr/local/share/doc/cf7-cli
 
         cp $root/extracted-binaries/cf-cli_osx cf-cli/usr/local/bin/cf7
+        ln -frs cf-cli/usr/local/bin/cf7 cf-cli/usr/local/bin/cf
         cp ../../license/NOTICE cf-cli/usr/local/share/doc/cf7-cli
         cp ../../license/LICENSE-WITH-3RD-PARTY-LICENSES cf-cli/usr/local/share/doc/cf7-cli/LICENSE
         chmod -R go-w cf-cli

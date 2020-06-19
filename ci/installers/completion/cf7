@@ -11,3 +11,4 @@ _cf-cli() {
     return 0
 }
 complete -F _cf-cli cf7
+complete -F _cf-cli cf
