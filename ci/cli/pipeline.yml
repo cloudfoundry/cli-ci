@@ -194,22 +194,6 @@ resources:
     private_key: ((cli-private-github-private-key))
     branch: master
 
-groups:
-- name: cli
-  jobs:
-  - units
-  - build-binaries
-  - integration-linux
-  - integration-linux-client-creds
-  - integration-windows
-  - integration-windows-client-creds
-  - integration-legacy
-  - integration-legacy-client-creds
-  - integration-experimental
-  - integration-experimental-client-creds
-  - cats
-  - create-installers
-
 jobs:
 - name: units
   serial: true
