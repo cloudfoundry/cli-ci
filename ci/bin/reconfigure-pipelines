@@ -88,6 +88,7 @@ pipelines_path=$(cd $(dirname $0)/.. && pwd)
 
 configure_pipeline V6 $pipelines_path/cli/pipeline.yml
 configure_pipeline oslo-scan-status $pipelines_path/oslo-scan-status/pipeline.yml
+configure_pipeline docker-images $pipelines_path/docker-images/pipeline.yml
 configure_workstation_scheduler_pipeline vat-workstation-scheduler $pipelines_path/workstation-scheduler/vat-pipeline.yml
 configure_workstation_scheduler_pipeline cli-workstation-scheduler $pipelines_path/workstation-scheduler/cli-pipeline.yml
 

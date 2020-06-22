@@ -181,48 +181,6 @@ resources:
     project_id: ((cf-cli-public-tracker-project-id))
     tracker_url: https://www.pivotaltracker.com
 
-- name: golang
-  type: docker-image
-  source:
-    repository: golang
-    tag: 1.13
-
-- name: baseimage
-  type: docker-image
-  source:
-    repository: phusion/baseimage
-    tag: latest
-
-- name: cli-ci-base-dockerfile
-  type: git
-  source:
-    uri: https://github.com/cloudfoundry/cli-ci
-    branch: master
-    paths: [ci/cli-base/Dockerfile]
-
-- name: cli-ci-package-dockerfile
-  type: git
-  source:
-    uri: https://github.com/cloudfoundry/cli-ci
-    branch: master
-    paths: [ci/cli-package/Dockerfile]
-
-- name: cf-cli-base-image
-  type: docker-image
-  source:
-    repository: cfcli/cli-base
-    username: ((dockerhub-username))
-    email: ((dockerhub-email))
-    password: ((dockerhub-password))
-
-- name: cf-cli-package-image
-  type: docker-image
-  source:
-    repository: cfcli/cli-package
-    username: ((dockerhub-username))
-    email: ((dockerhub-email))
-    password: ((dockerhub-password))
-
 - name: slack-alert
   type: slack-notification
   icon: slack
@@ -235,15 +193,6 @@ resources:
     uri: git@github.com:cloudfoundry/cli-private
     private_key: ((cli-private-github-private-key))
     branch: master
-
-- name: weekly
-  type: time
-  icon: weather-night
-  source:
-    location: America/Los_Angeles
-    start: 2:00 AM
-    stop: 3:00 AM
-    days: [Saturday]
 
 groups:
 - name: cli
@@ -260,10 +209,6 @@ groups:
   - integration-experimental-client-creds
   - cats
   - create-installers
-- name: images
-  jobs:
-  - create-cli-base-image
-  - create-cli-package-image
 
 jobs:
 - name: units
@@ -775,36 +720,5 @@ jobs:
     put: gcp-bosh-pool
     params:
       release: bosh-lock
-
-
-- name: create-cli-base-image
-  serial: true
-  plan:
-  - in_parallel:
-    - get: cli-ci-base-dockerfile
-      trigger: true
-    - get: golang
-      trigger: true
-      params: {save: true}
-    - get: weekly
-      trigger: true
-  - put: cf-cli-base-image
-    params:
-      load_base: golang
-      build: cli-ci-base-dockerfile/ci/cli-base
-
-- name: create-cli-package-image
-  serial: true
-  plan:
-  - in_parallel:
-    - get: cli-ci-package-dockerfile
-      trigger: true
-    - get: baseimage
-      trigger: true
-      params: {save: true}
-  - put: cf-cli-package-image
-    params:
-      load_base: baseimage
-      build: cli-ci-package-dockerfile/ci/cli-package
 
 # vi: includeexpr=substitute(v\:fname,'^cli-ci/','',''):
