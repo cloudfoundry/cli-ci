@@ -19,15 +19,6 @@ resources:
     source:
       url: ((vat-slack-webhook-url))
 
-  - name: start-of-work-day
-    type: time
-    icon: weather-sunset-up
-    source:
-      location: America/Los_Angeles
-      start: 8:00 AM
-      stop: 8:15 AM
-      days: [Monday, Tuesday, Wednesday, Thursday, Friday]
-
   - name: end-of-work-day
     type: time
     icon: weather-night
@@ -42,14 +33,12 @@ jobs:
     plan:
       - get: end-of-work-day
         trigger: true
-
       - put: slack-alert
         params:
-          channel: '#v3-acceleration-team'
+          channel: '#cli-eng'
           text: >
-            Hi team! Your cloud workstations will automatically shut down in 20 minutes. If you're still working,
-            pause the shutdown job for your workstation to prevent this! :v3-acceleration:
-
+            [THIS IS A TEST OF THE PUBLIC BROADCASTING SYSTEM] Hi team! Your cloud workstations will automatically shut down in 20 minutes. If you're still working,
+            pause the shutdown job for your workstation to prevent this! :josh-sleuth:
       - task: wait-20-minutes
         config:
           platform: linux
@@ -64,77 +53,55 @@ jobs:
               - |
                 sleep 1200
 
-  - name: startup-vat-ws-1
-    plan:
-      - get: cli-ci
-      - get: start-of-work-day
-        trigger: true
-      - task: startup
-        file: cli-ci/ci/vat-workstation-scheduler/tasks/startup-ws.yml
-        params:
-          GCP_VM_NAME: vat-ws-1
-          GCP_VM_ZONE: us-central1-a
-          GCP_SERVICE_ACCOUNT_KEY: ((workstation-scheduler-gcp-json-key))
-
-  - name: startup-vat-ws-2
-    plan:
-      - get: cli-ci
-      - get: start-of-work-day
-        trigger: true
-      - task: startup
-        file: cli-ci/ci/vat-workstation-scheduler/tasks/startup-ws.yml
-        params:
-          GCP_VM_NAME: vat-ws-2
-          GCP_VM_ZONE: us-central1-a
-          GCP_SERVICE_ACCOUNT_KEY: ((workstation-scheduler-gcp-json-key))
-
-  - name: startup-vat-ws-3
-    plan:
-      - get: cli-ci
-      - get: start-of-work-day
-        trigger: true
-      - task: startup
-        file: cli-ci/ci/vat-workstation-scheduler/tasks/startup-ws.yml
-        params:
-          GCP_VM_NAME: vat-ws-3
-          GCP_VM_ZONE: us-west1-b
-          GCP_SERVICE_ACCOUNT_KEY: ((workstation-scheduler-gcp-json-key))
-
-  - name: shutdown-vat-ws-1
+  - name: shutdown-cli-ws-1
     plan:
       - get: cli-ci
       - get: end-of-work-day
         trigger: true
         passed: [alert-and-wait]
       - task: shutdown
-        file: cli-ci/ci/vat-workstation-scheduler/tasks/shutdown-ws.yml
+        file: cli-ci/ci/workstation-scheduler/tasks/shutdown-ws.yml
         params:
-          GCP_VM_NAME: vat-ws-1
+          GCP_VM_NAME: cli-ws-1
           GCP_VM_ZONE: us-central1-a
           GCP_SERVICE_ACCOUNT_KEY: ((workstation-scheduler-gcp-json-key))
 
-  - name: shutdown-vat-ws-2
+  - name: shutdown-cli-ws-2
     plan:
       - get: cli-ci
       - get: end-of-work-day
         trigger: true
         passed: [alert-and-wait]
       - task: shutdown
-        file: cli-ci/ci/vat-workstation-scheduler/tasks/shutdown-ws.yml
+        file: cli-ci/ci/workstation-scheduler/tasks/shutdown-ws.yml
         params:
-          GCP_VM_NAME: vat-ws-2
+          GCP_VM_NAME: cli-ws-2
           GCP_VM_ZONE: us-central1-a
           GCP_SERVICE_ACCOUNT_KEY: ((workstation-scheduler-gcp-json-key))
 
-  - name: shutdown-vat-ws-3
+  - name: shutdown-cli-ws-3
     plan:
       - get: cli-ci
       - get: end-of-work-day
         trigger: true
         passed: [alert-and-wait]
       - task: shutdown
-        file: cli-ci/ci/vat-workstation-scheduler/tasks/shutdown-ws.yml
+        file: cli-ci/ci/workstation-scheduler/tasks/shutdown-ws.yml
         params:
-          GCP_VM_NAME: vat-ws-3
-          GCP_VM_ZONE: us-west1-b
+          GCP_VM_NAME: cli-ws-3
+          GCP_VM_ZONE: us-central1-a
           GCP_SERVICE_ACCOUNT_KEY: ((workstation-scheduler-gcp-json-key))
+
+  - name: shutdown-cli-ws-4
+    plan:
+      - get: cli-ci
+      - get: end-of-work-day
+        trigger: true
+        passed: [alert-and-wait]
+      - task: shutdown
+        file: cli-ci/ci/workstation-scheduler/tasks/shutdown-ws.yml
+        params:
+          GCP_VM_NAME: cli-ws-4
+          GCP_VM_ZONE: us-central1-a
+          GCP_SERVICE_ACCOUNT_KEY: ((workstation-scheduler-gcp-json-key))
+
