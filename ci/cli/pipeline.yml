@@ -236,6 +236,15 @@ resources:
     private_key: ((cli-private-github-private-key))
     branch: master
 
+- name: weekly
+  type: time
+  icon: weather-night
+  source:
+    location: America/Los_Angeles
+    start: 2:00 AM
+    stop: 3:00 AM
+    days: [Saturday]
+
 groups:
 - name: cli
   jobs:
@@ -777,6 +786,8 @@ jobs:
     - get: golang
       trigger: true
       params: {save: true}
+    - get: weekly
+      trigger: true
   - put: cf-cli-base-image
     params:
       load_base: golang
