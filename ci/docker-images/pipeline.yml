@@ -16,14 +16,14 @@ resources:
   source:
     uri: https://github.com/cloudfoundry/cli-ci
     branch: master
-    paths: [ci/cli-base/Dockerfile]
+    paths: [ci/docker-images/dockerfiles/base/Dockerfile]
 
 - name: cli-ci-package-dockerfile
   type: git
   source:
     uri: https://github.com/cloudfoundry/cli-ci
     branch: master
-    paths: [ci/cli-package/Dockerfile]
+    paths: [ci/docker-images/dockerfiles/package/Dockerfile]
 
 - name: cf-cli-base-image
   type: docker-image
@@ -65,7 +65,7 @@ jobs:
   - put: cf-cli-base-image
     params:
       load_base: golang
-      build: cli-ci-base-dockerfile/ci/cli-base
+      build: cli-ci-base-dockerfile/ci/docker-images/dockerfiles/base
 
 - name: create-cli-package-image
   serial: true
@@ -79,4 +79,4 @@ jobs:
   - put: cf-cli-package-image
     params:
       load_base: baseimage
-      build: cli-ci-package-dockerfile/ci/cli-package
+      build: cli-ci-base-dockerfile/ci/docker-images/dockerfiles/package
