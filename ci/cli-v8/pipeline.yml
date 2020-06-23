@@ -37,6 +37,26 @@ resources:
     secret_access_key: ((cli-team-aws-s3-secret-access-key))
     versioned_file: "v8/cf-cli-binaries.tgz"
 
+- name: cf-deployment-concourse-tasks
+  type: git
+  icon: github-box
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry/cf-deployment-concourse-tasks.git
+
+- name: cf-acceptance-tests-v7
+  type: git
+  icon: github-box
+  source:
+    # This branch should be a superset of the `cli-v7-capi-v3` branch
+    # It also contains test coverage for new v7 features
+    # Keep using this branch until those new tests are merged into master
+    branch: cli-v7-cats-new-features
+    uri: https://github.com/cloudfoundry/cf-acceptance-tests.git
+    ignore_paths:
+    - ci/*.yml
+    - .envrc
+
 - name: slack-alert
   type: slack-notification
   icon: slack
@@ -245,3 +265,65 @@ jobs:
     put: gcp-bosh-pool
     params:
       release: bosh-lock
+
+- name: cats
+  serial: true
+  plan:
+  - in_parallel:
+    - get: cli
+      passed:
+      - integration-linux
+      - integration-linux-client-creds
+      - integration-windows
+      - integration-windows-client-creds
+    - get: cf-acceptance-tests-v7
+      trigger: true
+    - get: cf-deployment-concourse-tasks
+    - get: cf-cli-binaries
+      passed:
+      - integration-linux
+      - integration-linux-client-creds
+      - integration-windows
+      - integration-windows-client-creds
+      trigger: true
+    - get: cli-ci
+    - get: vars-store
+    - put: bosh-lock
+      resource: gcp-bosh-pool
+      timeout: 2h
+      params:
+        acquire: true
+  - do:
+    - task: cleanup-integration
+      file: cli-ci/ci/cli-v8/tasks/cleanup-integration.yml
+    - task: config
+      file: cli-ci/ci/cli-v8/tasks/cats-config.yml
+      params:
+        INCLUDE_V3: true
+        BROKER_START_TIMEOUT: 330
+        CF_PUSH_TIMEOUT: 210
+        DEFAULT_TIMEOUT: 60
+        LONG_CURL_TIMEOUT: 210
+    - task: extract-linux-binary
+      file: cli-ci/ci/cli-v8/tasks/extract-linux-binary.yml
+    - task: run-tests
+      file: cf-deployment-concourse-tasks/run-cats-with-provided-cli/task.yml
+      input_mapping:
+        cf-acceptance-tests: cf-acceptance-tests-v7
+        integration-config: cats-config
+        cf-cli: linux-cf-binary
+      params:
+        NODES: 16
+        SKIP_REGEXP: "transparently proxies both reserved"
+        REPORTER_CONFIG_FILE_PATH: ""
+        FLAKE_ATTEMPTS: 2
+      on_failure:
+        put: slack-alert
+        params:
+          channel: '#cats-cli-v7-migration'
+          text: *slack_notification_text
+  ensure:
+    put: gcp-bosh-pool
+    params:
+      release: bosh-lock
+
