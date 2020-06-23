@@ -42,7 +42,7 @@ run:
       cat <<EOF > cf-cli@7.rb
     require 'formula'
 
-    class Cf7CliAT7 < Formula
+    class CfCliAT7 < Formula
       homepage 'https://code.cloudfoundry.org/cli'
       version '${VERSION}'
 
