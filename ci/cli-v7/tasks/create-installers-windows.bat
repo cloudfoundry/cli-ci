@@ -17,7 +17,7 @@ TYPE %ROOT_DIR%\cli-ci\ci\license\LICENSE-WITH-3RD-PARTY-LICENSES | MORE /P > LI
 TYPE %ROOT_DIR%\cli-ci\ci\license\NOTICE | MORE /P > NOTICE
 COPY %ROOT_DIR%\cli-ci\ci\installers\windows\cf.ico cf.ico
 
-MOVE %ROOT_DIR%\extracted-binaries\cf-cli_winx64.exe cf7.exe
+MOVE %ROOT_DIR%\extracted-binaries\cf7-cli_winx64.exe cf7.exe
 mklink cf7.exe cf.exe
 
 ISCC %ROOT_DIR%\cli-ci\ci\installers\windows\windows-installer-x64.iss
@@ -32,7 +32,7 @@ sed -i -e "s/CF_NOTICE/%ESCAPED_ROOT_DIR%\\NOTICE/" %ROOT_DIR%\cli-ci\ci\install
 sed -i -e "s/CF_SOURCE/%ESCAPED_ROOT_DIR%\\cf7.exe/" %ROOT_DIR%\cli-ci\ci\installers\windows\windows-installer-x86.iss
 sed -i -e "s/CF_ICON/%ESCAPED_ROOT_DIR%\\cf.ico/" %ROOT_DIR%\cli-ci\ci\installers\windows\windows-installer-x86.iss
 
-MOVE %ROOT_DIR%\extracted-binaries\cf-cli_win32.exe cf7.exe
+MOVE %ROOT_DIR%\extracted-binaries\cf7-cli_win32.exe cf7.exe
 mklink cf.exe cf7.exe
 
 ISCC %ROOT_DIR%\cli-ci\ci\installers\windows\windows-installer-x86.iss
