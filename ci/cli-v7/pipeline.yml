@@ -604,7 +604,7 @@ jobs:
             $ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
     - task: windows
       tags: [vat-windows]
-      file: cli-ci/ci/cli-v7/tasks/create-installers-windows.yml
+      file: cli-ci/ci/cli-v7/tasks/create-edge-installers-windows.yml
       on_failure:
         put: slack-alert
         params:
