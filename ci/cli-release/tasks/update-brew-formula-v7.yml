@@ -58,6 +58,7 @@ run:
 
       def install
         bin.install 'cf7'
+        bin.install_symlink 'cf7' => 'cf'
         (bash_completion/"cf7-cli").write <<-completion
     $(cat ../cli-ci/ci/installers/completion/cf7)
         completion
