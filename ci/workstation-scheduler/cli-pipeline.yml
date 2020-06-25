@@ -37,7 +37,7 @@ jobs:
         params:
           channel: '#cli-eng'
           text: >
-            [THIS IS A TEST OF THE PUBLIC BROADCASTING SYSTEM] Hi team! Your cloud workstations will automatically shut down in 20 minutes. If you're still working,
+            Hi team! Your cloud workstations will automatically shut down in 20 minutes. If you're still working,
             pause the shutdown job for your workstation to prevent this! :josh-sleuth:
       - task: wait-20-minutes
         config:
