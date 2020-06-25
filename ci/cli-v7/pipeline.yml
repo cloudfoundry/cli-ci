@@ -241,6 +241,16 @@ resources:
     project_id: '2196383'
     tracker_url: https://www.pivotaltracker.com
 
+- name: ubuntu-64-image
+  type: registry-image
+  source:
+    repository: ubuntu
+
+- name: ubuntu-32-image
+  type: registry-image
+  source:
+    repository: i386/ubuntu
+
 jobs:
 - name: units
   serial: true
@@ -485,6 +495,7 @@ jobs:
               dns_zone_name: ((bosh-lite-dns-zone-name))
           get_params:
             action: destroy
+
 - name: integration-linux-client-creds
   serial: true
   plan:
@@ -658,6 +669,30 @@ jobs:
     - put: edge-windows-installer-64
       params:
         file: winstallers/cf7-cli-installer_winx64.zip
+
+- name: integration-installers
+  serial: true
+  plan:
+  - in_parallel:
+    - get: edge-deb-installer-64
+      passed: [create-installers]
+    - get: edge-deb-installer-32
+      passed: [create-installers]
+    - get: ubuntu-64-image
+    - get: ubuntu-32-image
+  - in_parallel:
+    - task: deb-64
+      image: ubuntu-64-image
+      file: shared/tasks/integration-debian-installers.yml
+      params:
+        MAJOR_VERSION: 7
+        ARCH: x86-64
+    - task: deb-32
+      image: ubuntu-32-image
+      file: shared/tasks/integration-debian-installers.yml
+      params:
+        MAJOR_VERSION: 7
+        ARCH: i686
 
 - name: cats
   serial: true
