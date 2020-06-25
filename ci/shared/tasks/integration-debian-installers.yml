@@ -1,0 +1,66 @@
+---
+platform: linux
+
+image_resource:
+  type: registry-image
+  source:
+    repository: i386/ubuntu
+
+inputs:
+- name: cli
+- name: edge-deb-installer-64
+  optional: true
+- name: edge-deb-installer-32
+  optional: true
+
+params:
+  MAJOR_VERSION:
+  ARCH:
+
+run:
+  path: bash
+  args:
+  - -c
+  - |
+    set -eux
+
+    if [ "$MAJOR_VERSION" == "6" ]; then
+      SUFFIX=""
+    else
+      SUFFIX="$MAJOR_VERSION"
+    fi
+
+    if [ "$ARCH" == "x86-64" ]; then
+      dpkg -i "edge-deb-installer-64/cf${SUFFIX}-cli-installer_edge_${ARCH}.deb"
+    elif [ "$ARCH" == "i686" ]; then
+      dpkg -i "edge-deb-installer-32/cf${SUFFIX}-cli-installer_edge_${ARCH}.deb"
+    else
+      echo "Error: unrecognized architecture" >&2
+      exit 1
+    fi
+
+    if ! [ -x "$(command -v cf)" ]; then
+      echo 'Error: cf is not installed.' >&2
+      exit 1
+    fi
+
+    EXPECTED_CLI_VERSION="$(cat cli/BUILD_VERSION)"
+    CF_VERSION="$(cf -v)"
+
+    if [[ ! "${CF_VERSION}" == *"cf version ${EXPECTED_CLI_VERSION}"* ]]; then
+      echo "Error: cli/BUILD_VERSION did not match cf -v"
+      exit 1
+    fi
+
+    if ! [ "$MAJOR_VERSION" == "6" ]; then
+      if ! [ -x "$(command -v cf${SUFFIX})" ]; then
+        echo 'Error: cf${SUFFIX} is not installed.' >&2
+        exit 1
+      fi
+
+      SUFFIXED_CF_VERSION="$(cf${SUFFIX} -v)"
+      if [[ ! "${SUFFIXED_CF_VERSION}" == *"cf${SUFFIX} version ${EXPECTED_CLI_VERSION}"* ]]; then
+        echo "Error: cli/BUILD_VERSION did not match cf${SUFFIX} -v"
+        exit 1
+      fi
+    fi
