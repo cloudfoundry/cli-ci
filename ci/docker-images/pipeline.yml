@@ -76,6 +76,8 @@ jobs:
     - get: baseimage
       trigger: true
       params: {save: true}
+    - get: weekly
+      trigger: true
   - put: cf-cli-package-image
     params:
       load_base: baseimage
