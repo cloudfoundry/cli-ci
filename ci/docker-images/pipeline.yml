@@ -81,4 +81,4 @@ jobs:
   - put: cf-cli-package-image
     params:
       load_base: baseimage
-      build: cli-ci-base-dockerfile/ci/docker-images/dockerfiles/package
+      build: cli-ci-package-dockerfile/ci/docker-images/dockerfiles/package
