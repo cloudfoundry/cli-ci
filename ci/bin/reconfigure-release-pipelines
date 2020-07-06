@@ -25,11 +25,20 @@ configure_pipeline() {
 
 check_installed lpass
 check_installed fly
+check_installed ytt
 
 # Make sure we're up to date and that we're logged in.
 lpass sync
 
 pipelines_path=$(cd $(dirname $0)/.. && pwd)
 
-configure_pipeline cli \
-  $pipelines_path/cli-release/pipeline.yml
+if [ "$1" == "prod" ]; then
+  configure_pipeline cli \
+    <(ytt -f $pipelines_path/cli-release/pipeline.yml -f $pipelines_path/cli-release/overlay.yml)
+elif [ "$1" == "dev" ]; then
+  configure_pipeline cli \
+    $pipelines_path/cli-release/pipeline.yml
+else
+  echo "Must specify either 'prod' or 'dev' before configuring pipeline!"
+  exit 1
+fi

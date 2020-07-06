@@ -1,0 +1,15 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"resources": []})
+---
+resources:
+#@overlay/match by=overlay.subset({"source":{"prefix":"cf-cli-releases"}}), expects='1+'
+- source:
+    bucket: cf-cli-releases
+    #@overlay/remove
+    prefix:
+#@overlay/match by=overlay.subset({"source":{"prefix":"v7-cf-cli-releases"}}), expects='1+'
+- source:
+    bucket: v7-cf-cli-releases
+    #@overlay/remove
+    prefix:
