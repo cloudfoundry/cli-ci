@@ -661,6 +661,12 @@ jobs:
     - get: edge-deb-installer-32
       trigger: true
       passed: [create-installers]
+    - get: edge-redhat-installer-64
+      trigger: true
+      passed: [create-installers]
+    - get: edge-redhat-installer-32
+      trigger: true
+      passed: [create-installers]
     - get: ubuntu-64-image
     - get: ubuntu-32-image
   - in_parallel:
@@ -673,6 +679,20 @@ jobs:
     - task: deb-32
       image: ubuntu-32-image
       file: cli-ci/ci/shared/tasks/integration-debian-installers.yml
+      params:
+        MAJOR_VERSION: 6
+        ARCH: i686
+    - task: rpm-64
+      input_mapping:
+        installer: edge-redhat-installer-64
+      file: cli-ci/ci/shared/tasks/integration-rpm-installers.yml
+      params:
+        MAJOR_VERSION: 6
+        ARCH: x86-64
+    - task: rpm-32
+      input_mapping:
+        installer: edge-redhat-installer-32
+      file: cli-ci/ci/shared/tasks/integration-rpm-installers.yml
       params:
         MAJOR_VERSION: 6
         ARCH: i686

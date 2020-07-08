@@ -1,0 +1,56 @@
+---
+platform: linux
+
+image_resource:
+  type: registry-image
+  source:
+    repository: fedora
+
+inputs:
+- name: cli
+- name: installer
+
+params:
+  MAJOR_VERSION:
+  ARCH:
+
+run:
+  path: bash
+  args:
+  - -c
+  - |
+    set -eux
+
+    if [ "$MAJOR_VERSION" == "6" ]; then
+      SUFFIX=""
+    else
+      SUFFIX="$MAJOR_VERSION"
+    fi
+
+    rpm -i "installer/cf${SUFFIX}-cli-installer_edge_${ARCH}.rpm"
+
+    if ! [ -x "$(command -v cf)" ]; then
+      echo 'Error: cf is not installed.' >&2
+      exit 1
+    fi
+
+    EXPECTED_CLI_VERSION="$(cat cli/BUILD_VERSION)"
+    CF_VERSION="$(cf -v)"
+
+    if [[ ! "${CF_VERSION}" == *"cf version ${EXPECTED_CLI_VERSION}"* ]]; then
+      echo "Error: cli/BUILD_VERSION did not match cf -v"
+      exit 1
+    fi
+
+    if ! [ "$MAJOR_VERSION" == "6" ]; then
+      if ! [ -x "$(command -v cf${SUFFIX})" ]; then
+        echo 'Error: cf${SUFFIX} is not installed.' >&2
+        exit 1
+      fi
+
+      SUFFIXED_CF_VERSION="$(cf${SUFFIX} -v)"
+      if [[ ! "${SUFFIXED_CF_VERSION}" == *"cf${SUFFIX} version ${EXPECTED_CLI_VERSION}"* ]]; then
+        echo "Error: cli/BUILD_VERSION did not match cf${SUFFIX} -v"
+        exit 1
+      fi
+    fi
