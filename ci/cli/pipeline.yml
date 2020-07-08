@@ -652,22 +652,27 @@ jobs:
   serial: true
   plan:
   - in_parallel:
+    - get: cli-ci
+    - get: cli
+      passed: [create-installers]
     - get: edge-deb-installer-64
+      trigger: true
       passed: [create-installers]
     - get: edge-deb-installer-32
+      trigger: true
       passed: [create-installers]
     - get: ubuntu-64-image
     - get: ubuntu-32-image
   - in_parallel:
     - task: deb-64
       image: ubuntu-64-image
-      file: shared/tasks/integration-debian-installers.yml
+      file: cli-ci/ci/shared/tasks/integration-debian-installers.yml
       params:
         MAJOR_VERSION: 6
         ARCH: x86-64
     - task: deb-32
       image: ubuntu-32-image
-      file: shared/tasks/integration-debian-installers.yml
+      file: cli-ci/ci/shared/tasks/integration-debian-installers.yml
       params:
         MAJOR_VERSION: 6
         ARCH: i686
