@@ -1,0 +1,37 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: cfcli/cli-package
+
+inputs:
+- name: cli
+
+run:
+  path: bash
+  args:
+  - -c
+  - |
+    set -ex
+
+    cd cli
+
+    BUILD_VERSION="$(cat BUILD_VERSION)"
+    GIT_TAG_VERSION="$(git tag --points-at HEAD)"
+
+    if [ -z "$BUILD_VERSION" ]; then
+      echo "cli/BUILD_VERSION not set"
+      exit 1
+    fi
+
+    if [ -z "$GIT_TAG_VERSION" ]; then
+      echo "git tag version not set"
+      exit 1
+    fi
+
+    if [[ ! "v${BUILD_VERSION}" == "$GIT_TAG_VERSION" ]]; then
+      echo "cli/BUILD_VERSION does not match git tag version"
+      exit 1
+    fi

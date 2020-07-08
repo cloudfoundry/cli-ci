@@ -232,6 +232,22 @@ resources:
     region_name: us-west-1
 
 jobs:
+- name: final-release-checks-v6
+  serial: true
+  plan:
+    - get: cli
+      resource: cli-v6
+    - task: check-build-version
+      file: cli-ci/ci/cli-release/tasks/check-build-version.yml
+
+- name: final-release-checks-v7
+  serial: true
+  plan:
+    - get: cli
+      resource: cli-v7
+    - task: check-build-version
+      file: cli-ci/ci/cli-release/tasks/check-build-version.yml
+
 - name: create-and-sign-installers-v6
   serial: true
   plan:
@@ -239,6 +255,7 @@ jobs:
     - get: cli-ci
     - get: cli
       resource: cli-v6
+      passed: [final-release-checks-v6]
     - get: edge-linux-binary-32
       resource: edge-linux-binary-32-v6
     - get: edge-linux-binary-64
@@ -315,6 +332,7 @@ jobs:
     - get: cli-ci
     - get: cli
       resource: cli-v7
+      passed: [final-release-checks-v7]
     - get: edge-linux-binary-32
       resource: edge-linux-binary-32-v7
     - get: edge-linux-binary-64
