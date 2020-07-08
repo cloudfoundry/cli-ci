@@ -3,10 +3,7 @@ platform: linux
 
 inputs:
 - name: cli
-- name: edge-deb-installer-64
-  optional: true
-- name: edge-deb-installer-32
-  optional: true
+- name: installer
 
 params:
   MAJOR_VERSION:
@@ -25,14 +22,7 @@ run:
       SUFFIX="$MAJOR_VERSION"
     fi
 
-    if [ "$ARCH" == "x86-64" ]; then
-      dpkg -i "edge-deb-installer-64/cf${SUFFIX}-cli-installer_edge_${ARCH}.deb"
-    elif [ "$ARCH" == "i686" ]; then
-      dpkg -i "edge-deb-installer-32/cf${SUFFIX}-cli-installer_edge_${ARCH}.deb"
-    else
-      echo "Error: unrecognized architecture" >&2
-      exit 1
-    fi
+    dpkg -i "installer/cf${SUFFIX}-cli-installer_edge_${ARCH}.deb"
 
     if ! [ -x "$(command -v cf)" ]; then
       echo 'Error: cf is not installed.' >&2

@@ -673,12 +673,16 @@ jobs:
     - task: deb-64
       image: ubuntu-64-image
       file: cli-ci/ci/shared/tasks/integration-debian-installers.yml
+      input_mapping:
+        installer: edge-deb-installer-64
       params:
         MAJOR_VERSION: 6
         ARCH: x86-64
     - task: deb-32
       image: ubuntu-32-image
       file: cli-ci/ci/shared/tasks/integration-debian-installers.yml
+      input_mapping:
+        installer: edge-deb-installer-32
       params:
         MAJOR_VERSION: 6
         ARCH: i686
