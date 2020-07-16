@@ -24,12 +24,6 @@ resources:
     branch: master
     paths: [ci/docker-images/dockerfiles/base/Dockerfile]
 
-- name: cf-cli-release-base-dockerfile
-  type: git
-  source:
-    uri: https://github.com/cloudfoundry/cf-cli-release
-    branch: master
-    paths: [ci/cli-release-base/Dockerfile]
 
 - name: cli-ci-package-dockerfile
   type: git
@@ -37,6 +31,13 @@ resources:
     uri: https://github.com/cloudfoundry/cli-ci
     branch: master
     paths: [ci/docker-images/dockerfiles/package/Dockerfile]
+
+- name: cf-cli-release-base-dockerfile
+  type: git
+  source:
+    uri: https://github.com/bosh-packages/cf-cli-release
+    branch: master
+    paths: [ci/cli-release-base/Dockerfile]
 
 - name: cf-cli-base-image
   type: docker-image
@@ -112,6 +113,9 @@ jobs:
       trigger: true
     - get: weekly
       trigger: true
+    - get: ubuntu
+      trigger: true
+      params: {save: true}
   - put: cf-cli-release-base-image
     params:
       load_base: ubuntu
