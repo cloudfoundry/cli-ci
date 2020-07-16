@@ -11,12 +11,25 @@ resources:
     repository: phusion/baseimage
     tag: latest
 
+- name: ubuntu
+  type: docker-image
+  source:
+    repository: ubuntu
+    tag: trusty
+
 - name: cli-ci-base-dockerfile
   type: git
   source:
     uri: https://github.com/cloudfoundry/cli-ci
     branch: master
     paths: [ci/docker-images/dockerfiles/base/Dockerfile]
+
+- name: cf-cli-release-base-dockerfile
+  type: git
+  source:
+    uri: https://github.com/cloudfoundry/cf-cli-release
+    branch: master
+    paths: [ci/cli-release-base/Dockerfile]
 
 - name: cli-ci-package-dockerfile
   type: git
@@ -37,6 +50,14 @@ resources:
   type: docker-image
   source:
     repository: cfcli/cli-package
+    username: ((dockerhub-username))
+    email: ((dockerhub-email))
+    password: ((dockerhub-password))
+
+- name: cf-cli-release-base-image
+  type: docker-image
+  source:
+    repository: cfcli/cli-release-base
     username: ((dockerhub-username))
     email: ((dockerhub-email))
     password: ((dockerhub-password))
@@ -82,3 +103,16 @@ jobs:
     params:
       load_base: baseimage
       build: cli-ci-package-dockerfile/ci/docker-images/dockerfiles/package
+
+- name: create-cli-release-base-image
+  serial: true
+  plan:
+  - in_parallel:
+    - get: cf-cli-release-base-dockerfile
+      trigger: true
+    - get: weekly
+      trigger: true
+  - put: cf-cli-release-base-image
+    params:
+      load_base: ubuntu
+      build: cf-cli-release-base-dockerfile/ci/cli-release-base
