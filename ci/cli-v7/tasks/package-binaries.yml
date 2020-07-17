@@ -40,10 +40,15 @@ run:
       mv LICENSE{-WINDOWS,}
 
       mkdir win32 win64
+
       mv cf-cli_win32.exe win32/cf7.exe
+      cp win32/cf7.exe win32/cf.exe
+
       mv cf-cli_winx64.exe win64/cf7.exe
-      zip -j $root/archives/cf7-cli_edge_win32.zip LICENSE NOTICE win32/cf7.exe
-      zip -j $root/archives/cf7-cli_edge_winx64.zip LICENSE NOTICE win64/cf7.exe
+      cp win64/cf7.exe win64/cf.exe
+
+      zip -j $root/archives/cf7-cli_edge_win32.zip LICENSE NOTICE win32/cf7.exe win32/cf.exe
+      zip -j $root/archives/cf7-cli_edge_winx64.zip LICENSE NOTICE win64/cf7.exe win64/cf.exe
     popd
 
     mv packaged/* archives
