@@ -403,62 +403,16 @@ jobs:
 - name: update-claw-v6
   serial: true
   plan:
-  - in_parallel:
-    - get: cli
-      resource: cli-v6
-      trigger: true
-      passed: [create-and-sign-installers-v6]
-    - get: cli-ci
-    - get: edge-linux-binary-64
-      resource: edge-linux-binary-64-v6
-      passed: [create-and-sign-installers-v6]
-  - in_parallel:
-    - task: claw.run.pivotal.io
-      file: cli-ci/ci/cli-release/tasks/update-claw.yml
-      params:
-        CF_API: ((cf-api))
-        CF_USERNAME: ((cli-pws-client-id))
-        CF_PASSWORD: ((cli-pws-client-secret))
-        CF_ORGANIZATION: ((pivotal-organization))
-        CF_SPACE: ((pivotal-space))
-    - task: packages.cloudfoundry.org
-      file: cli-ci/ci/cli-release/tasks/update-claw.yml
-      params:
-        CF_API: ((cf-api))
-        CF_USERNAME: ((cli-pws-client-id))
-        CF_PASSWORD: ((cli-pws-client-secret))
-        CF_ORGANIZATION: ((oss-organization))
-        CF_SPACE: ((oss-space))
+     - get: cli
+       resource: cli-v6
+       passed: [create-and-sign-installers-v6]
 
 - name: update-claw-v7
   serial: true
   plan:
-  - in_parallel:
     - get: cli
       resource: cli-v7
-      trigger: true
       passed: [create-and-sign-installers-v7]
-    - get: cli-ci
-    - get: edge-linux-binary-64
-      resource: edge-linux-binary-64-v7
-      passed: [create-and-sign-installers-v7]
-  - in_parallel:
-    - task: claw.run.pivotal.io
-      file: cli-ci/ci/cli-release/tasks/update-claw-v7.yml
-      params:
-        CF_API: ((cf-api))
-        CF_USERNAME: ((cli-pws-client-id))
-        CF_PASSWORD: ((cli-pws-client-secret))
-        CF_ORGANIZATION: ((pivotal-organization))
-        CF_SPACE: ((pivotal-space))
-    - task: packages.cloudfoundry.org
-      file: cli-ci/ci/cli-release/tasks/update-claw-v7.yml
-      params:
-        CF_API: ((cf-api))
-        CF_USERNAME: ((cli-pws-client-id))
-        CF_PASSWORD: ((cli-pws-client-secret))
-        CF_ORGANIZATION: ((oss-organization))
-        CF_SPACE: ((oss-space))
 
 - name: update-debian-repo-v6
   serial: true
