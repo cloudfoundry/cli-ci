@@ -33,7 +33,7 @@ resources:
   type: git
   source:
     uri: https://github.com/cloudfoundry/cf-acceptance-tests
-    branch: master
+    branch: v6-cli-legacy
 
 - name: cf-deployment-concourse-tasks
   type: git
