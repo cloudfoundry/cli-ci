@@ -235,6 +235,7 @@ jobs:
 - name: final-release-checks-v6
   serial: true
   plan:
+    - get: cli-ci
     - get: cli
       resource: cli-v6
     - task: check-build-version
@@ -243,6 +244,7 @@ jobs:
 - name: final-release-checks-v7
   serial: true
   plan:
+    - get: cli-ci
     - get: cli
       resource: cli-v7
     - task: check-build-version
