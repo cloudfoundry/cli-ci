@@ -100,6 +100,18 @@ jobs:
           GCP_VM_ZONE: us-west1-b
           GCP_SERVICE_ACCOUNT_KEY: ((workstation-scheduler-gcp-json-key))
 
+  - name: startup-vat-ws-4
+    plan:
+      - get: cli-ci
+      - get: start-of-work-day
+        trigger: true
+      - task: startup
+        file: cli-ci/ci/workstation-scheduler/tasks/startup-ws.yml
+        params:
+          GCP_VM_NAME: vat-ws-4
+          GCP_VM_ZONE: us-central1-a
+          GCP_SERVICE_ACCOUNT_KEY: ((workstation-scheduler-gcp-json-key))
+
   - name: shutdown-vat-ws-1
     plan:
       - get: cli-ci
@@ -137,4 +149,17 @@ jobs:
         params:
           GCP_VM_NAME: vat-ws-3
           GCP_VM_ZONE: us-west1-b
+          GCP_SERVICE_ACCOUNT_KEY: ((workstation-scheduler-gcp-json-key))
+
+  - name: shutdown-vat-ws-4
+    plan:
+      - get: cli-ci
+      - get: end-of-work-day
+        trigger: true
+        passed: [alert-and-wait]
+      - task: shutdown
+        file: cli-ci/ci/workstation-scheduler/tasks/shutdown-ws.yml
+        params:
+          GCP_VM_NAME: vat-ws-4
+          GCP_VM_ZONE: us-central1-a
           GCP_SERVICE_ACCOUNT_KEY: ((workstation-scheduler-gcp-json-key))
