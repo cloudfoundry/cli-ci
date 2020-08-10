@@ -15,6 +15,7 @@ params:
   AWS_SECRET_ACCESS_KEY:
   AWS_ACCESS_KEY_ID:
   AWS_BUCKET_NAME:
+  MAJOR_VERSION:
 
 run:
   path: bash
@@ -23,6 +24,11 @@ run:
   - |
     set -ex
 
+    if [ "MAJOR_VERSION" = "6" ]; then
+      CF_CLI_VERSION_PREFIX=""
+    else
+      CF_CLI_VERSION_PREFIX=$MAJOR_VERSION
+    fi;
     mkdir gpg-dir
     export GNUPGHOME=$PWD/gpg-dir
     chmod 700 $GNUPGHOME
@@ -35,8 +41,8 @@ run:
     VERSION=$(cat cli/BUILD_VERSION)
 
     mkdir installers
-    curl -L "https://cli.run.pivotal.io/stable?release=debian32&version=${VERSION}&source=github-rel" > installers/cf-cli-installer_${VERSION}_i686.deb
-    curl -L "https://cli.run.pivotal.io/stable?release=debian64&version=${VERSION}&source=github-rel" > installers/cf-cli-installer_${VERSION}_x86-64.deb
+    curl -L "https://cli.run.pivotal.io/stable?release=debian32&version=${VERSION}&source=github-rel" > installers/cf${CF_CLI_VERSION_PREFIX}-cli-installer_${VERSION}_i686.deb
+    curl -L "https://cli.run.pivotal.io/stable?release=debian64&version=${VERSION}&source=github-rel" > installers/cf${CF_CLI_VERSION_PREFIX}-cli-installer_${VERSION}_x86-64.deb
 
     cat >> $GNUPGHOME/gpg.conf <<EOF
     personal-digest-preferences SHA256

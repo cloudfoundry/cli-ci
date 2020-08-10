@@ -439,6 +439,7 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ((cli-production-release-secret-access-key))
       GPG_KEY_LOCATION: ((gpg-key-location))
       KEY_ID_LOCATION: ((gpg-key-id-location))
+      MAJOR_VERSION: 6
 
 - name: update-debian-repo-v7
   serial: true
@@ -456,13 +457,14 @@ jobs:
   - task: copy-certificates
     file: cli-ci/ci/cli-release/tasks/copy-certificates.yml
   - task: publish-debian
-    file: cli-ci/ci/cli-release/tasks/publish-debian-v7.yml
+    file: cli-ci/ci/cli-release/tasks/publish-debian.yml
     params:
       AWS_ACCESS_KEY_ID: ((cli-production-release-access-key-id))
       AWS_BUCKET_NAME: cf-cli-debian-repo
       AWS_SECRET_ACCESS_KEY: ((cli-production-release-secret-access-key))
       GPG_KEY_LOCATION: ((gpg-key-location))
       KEY_ID_LOCATION: ((gpg-key-id-location))
+      MAJOR_VERSION: 7
 
 - name: update-homebrew-v6
   serial: true
