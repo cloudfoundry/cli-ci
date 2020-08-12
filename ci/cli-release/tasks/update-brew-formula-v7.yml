@@ -15,6 +15,8 @@ outputs:
 - name: update-brew-formula-output
 
 params:
+  CLAW_URL:
+  DEV_SUFFIX:
   OUTPUT_PATH: update-brew-formula-output
 
 run:
@@ -27,8 +29,8 @@ run:
     VERSION=$(cat cli/BUILD_VERSION)
 
     mkdir cf7-cli-osx-tarball cf7-cli-linux-tarball
-    curl -L "https://packages.cloudfoundry.org/stable?release=macosx64-binary&version=${VERSION}&source=github-rel" > cf7-cli-osx-tarball/cf7-cli_${VERSION}_osx.tgz
-    curl -L "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=${VERSION}&source=github-rel" > cf7-cli-linux-tarball/cf7-cli_${VERSION}_linux64.tgz
+    curl -L "https://${CLAW_URL}/stable?release=macosx64-binary&version=${VERSION}&source=github-rel" > cf7-cli-osx-tarball/cf7-cli_${VERSION}_osx.tgz
+    curl -L "https://${CLAW_URL}/stable?release=linux64-binary&version=${VERSION}&source=github-rel" > cf7-cli-linux-tarball/cf7-cli_${VERSION}_linux64.tgz
 
     pushd cf7-cli-osx-tarball
       CLI_OSX_SHA256=$(shasum -a 256 cf7-cli_*_osx.tgz | cut -d ' ' -f 1)
@@ -39,18 +41,18 @@ run:
     popd
 
     pushd homebrew-tap
-      cat <<EOF > cf-cli@7.rb
+      cat <<EOF > cf-cli@7${DEV_SUFFIX}.rb
     require 'formula'
 
-    class CfCliAT7 < Formula
+    class CfCliAT7${DEV_SUFFIX} < Formula
       homepage 'https://code.cloudfoundry.org/cli'
       version '${VERSION}'
 
       if OS.mac?
-        url 'https://packages.cloudfoundry.org/homebrew/cf7-${VERSION}.tgz'
+        url 'https://${CLAW_URL}/homebrew/cf7-${VERSION}.tgz'
         sha256 '${CLI_OSX_SHA256}'
       elsif OS.linux?
-        url 'https://packages.cloudfoundry.org/stable?release=linux64-binary&version=${VERSION}&source=homebrew'
+        url 'https://${CLAW_URL}/stable?release=linux64-binary&version=${VERSION}&source=homebrew'
         sha256 '${CLI_LINUX_64_SHA256}'
       end
 
@@ -72,7 +74,7 @@ run:
     end
     EOF
 
-    git add cf-cli@7.rb
+    git add cf-cli@7${DEV_SUFFIX}.rb
     if ! [ -z "$(git status --porcelain)"];
     then
       git config --global user.email "cf-cli-eng@pivotal.io"
@@ -81,7 +83,7 @@ run:
     else
         echo "no new version to commit"
     fi
-    cat cf-cli@7.rb
+    cat cf-cli@7${DEV_SUFFIX}.rb
     popd
 
     cp -R homebrew-tap $OUTPUT_PATH

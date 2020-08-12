@@ -13,10 +13,19 @@ check_installed() {
 configure_pipeline() {
   local name=$1
   local pipeline=$2
+  local env=$3
+
+  local target
+  if [ "$3" == "prod" ]; then
+    target="local"
+  elif [ "$3" == "dev" ]; then
+    target="ci"
+  fi
+
 
   printf "configuring the $name pipeline...\n"
 
-  fly -t local set-pipeline \
+  fly -t ${target} set-pipeline \
     -p $name \
     -c $pipeline \
     -l <(lpass show "release-pipeline-concourse-credentials.yml" --notes) \
@@ -33,11 +42,13 @@ lpass sync
 pipelines_path=$(cd $(dirname $0)/.. && pwd)
 
 if [ "$1" == "prod" ]; then
-  configure_pipeline cli \
-    <(ytt -f $pipelines_path/cli-release/pipeline.yml -f $pipelines_path/cli-release/overlay.yml)
+  configure_pipeline cli-release \
+    <(ytt -f $pipelines_path/cli-release/pipeline.yml -f $pipelines_path/cli-release/overlay.yml) \
+    $1
 elif [ "$1" == "dev" ]; then
-  configure_pipeline cli \
-    $pipelines_path/cli-release/pipeline.yml
+  configure_pipeline cli-release-dev \
+    $pipelines_path/cli-release/pipeline.yml \
+    $1
 else
   echo "Must specify either 'prod' or 'dev' before configuring pipeline!"
   exit 1

@@ -10,6 +10,9 @@ inputs:
 
 params:
   AWS_ACCESS_KEY_ID:
+  AWS_RELEASES_PATH:
+  AWS_RELEASES_PATH_V7:
+  AWS_RPM_PATH:
   AWS_SECRET_ACCESS_KEY:
   GPG_KEY_LOCATION:
 
@@ -39,13 +42,13 @@ run:
     aws s3 sync \
       --exclude "*" \
       --include "releases/*/*installer*.rpm" \
-      s3://cf-cli-releases \
+      s3://${AWS_RELEASES_PATH} \
       .
 
     aws s3 sync \
       --exclude "*" \
       --include "releases/*/*installer*.rpm" \
-      s3://v7-cf-cli-releases \
+      s3://${AWS_RELEASES_PATH_V7} \
       .
 
     createrepo -s sha .
@@ -54,4 +57,4 @@ run:
     aws s3 sync \
       --delete \
       repodata \
-      s3://cf-cli-rpm-repo/repodata
+      s3://${AWS_RPM_PATH}/repodata

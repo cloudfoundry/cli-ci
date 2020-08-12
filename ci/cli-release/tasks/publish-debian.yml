@@ -15,6 +15,8 @@ params:
   AWS_SECRET_ACCESS_KEY:
   AWS_ACCESS_KEY_ID:
   AWS_BUCKET_NAME:
+  AWS_PREFIX_FLAG:
+  CLAW_URL:
   MAJOR_VERSION:
 
 run:
@@ -41,8 +43,8 @@ run:
     VERSION=$(cat cli/BUILD_VERSION)
 
     mkdir installers
-    curl -L "https://cli.run.pivotal.io/stable?release=debian32&version=${VERSION}&source=github-rel" > installers/cf${CF_CLI_VERSION_PREFIX}-cli-installer_${VERSION}_i686.deb
-    curl -L "https://cli.run.pivotal.io/stable?release=debian64&version=${VERSION}&source=github-rel" > installers/cf${CF_CLI_VERSION_PREFIX}-cli-installer_${VERSION}_x86-64.deb
+    curl -L "https://${CLAW_URL}/stable?release=debian32&version=${VERSION}&source=github-rel" > installers/cf${CF_CLI_VERSION_PREFIX}-cli-installer_${VERSION}_i686.deb
+    curl -L "https://${CLAW_URL}/stable?release=debian64&version=${VERSION}&source=github-rel" > installers/cf${CF_CLI_VERSION_PREFIX}-cli-installer_${VERSION}_x86-64.deb
 
     cat >> $GNUPGHOME/gpg.conf <<EOF
     personal-digest-preferences SHA256
@@ -50,4 +52,4 @@ run:
     default-preference-list SHA512 SHA384 SHA256 SHA224 AES256 AES192 AES CAST5 ZLIB BZIP2 ZIP Uncompressed
     EOF
 
-    deb-s3 upload installers/*.deb --preserve-versions --sign=$(cat certificates/${KEY_ID_LOCATION}) --bucket=${AWS_BUCKET_NAME}
+    deb-s3 upload installers/*.deb --preserve-versions --sign=$(cat certificates/${KEY_ID_LOCATION}) --bucket=${AWS_BUCKET_NAME} {AWS_PREFIX_FLAG}

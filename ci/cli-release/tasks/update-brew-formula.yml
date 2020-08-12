@@ -15,6 +15,8 @@ outputs:
 - name: update-brew-formula-output
 
 params:
+  CLAW_URL:
+  DEV_SUFFIX:
   OUTPUT_PATH: update-brew-formula-output
 
 run:
@@ -27,8 +29,8 @@ run:
     VERSION=$(cat cli/BUILD_VERSION)
 
     mkdir cf-cli-osx-tarball cf-cli-linux-tarball
-    curl -L "https://packages.cloudfoundry.org/stable?release=macosx64-binary&version=${VERSION}&source=github-rel" > cf-cli-osx-tarball/cf-cli_${VERSION}_osx.tgz
-    curl -L "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=${VERSION}&source=github-rel" > cf-cli-linux-tarball/cf-cli_${VERSION}_linux64.tgz
+    curl -L "https://${CLAW_URL}/stable?release=macosx64-binary&version=${VERSION}&source=github-rel" > cf-cli-osx-tarball/cf-cli_${VERSION}_osx.tgz
+    curl -L "https://${CLAW_URL}/stable?release=linux64-binary&version=${VERSION}&source=github-rel" > cf-cli-linux-tarball/cf-cli_${VERSION}_linux64.tgz
 
 
 
@@ -41,20 +43,20 @@ run:
     popd
 
     pushd homebrew-tap
-      cat <<EOF > cf-cli.rb
+      cat <<EOF > cf-cli${DEV_SUFFIX}.rb
     require 'formula'
 
-    class CfCli < Formula
+    class CfCli${DEV_SUFFIX} < Formula
       homepage 'https://code.cloudfoundry.org/cli'
       version '${VERSION}'
 
       if OS.mac?
-        head 'https://packages.cloudfoundry.org/edge?arch=macosx64&source=homebrew'
-        url 'https://packages.cloudfoundry.org/homebrew/cf-${VERSION}.tgz'
+        head 'https://${CLAW_URL}/edge?arch=macosx64&source=homebrew'
+        url 'https://${CLAW_URL}/homebrew/cf-${VERSION}.tgz'
         sha256 '${CLI_OSX_SHA256}'
       elsif OS.linux?
-        head 'https://packages.cloudfoundry.org/edge?arch=linux64&source=homebrew'
-        url 'https://packages.cloudfoundry.org/stable?release=linux64-binary&version=${VERSION}&source=homebrew'
+        head 'https://${CLAW_URL}/edge?arch=linux64&source=homebrew'
+        url 'https://${CLAW_URL}/stable?release=linux64-binary&version=${VERSION}&source=homebrew'
         sha256 '${CLI_LINUX_64_SHA256}'
       end
 
@@ -75,7 +77,7 @@ run:
     end
     EOF
 
-    git add cf-cli.rb
+    git add cf-cli${DEV_SUFFIX}.rb
     if ! [ -z "$(git status --porcelain)"];
     then
       git config --global user.email "cf-cli-eng@pivotal.io"

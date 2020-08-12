@@ -435,8 +435,10 @@ jobs:
     file: cli-ci/ci/cli-release/tasks/publish-debian.yml
     params:
       AWS_ACCESS_KEY_ID: ((cli-production-release-access-key-id))
-      AWS_BUCKET_NAME: cf-cli-debian-repo
+      AWS_BUCKET_NAME: cf-cli-dev
+      AWS_PREFIX_FLAG: --prefix=cf-cli-debian-repo
       AWS_SECRET_ACCESS_KEY: ((cli-production-release-secret-access-key))
+      CLAW_URL: ((dev-claw-url))
       GPG_KEY_LOCATION: ((gpg-key-location))
       KEY_ID_LOCATION: ((gpg-key-id-location))
       MAJOR_VERSION: 6
@@ -460,8 +462,10 @@ jobs:
     file: cli-ci/ci/cli-release/tasks/publish-debian.yml
     params:
       AWS_ACCESS_KEY_ID: ((cli-production-release-access-key-id))
-      AWS_BUCKET_NAME: cf-cli-debian-repo
+      AWS_BUCKET_NAME: cf-cli-dev
+      AWS_PREFIX_FLAG: --prefix=cf-cli-debian-repo
       AWS_SECRET_ACCESS_KEY: ((cli-production-release-secret-access-key))
+      CLAW_URL: ((dev-claw-url))
       GPG_KEY_LOCATION: ((gpg-key-location))
       KEY_ID_LOCATION: ((gpg-key-id-location))
       MAJOR_VERSION: 7
@@ -478,6 +482,9 @@ jobs:
     - get: homebrew-tap
   - task: update-brew-formula
     file: cli-ci/ci/cli-release/tasks/update-brew-formula.yml
+    params:
+      CLAW_URL: ((dev-claw-url))
+      DEV_SUFFIX: Dev
   - put: homebrew-tap
     params:
       repository: update-brew-formula-output/homebrew-tap
@@ -494,6 +501,9 @@ jobs:
     - get: homebrew-tap
   - task: update-brew-formula
     file: cli-ci/ci/cli-release/tasks/update-brew-formula-v7.yml
+    params:
+      CLAW_URL: ((dev-claw-url))
+      DEV_SUFFIX: Dev
   - put: homebrew-tap
     params:
       repository: update-brew-formula-output/homebrew-tap
@@ -517,6 +527,9 @@ jobs:
     file: cli-ci/ci/cli-release/tasks/publish-rpm.yml
     params:
       AWS_ACCESS_KEY_ID: ((cli-production-release-access-key-id))
+      AWS_RELEASES_PATH: cf-cli-dev/cf-cli-releases
+      AWS_RELEASES_PATH_V7: cf-cli-dev/v7-cf-cli-releases
+      AWS_RPM_PATH: cf-cli-dev/cf-cli-rpm-repo
       AWS_SECRET_ACCESS_KEY: ((cli-production-release-secret-access-key))
       GPG_KEY_LOCATION: ((gpg-key-location))
 
@@ -539,6 +552,9 @@ jobs:
     file: cli-ci/ci/cli-release/tasks/publish-rpm.yml
     params:
       AWS_ACCESS_KEY_ID: ((cli-production-release-access-key-id))
+      AWS_RELEASES_PATH: cf-cli-dev/cf-cli-releases
+      AWS_RELEASES_PATH_V7: cf-cli-dev/v7-cf-cli-releases
+      AWS_RPM_PATH: cf-cli-dev/cf-cli-rpm-repo
       AWS_SECRET_ACCESS_KEY: ((cli-production-release-secret-access-key))
       GPG_KEY_LOCATION: ((gpg-key-location))
 
