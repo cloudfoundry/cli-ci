@@ -39,7 +39,7 @@ resources:
     access_key_id: ((cli-production-release-access-key-id))
     secret_access_key: ((cli-production-release-secret-access-key))
     versioned_file: master/cf-cli_edge_linux_i686.tgz
-    region_name: us-west-1
+    region_name: us-east-1
 
 - name: edge-linux-binary-32-v7
   type: s3
@@ -49,7 +49,7 @@ resources:
     access_key_id: ((cli-production-release-access-key-id))
     secret_access_key: ((cli-production-release-secret-access-key))
     versioned_file: master/cf7-cli_edge_linux_i686.tgz
-    region_name: us-west-1
+    region_name: us-east-1
 
 - name: edge-linux-binary-64-v6
   type: s3
@@ -59,7 +59,7 @@ resources:
     access_key_id: ((cli-production-release-access-key-id))
     secret_access_key: ((cli-production-release-secret-access-key))
     versioned_file: master/cf-cli_edge_linux_x86-64.tgz
-    region_name: us-west-1
+    region_name: us-east-1
 
 - name: edge-linux-binary-64-v7
   type: s3
@@ -69,7 +69,7 @@ resources:
     access_key_id: ((cli-production-release-access-key-id))
     secret_access_key: ((cli-production-release-secret-access-key))
     versioned_file: master/cf7-cli_edge_linux_x86-64.tgz
-    region_name: us-west-1
+    region_name: us-east-1
 
 - name: edge-osx-binary-64-v6
   type: s3
@@ -79,7 +79,7 @@ resources:
     access_key_id: ((cli-production-release-access-key-id))
     secret_access_key: ((cli-production-release-secret-access-key))
     versioned_file: master/cf-cli_edge_osx.tgz
-    region_name: us-west-1
+    region_name: us-east-1
 
 - name: edge-osx-binary-64-v7
   type: s3
@@ -89,7 +89,7 @@ resources:
     access_key_id: ((cli-production-release-access-key-id))
     secret_access_key: ((cli-production-release-secret-access-key))
     versioned_file: master/cf7-cli_edge_osx.tgz
-    region_name: us-west-1
+    region_name: us-east-1
 
 - name: edge-windows-binary-32-v6
   type: s3
@@ -99,7 +99,7 @@ resources:
     access_key_id: ((cli-production-release-access-key-id))
     secret_access_key: ((cli-production-release-secret-access-key))
     versioned_file: master/cf-cli_edge_win32.zip
-    region_name: us-west-1
+    region_name: us-east-1
 
 - name: edge-windows-binary-32-v7
   type: s3
@@ -109,7 +109,7 @@ resources:
     access_key_id: ((cli-production-release-access-key-id))
     secret_access_key: ((cli-production-release-secret-access-key))
     versioned_file: master/cf7-cli_edge_win32.zip
-    region_name: us-west-1
+    region_name: us-east-1
 
 - name: edge-windows-binary-64-v6
   type: s3
@@ -119,7 +119,7 @@ resources:
     access_key_id: ((cli-production-release-access-key-id))
     secret_access_key: ((cli-production-release-secret-access-key))
     versioned_file: master/cf-cli_edge_winx64.zip
-    region_name: us-west-1
+    region_name: us-east-1
 
 - name: edge-windows-binary-64-v7
   type: s3
@@ -129,7 +129,7 @@ resources:
     access_key_id: ((cli-production-release-access-key-id))
     secret_access_key: ((cli-production-release-secret-access-key))
     versioned_file: master/cf7-cli_edge_winx64.zip
-    region_name: us-west-1
+    region_name: us-east-1
 
 - name: edge-deb-installer-32-v6
   type: s3
@@ -139,7 +139,7 @@ resources:
     access_key_id: ((cli-production-release-access-key-id))
     secret_access_key: ((cli-production-release-secret-access-key))
     versioned_file: master/cf-cli-installer_edge_i686.deb
-    region_name: us-west-1
+    region_name: us-east-1
 
 - name: edge-deb-installer-32-v7
   type: s3
@@ -149,7 +149,7 @@ resources:
     access_key_id: ((cli-production-release-access-key-id))
     secret_access_key: ((cli-production-release-secret-access-key))
     versioned_file: master/cf7-cli-installer_edge_i686.deb
-    region_name: us-west-1
+    region_name: us-east-1
 
 - name: edge-deb-installer-64-v6
   type: s3
@@ -159,7 +159,7 @@ resources:
     access_key_id: ((cli-production-release-access-key-id))
     secret_access_key: ((cli-production-release-secret-access-key))
     versioned_file: master/cf-cli-installer_edge_x86-64.deb
-    region_name: us-west-1
+    region_name: us-east-1
 
 - name: edge-deb-installer-64-v7
   type: s3
@@ -169,7 +169,7 @@ resources:
     access_key_id: ((cli-production-release-access-key-id))
     secret_access_key: ((cli-production-release-secret-access-key))
     versioned_file: master/cf7-cli-installer_edge_x86-64.deb
-    region_name: us-west-1
+    region_name: us-east-1
 
 - name: edge-redhat-installer-32-v6
   type: s3
@@ -179,7 +179,7 @@ resources:
     access_key_id: ((cli-production-release-access-key-id))
     secret_access_key: ((cli-production-release-secret-access-key))
     versioned_file: master/cf-cli-installer_edge_i686.rpm
-    region_name: us-west-1
+    region_name: us-east-1
 
 - name: edge-redhat-installer-32-v7
   type: s3
@@ -189,7 +189,7 @@ resources:
     access_key_id: ((cli-production-release-access-key-id))
     secret_access_key: ((cli-production-release-secret-access-key))
     versioned_file: master/cf7-cli-installer_edge_i686.rpm
-    region_name: us-west-1
+    region_name: us-east-1
 
 - name: edge-redhat-installer-64-v6
   type: s3
@@ -199,7 +199,7 @@ resources:
     access_key_id: ((cli-production-release-access-key-id))
     secret_access_key: ((cli-production-release-secret-access-key))
     versioned_file: master/cf-cli-installer_edge_x86-64.rpm
-    region_name: us-west-1
+    region_name: us-east-1
 
 - name: edge-redhat-installer-64-v7
   type: s3
@@ -209,7 +209,7 @@ resources:
     access_key_id: ((cli-production-release-access-key-id))
     secret_access_key: ((cli-production-release-secret-access-key))
     versioned_file: master/cf7-cli-installer_edge_x86-64.rpm
-    region_name: us-west-1
+    region_name: us-east-1
 
 - name: edge-osx-installer-64-v6
   type: s3
@@ -219,7 +219,7 @@ resources:
     access_key_id: ((cli-production-release-access-key-id))
     secret_access_key: ((cli-production-release-secret-access-key))
     versioned_file: master/cf-cli-installer_edge_osx.pkg
-    region_name: us-west-1
+    region_name: us-east-1
 
 - name: edge-osx-installer-64-v7
   type: s3
@@ -229,7 +229,7 @@ resources:
     access_key_id: ((cli-production-release-access-key-id))
     secret_access_key: ((cli-production-release-secret-access-key))
     versioned_file: master/cf7-cli-installer_edge_osx.pkg
-    region_name: us-west-1
+    region_name: us-east-1
 
 jobs:
 - name: final-release-checks-v6
@@ -325,6 +325,7 @@ jobs:
     params:
       AWS_ACCESS_KEY_ID: ((cli-production-release-access-key-id))
       AWS_SECRET_ACCESS_KEY: ((cli-production-release-secret-access-key))
+      OPTIONAL_AWS_DEV_BUCKET: cf-cli-dev/
       TARGET_V7: false
 
 - name: create-and-sign-installers-v7
@@ -400,6 +401,7 @@ jobs:
     params:
       AWS_ACCESS_KEY_ID: ((cli-production-release-access-key-id))
       AWS_SECRET_ACCESS_KEY: ((cli-production-release-secret-access-key))
+      OPTIONAL_AWS_DEV_BUCKET: cf-cli-dev/
       TARGET_V7: true
 
 - name: update-claw-v6

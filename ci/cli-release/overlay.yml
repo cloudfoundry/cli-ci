@@ -6,11 +6,13 @@ resources:
 #@overlay/match by=overlay.subset({"source":{"prefix":"cf-cli-releases"}}), expects='1+'
 - source:
     bucket: cf-cli-releases
+    region_name: us-west-1
     #@overlay/remove
     prefix:
 #@overlay/match by=overlay.subset({"source":{"prefix":"v7-cf-cli-releases"}}), expects='1+'
 - source:
     bucket: v7-cf-cli-releases
+    region_name: us-west-1
     #@overlay/remove
     prefix:
 
@@ -78,3 +80,12 @@ jobs:
       CLAW_URL: ((claw_url))
       #@overlay/remove
       DEV_SUFFIX:
+
+#@overlay/match by="name"
+- name: create-and-sign-installers-v6
+  plan:
+  #@overlay/match by=overlay.subset({"task":"upload-releases"})
+  - task: upload-releases
+    params:
+      #@overlay/remove
+      OPTIONAL_AWS_DEV_BUCKET:
