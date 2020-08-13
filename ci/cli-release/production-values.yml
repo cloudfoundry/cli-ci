@@ -1,0 +1,14 @@
+---
+region_name: us-west-1
+v6_release_path: cf-cli-releases
+v7_release_path: v7-cf-cli-releases
+versioned_file_prefix_v6: master/cf
+versioned_file_prefix_v7: master/cf7
+debian_bucket_name: cf-cli-debian-repo
+claw_url: cli.run.pivotal.io
+aws_prefix_flag: ""
+rpm_aws_releases_path_v6: cf-cli-releases
+rpm_aws_releases_path_v7: v7-cf-cli-releases
+rpm_aws_path: cf-cli-rpm-repo
+dev_suffix: ""
+optional_aws_dev_bucket: ""

@@ -14,6 +14,7 @@ configure_pipeline() {
   local name=$1
   local pipeline=$2
   local env=$3
+  local values_file=$4
 
   local target
   if [ "$3" == "prod" ]; then
@@ -28,6 +29,7 @@ configure_pipeline() {
   fly -t ${target} set-pipeline \
     -p $name \
     -c $pipeline \
+    -l $values_file \
     -l <(lpass show "release-pipeline-concourse-credentials.yml" --notes) \
     -l <(lpass show "VAT Concourse Credentials" --notes)
 }
@@ -43,12 +45,14 @@ pipelines_path=$(cd $(dirname $0)/.. && pwd)
 
 if [ "$1" == "prod" ]; then
   configure_pipeline cli-release \
-    <(ytt -f $pipelines_path/cli-release/pipeline.yml -f $pipelines_path/cli-release/overlay.yml) \
-    $1
+    $pipelines_path/cli-release/pipeline.yml \
+    $1 \
+    $pipelines_path/cli-release/production-values.yml
 elif [ "$1" == "dev" ]; then
   configure_pipeline cli-release-dev \
     $pipelines_path/cli-release/pipeline.yml \
-    $1
+    $1 \
+    $pipelines_path/cli-release/dev-values.yml
 else
   echo "Must specify either 'prod' or 'dev' before configuring pipeline!"
   exit 1
