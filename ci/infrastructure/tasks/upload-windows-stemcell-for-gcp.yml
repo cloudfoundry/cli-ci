@@ -6,7 +6,6 @@ image_resource:
     repository: relintdockerhubpushbot/cf-deployment-concourse-tasks
 
 inputs:
-- name: capi-ci
 - name: bbl-state
 
 run:
