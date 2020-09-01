@@ -373,7 +373,7 @@ jobs:
     - task: cleanup-integration
       file: cli-ci/ci/cli-v8/tasks/cleanup-integration.yml
     - task: config
-      file: cli-ci/ci/cli-v8/tasks/cats-config.yml
+      file: cli-ci/ci/cli-v8/tasks/v3-only-cats-config.yml
       params:
         INCLUDE_V3: true
         BROKER_START_TIMEOUT: 330
@@ -386,7 +386,7 @@ jobs:
       file: cf-deployment-concourse-tasks/run-cats-with-provided-cli/task.yml
       input_mapping:
         cf-acceptance-tests: cf-acceptance-tests-v3-only
-        integration-config: cats-config
+        integration-config: v3-only-cats-config
         cf-cli: linux-cf-binary
       params:
         NODES: 16
