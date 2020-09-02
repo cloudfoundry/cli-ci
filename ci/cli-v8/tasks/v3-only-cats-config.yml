@@ -41,7 +41,7 @@ run:
     credhub login
     CF_INT_PASSWORD=$(credhub get -n /bosh-$ENV/cf/cf_admin_password | bosh interpolate --path /value -)
 
-    cat << EOF | jq -S . > cats-config/integration_config.json
+    cat << EOF | jq -S . > v3-only-cats-config/integration_config.json
     {
       "admin_password": "${CF_INT_PASSWORD}",
       "admin_user": "${CF_INT_USERNAME}",
