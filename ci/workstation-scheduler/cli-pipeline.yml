@@ -51,3 +51,15 @@ jobs:
           GCP_VM_NAME: cli-ws-3
           GCP_VM_ZONE: us-central1-a
           GCP_SERVICE_ACCOUNT_KEY: ((workstation-scheduler-gcp-json-key))
+
+  - name: shutdown-cli-ws-4
+    plan:
+      - get: cli-ci
+      - get: end-of-work-day
+        trigger: true
+      - task: shutdown
+        file: cli-ci/ci/workstation-scheduler/tasks/shutdown-ws.yml
+        params:
+          GCP_VM_NAME: cli-ws-4
+          GCP_VM_ZONE: us-central1-a
+          GCP_SERVICE_ACCOUNT_KEY: ((workstation-scheduler-gcp-json-key))
