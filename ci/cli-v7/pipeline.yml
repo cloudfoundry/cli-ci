@@ -60,7 +60,7 @@ resources:
   type: git
   icon: github-box
   source:
-    branch: buildpack-table-change
+    branch: master
     uri: https://github.com/cloudfoundry/cf-acceptance-tests.git
     ignore_paths:
     - ci/*.yml
