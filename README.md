@@ -17,7 +17,8 @@ May 21st, 2020
 # CLI Concourse
 
 ## Setup MacOS Concourse worker
-
+- Have to use Pivotal VPN to access arbor.sf.pivotallabs.com
+- Credentials are in the `lpass show 6404929765381722338`
 - Copy `./com.pivotal.ConcourseWorker.plist` to `/Library/LaunchDaemons`
 - Copy `./bin/concourse_worker` to `/Users/pivotal/bin/concourse_worker`
 - Load service `sudo launchctl load -w /Library/LaunchDaemons/com.pivotal.ConcourseWorker.plist`
