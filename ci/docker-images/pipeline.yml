@@ -9,7 +9,7 @@ resources:
   type: docker-image
   source:
     repository: phusion/baseimage
-    tag: latest
+    tag: latest-amd64
 
 - name: ubuntu
   type: docker-image
