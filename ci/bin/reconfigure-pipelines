@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+FLY_TARGET_NAME=${1:-ci}
+echo "Pipeline: $FLY_TARGET_NAME"
+
 set -e
 set -o pipefail
 
@@ -16,7 +19,7 @@ configure_pipeline() {
 
   printf "configuring the $name pipeline...\n"
 
-  fly -t ci set-pipeline \
+  fly -t $FLY_TARGET_NAME set-pipeline \
     -p $name \
     -c $pipeline \
     -l <(lpass show "Concourse Credentials" --notes)
@@ -35,7 +38,7 @@ configure_infrastructure_pipeline() {
 
   printf "configuring the $name pipeline...\n"
 
-  fly -t ci set-pipeline \
+  fly -t $FLY_TARGET_NAME set-pipeline \
     -p $name \
     -c $pipeline \
     -l <(lpass show "Concourse Credentials" --notes) \
@@ -48,7 +51,7 @@ configure_bosh_lite_pool_pipeline() {
 
   printf "configuring the $name pipeline...\n"
 
-  fly -t ci set-pipeline \
+  fly -t $FLY_TARGET_NAME set-pipeline \
     -p $name \
     -c $pipelines_path/cli-dev-bosh-lite/pipeline.yml \
     -v bosh-lite-dns-zone-name=bosh-lite-pool \
@@ -70,7 +73,7 @@ configure_workstation_scheduler_pipeline() {
 
   printf "configuring the $name pipeline...\n"
 
-  fly -t ci set-pipeline \
+  fly -t $FLY_TARGET_NAME set-pipeline \
     -p $name \
     -c $pipeline \
     -l <(lpass show "Concourse Credentials" --notes) \
