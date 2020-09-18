@@ -1,4 +1,4 @@
-FROM phusion/baseimage
+FROM phusion/baseimage:latest-amd64
 
 RUN apt update && apt upgrade -y -o Dpkg::Options::="--force-confold"
 RUN apt install -y fakeroot git rpm cpio zip python-pip
