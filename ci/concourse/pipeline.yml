@@ -1,0 +1,44 @@
+groups:
+- name: workers
+  jobs:
+  - install-windows-deps
+
+jobs:
+- name: install-windows-deps
+  serial: true
+  plan:
+  - in_parallel:
+    - get: golang-windows
+    - get: ci
+  - in_parallel:
+    - task: install-go-windows-worker-0
+      tags: ["windows-worker-0"]
+      file: ci/tasks/install-go-windows.yml
+    - task: install-git-windows-worker-0
+      tags: ["windows-worker-0"]
+      file: ci/tasks/choco-install.yml
+      params: {PACKAGE: git}
+    - task: install-go-windows-worker-1
+      tags: ["windows-worker-1"]
+      file: ci/tasks/install-go-windows.yml
+    - task: install-git-windows-worker-1
+      tags: ["windows-worker-1"]
+      file: ci/tasks/choco-install.yml
+      params: {PACKAGE: git}
+
+resources:
+- name: golang-windows
+  type: s3
+  icon: language-go
+  source:
+    endpoint: storage.googleapis.com
+    bucket: golang
+    regexp: 'go(1\.13\.8)\.windows-amd64\.msi'
+    # regexp: 'go(\d+\.\d+(\.\d+)?)\.windows-amd64\.msi'
+# ~/workspace/concourse/ci
+- name: ci
+  type: git
+  icon: &git-icon github
+  source:
+    uri: https://github.com/concourse/ci.git
+    branch: master

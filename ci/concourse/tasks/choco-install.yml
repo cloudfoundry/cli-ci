@@ -1,0 +1,14 @@
+---
+platform: windows
+
+inputs:
+- name: ci
+
+params:
+  PACKAGE:
+
+run:
+  path: powershell.exe
+  args:
+  - -File
+  - '.\ci\tasks\scripts\choco-install.ps1'
