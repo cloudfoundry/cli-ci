@@ -31,9 +31,14 @@ configure_infrastructure_pipeline() {
   local creds=$2
   local potato=$3
   local pipeline=$4
+  local cf_deployment_version=$5
 
   if [[ -z $pipeline ]]; then
     pipeline=$pipelines_path/infrastructure/pipeline.yml
+  fi
+
+  if [[ -z $cf_deployment_version ]]; then
+    cf_deployment_version="v*"
   fi
 
   printf "configuring the $name pipeline...\n"
@@ -43,7 +48,8 @@ configure_infrastructure_pipeline() {
     -c $pipeline \
     -l <(lpass show "Concourse Credentials" --notes) \
     -l <(lpass show "$creds" --notes) \
-    -v pool-name=$potato
+    -v pool-name=$potato \
+    -v cf-deployment-version=$cf_deployment_version
 }
 
 configure_bosh_lite_pool_pipeline() {
