@@ -2,8 +2,7 @@ SET GOPATH=%CD%\gopath
 SET CATSPATH=%GOPATH%\src\github.com\cloudfoundry\cf-acceptance-tests
 SET CF_DIAL_TIMEOUT=15
 
-C:\ProgramData\chocolatey\bin\RefreshEnv.cmd
-
+SET PATH=C:\ProgramData\chocolatey\bin;%PATH%
 SET PATH=C:\Go\bin;%PATH%
 SET PATH=C:\Program Files\Git\cmd\;%PATH%
 SET PATH=%GOPATH%\bin;%PATH%
