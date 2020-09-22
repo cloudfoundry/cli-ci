@@ -1,7 +1,8 @@
 SET GOPATH=%CD%\go
 SET CF_DIAL_TIMEOUT=15
 
-SET PATH=C:\ProgramData\chocolatey\bin;%PATH%
+C:\ProgramData\chocolatey\bin\RefreshEnv.cmd
+
 SET PATH=C:\Go\bin;%PATH%
 SET PATH=%GOPATH%\bin;%PATH%
 SET PATH=C:\Program Files\GnuWin32\bin;%PATH%
