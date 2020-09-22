@@ -1,12 +1,14 @@
 $ErrorActionPreference = "Stop"
-$Env:GOPATH="$pwd\go"
 $Env:CF_DIAL_TIMEOUT=15
+$Env:ROOT="$pwd"
 
-echo $Env:GOPATH
 echo $pwd
+echo $Env:ROOT
+
 Import-Module C:\ProgramData\chocolatey\helpers\chocolateyProfile.psm1
 refreshenv
 
+$Env:GOPATH="$Env:ROOT\go"
 $Env:PATH="C:\Go\bin;" + "$Env:PATH"
 $Env:PATH="$Env:GOPATH\bin;" + "$Env:PATH"
 $Env:PATH="C:\Program Files\GnuWin32\bin;" + "$Env:PATH"
