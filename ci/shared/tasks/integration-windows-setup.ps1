@@ -2,6 +2,8 @@ $ErrorActionPreference = "Stop"
 $Env:GOPATH="$pwd\go"
 $Env:CF_DIAL_TIMEOUT=15
 
+echo $Env:GOPATH
+echo $pwd
 Import-Module C:\ProgramData\chocolatey\helpers\chocolateyProfile.psm1
 refreshenv
 
@@ -27,6 +29,9 @@ pushd $pwd\cf-cli-binaries
 	7z x cf-cli-binaries.tar -y
 	Move-Item -Path $pwd\cf-cli_winx64.exe  -Destination ..\cf.exe -Force
 popd
+
+echo $Env:GOPATH
+echo $pwd
 
 go get -v -u github.com/onsi/ginkgo/ginkgo
 
