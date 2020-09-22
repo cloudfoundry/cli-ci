@@ -76,7 +76,7 @@ resources:
   type: slack-notification
   icon: slack
   source:
-    url: ((vat-slack-webhook-url))
+    url: ((slack-webhook-url))
 
 - name: vars-store
   type: git
@@ -101,7 +101,7 @@ jobs:
       on_failure:
         put: slack-alert
         params:
-          channel: '#v3-acceleration-team'
+          channel: '#cli-dev-internal'
           text: &slack_notification_text |
             $BUILD_JOB_NAME failed :(
             $ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME - (Viewable internally only)
@@ -110,14 +110,14 @@ jobs:
       on_failure:
         put: slack-alert
         params:
-          channel: '#v3-acceleration-team'
+          channel: '#cli-dev-internal'
           text: *slack_notification_text
     - task: units-osx
       file: cli-ci/ci/cli-v7/tasks/units-osx.yml
       on_failure:
         put: slack-alert
         params:
-          channel: '#v3-acceleration-team'
+          channel: '#cli-dev-internal'
           text: *slack_notification_text
     - task: units-windows
       tags: [cli-windows]
@@ -125,7 +125,7 @@ jobs:
       on_failure:
         put: slack-alert
         params:
-          channel: '#v3-acceleration-team'
+          channel: '#cli-dev-internal'
           text: *slack_notification_text
 
 - name: build-binaries
@@ -144,7 +144,7 @@ jobs:
       on_failure:
         put: slack-alert
         params:
-          channel: '#v3-acceleration-team'
+          channel: '#cli-dev-internal'
           text: *slack_notification_text
     - task: build-osx
       file: cli-ci/ci/cli-v8/tasks/build-osx-binary.yml
@@ -153,7 +153,7 @@ jobs:
       on_failure:
         put: slack-alert
         params:
-          channel: '#v3-acceleration-team'
+          channel: '#cli-dev-internal'
           text: *slack_notification_text
   - task: combine-binaries
     file: cli-ci/ci/cli-v8/tasks/combine-binaries.yml
@@ -184,7 +184,7 @@ jobs:
       on_failure:
         put: slack-alert
         params:
-          channel: '#v3-acceleration-team'
+          channel: '#cli-dev-internal'
           text: *slack_notification_text
       ensure:
         task: cleanup-integration
@@ -218,7 +218,7 @@ jobs:
       on_failure:
         put: slack-alert
         params:
-          channel: '#v3-acceleration-team'
+          channel: '#cli-dev-internal'
           text: *slack_notification_text
       ensure:
         task: cleanup-integration
@@ -240,7 +240,7 @@ jobs:
       on_failure:
         put: slack-alert
         params:
-          channel: '#v3-acceleration-team'
+          channel: '#cli-dev-internal'
           text: *slack_notification_text
       ensure:
         task: cleanup-integration
@@ -271,7 +271,7 @@ jobs:
       on_failure:
         put: slack-alert
         params:
-          channel: '#v3-acceleration-team'
+          channel: '#cli-dev-internal'
           text: *slack_notification_text
       ensure:
         task: cleanup-integration
