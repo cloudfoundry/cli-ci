@@ -655,12 +655,16 @@ jobs:
       - integration-linux-client-creds
       - integration-windows
       - integration-windows-client-creds
+      - integration-legacy
+      - integration-legacy-client-creds
     - get: cf-cli-binaries
       passed:
       - integration-linux
       - integration-linux-client-creds
       - integration-windows
       - integration-windows-client-creds
+      - integration-legacy
+      - integration-legacy-client-creds
       trigger: true
   - task: extract-binaries
     file: cli-ci/ci/cli-v7/tasks/extract-binaries.yml
@@ -801,6 +805,8 @@ jobs:
       - integration-linux-client-creds
       - integration-windows
       - integration-windows-client-creds
+      - integration-legacy
+      - integration-legacy-client-creds
     - get: cf-acceptance-tests-v7
       trigger: true
     - get: cf-deployment-concourse-tasks
@@ -810,6 +816,8 @@ jobs:
       - integration-linux-client-creds
       - integration-windows
       - integration-windows-client-creds
+      - integration-legacy
+      - integration-legacy-client-creds
       trigger: true
     - get: cli-ci
     - get: vars-store
@@ -861,6 +869,8 @@ jobs:
     - integration-windows
     - integration-linux-client-creds
     - integration-windows-client-creds
+    - integration-legacy
+    - integration-legacy-client-creds
     trigger: true
   - put: cf-cli-tracker
     params:
