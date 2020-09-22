@@ -2,6 +2,7 @@ $ErrorActionPreference = "Stop"
 $Env:GOPATH="$pwd\go"
 $Env:CF_DIAL_TIMEOUT=15
 
+$Env:PATH="C:\ProgramData\chocolatey\bin;" + "$Env:PATH"
 $Env:PATH="C:\Go\bin;" + "$Env:PATH"
 $Env:PATH="$Env:GOPATH\bin;" + "$Env:PATH"
 $Env:PATH="C:\Program Files\GnuWin32\bin;" + "$Env:PATH"

@@ -8,6 +8,7 @@ IF "%TARGET_V7%" == "true" (
 )
 
 SET PATH=C:\Program Files\GnuWin32\bin;%PATH%
+SET PATH=C:\ProgramData\chocolatey\bin;%PATH%
 SET PATH=C:\Program Files (x86)\Inno Setup 5;%PATH%
 
 SET PATH=C:\Program Files (x86)\Windows Kits\10\bin\x64;%PATH%
