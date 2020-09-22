@@ -283,7 +283,7 @@ jobs:
           channel: '#v3-acceleration-team'
           text: *slack_notification_text
     - task: units-windows
-      tags: [vat-windows]
+      tags: [cli-windows]
       file: cli-ci/ci/cli-v7/tasks/units-windows.yml
       on_failure:
         put: slack-alert
@@ -526,7 +526,7 @@ jobs:
     - task: cleanup-integration
       file: cli-ci/ci/cli-v7/tasks/cleanup-integration.yml
     - task: integration
-      tags: [vat-windows]
+      tags: [cli-windows]
       file: cli-ci/ci/cli-v7/tasks/integration-windows.yml
       params:
         <<: *integration_params
@@ -553,7 +553,7 @@ jobs:
     - task: cleanup-integration
       file: cli-ci/ci/cli-v7/tasks/cleanup-integration.yml
     - task: integration
-      tags: [vat-windows]
+      tags: [cli-windows]
       file: cli-ci/ci/cli-v7/tasks/integration-windows.yml
       params:
         <<: *integration_params
@@ -611,7 +611,7 @@ jobs:
             :ubuntu: create unix installers failed :redhat:
             $ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
     - task: windows
-      tags: [vat-windows]
+      tags: [cli-windows]
       file: cli-ci/ci/cli-v7/tasks/create-edge-installers-windows.yml
       on_failure:
         put: slack-alert
