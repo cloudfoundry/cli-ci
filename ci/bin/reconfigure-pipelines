@@ -113,6 +113,7 @@ configure_infrastructure_pipeline inf-tropisueno tropisueno-pipeline baked-potat
 configure_infrastructure_pipeline inf-meowtropolitan meowtropolitan-pipeline baked-potato
 pipeline=$pipelines_path/infrastructure/pipeline.yml
 configure_infrastructure_pipeline inf-samovar samovar-pipeline hasselback-potato $pipeline "v13.5.0"
+configure_infrastructure_pipeline inf-ozaoza ozaoza-pipeline hasselback-potato $pipeline "v13.5.0"
 
 # Arsicault has additional configuration to alert the PM before it rolls.
 arsicault_pipeline="bosh int $pipelines_path/infrastructure/pipeline.yml -o $pipelines_path/infrastructure/add-pm-alert-and-wait.yml"
