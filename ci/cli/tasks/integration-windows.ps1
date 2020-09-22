@@ -2,6 +2,9 @@ $ErrorActionPreference = "Stop"
 
 . "$PSScriptRoot\..\..\shared\tasks\integration-windows-setup.ps1"
 
+$Env:CF_INT_CUSTOM_CLIENT_SECRET=(Get-Content $pwd\cf-credentials\uaa-custom-client-secret -Raw).trim()
+$Env:CF_INT_CUSTOM_CLIENT_ID="cf-custom"
+
 echo "CF_INT_CLIENT_CREDENTIALS_TEST_MODE: $Env:CF_INT_CLIENT_CREDENTIALS_TEST_MODE"
 
 cd $Env:GOPATH\src\code.cloudfoundry.org\cli
