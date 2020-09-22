@@ -599,9 +599,9 @@ jobs:
         acquire: true
   - do:
     - task: cleanup-integration
-      file: cli-ci/ci/cli/tasks/cleanup-integration.yml
+      file: cli-ci/ci/cli-v7/tasks/cleanup-integration.yml
     - task: integration
-      file: cli-ci/ci/cli/tasks/integration-linux.yml
+      file: cli-ci/ci/cli-v7/tasks/integration-linux.yml
       params:
         <<: *integration_params
         NODES: 12
@@ -612,7 +612,7 @@ jobs:
           text: *slack_notification_text
       ensure:
         task: cleanup-integration
-        file: cli-ci/ci/cli/tasks/cleanup-integration.yml
+        file: cli-ci/ci/cli-v7/tasks/cleanup-integration.yml
   ensure:
     put: legacy-gcp-bosh-pool
     params:
@@ -624,9 +624,9 @@ jobs:
   - in_parallel: *integration_legacy_resources
   - do:
     - task: cleanup-integration
-      file: cli-ci/ci/cli/tasks/cleanup-integration.yml
+      file: cli-ci/ci/cli-v7/tasks/cleanup-integration.yml
     - task: integration
-      file: cli-ci/ci/cli/tasks/integration-linux.yml
+      file: cli-ci/ci/cli-v7/tasks/integration-linux.yml
       params:
         <<: *integration_params
         NODES: 12
@@ -638,7 +638,7 @@ jobs:
           text: *slack_notification_text
       ensure:
         task: cleanup-integration
-        file: cli-ci/ci/cli/tasks/cleanup-integration.yml
+        file: cli-ci/ci/cli-v7/tasks/cleanup-integration.yml
   ensure:
     put: legacy-gcp-bosh-pool
     params:
