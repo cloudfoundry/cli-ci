@@ -26,6 +26,7 @@ resources:
       bucket: ((bosh-lite-storage-bucket))
       prefix: on_demand_terraform_state_files/
       credentials: ((bosh-lite-gcp-json-key))
+
 - name: capi-ci
   type: git
   source:
@@ -93,12 +94,6 @@ resources:
     access_key_id: ((cli-team-aws-s3-access-key-id))
     secret_access_key: ((cli-team-aws-s3-secret-access-key))
     versioned_file: "v7/cf-cli-binaries.tgz"
-
-- name: edge-capi-release
-  type: s3
-  source:
-    bucket: capi-releases
-    regexp: capi-(.*)-.*-.*.tgz
 
 - name: edge-linux-binary-32
   type: s3
@@ -391,7 +386,6 @@ jobs:
     - get: cf-cli-binaries
       passed: [build-binaries]
       trigger: true
-    - get: edge-capi-release
     - get: vars-store
     - get: cli-ci
   - do:
@@ -426,8 +420,6 @@ jobs:
                 manifest: cf-deployment/cf-deployment.yml
                 vars_files:
                 - bosh-target/vars.yml
-                var_files:
-                  edge_capi_url: edge-capi-release/url
                 vars:
                   client-secret: ((client-secret))
                 ops_files:
@@ -443,7 +435,6 @@ jobs:
                 - cli-ci/ci/infrastructure/operations/add-oidc-provider.yml
                 - cli-ci/ci/infrastructure/operations/add-uaa-client-cf-custom.yml
                 - cli-ci/ci/infrastructure/operations/give-cf-admin-clients-read-scope.yml
-                - cli-ci/ci/infrastructure/operations/use-edge-capi.yml
                 - cli-ci/ci/infrastructure/operations/add-uaa-client-credentials.yml
             - task: upload-to-gcs
               file: capi-ci/ci/gcs/upload-to-gcs.yml
