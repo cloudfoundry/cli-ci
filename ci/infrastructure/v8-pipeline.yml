@@ -38,6 +38,11 @@ resources:
     private_key: ((cli-pools-github-private-key))
     branch: master
     pool: ((pool-name))
+- name: edge-capi-release
+  type: s3
+  source:
+    bucket: capi-releases
+    regexp: capi-(.*)-.*-.*.tgz
 
 jobs:
 - name: deploy
@@ -46,6 +51,8 @@ jobs:
   plan:
   - aggregate:
     - get: cf-deployment
+      trigger: true
+    - get: edge-capi-release
       trigger: true
     - get: cf-deployment-concourse-tasks
     - get: state
@@ -105,6 +112,14 @@ jobs:
         input2/ci/infrastructure/operations/reduce-async-service-polling.yml
         input2/ci/infrastructure/operations/skip-ssl-override.yml
         input2/ci/infrastructure/operations/uaa-vm_type-override.yml
+        input2/ci/infrastructure/operations/use-latest-capi.yml
+  - task: upload-edge-capi
+    file: cli-ci/ci/infrastructure/tasks/upload-edge-capi.yml
+    input_mapping:
+      bbl-state: updated-bbl-state
+      release-tarball: edge-capi-release
+    params:
+      BBL_STATE_DIR: "ci/infrastructure/((stack-name))"
   - task: deploy-cf
     file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
     input_mapping:
@@ -114,26 +129,27 @@ jobs:
     params:
       SYSTEM_DOMAIN: ((stack-name)).cli.fun
       OPS_FILES:
-        add-dummy-windows-stack.yml
-        add-lb-ca-cert.yml
-        add-oidc-provider.yml
         add-persistent-isolation-segment-diego-cell.yml
-        add-uaa-client-credentials.yml
-        adjust-user-retry-attempts.yml
+        use-compiled-releases.yml
+        use-latest-capi.yml
         cli-isolation-cell-overrides.yml
         default-app-memory.yml
+        skip-ssl-override.yml
+        scale-to-one-az.yml
         diego-cell-instances.yml
         doppler-instances.yml
-        enable-mysql-audit-logging.yml
-        enable-service-discovery.yml
-        enable-v3-deployments-endpoint.yml
-        increase-route-registration-interval.yml
-        reduce-async-service-polling.yml
-        scale-to-one-az.yml
-        skip-ssl-override.yml
         uaa-vm_type-override.yml
-        use-compiled-releases.yml
+        add-uaa-client-credentials.yml
+        add-dummy-windows-stack.yml
+        reduce-async-service-polling.yml
+        add-oidc-provider.yml
+        adjust-user-retry-attempts.yml
+        enable-v3-deployments-endpoint.yml
+        enable-mysql-audit-logging.yml
         use-internal-lookup-for-route-services.yml
+        add-lb-ca-cert.yml
+        enable-service-discovery.yml
+        increase-route-registration-interval.yml
       VARS_FILES: vars.yml
       BBL_STATE_DIR: ci/infrastructure/((stack-name))
   - task: bosh-cleanup

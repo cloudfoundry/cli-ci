@@ -41,7 +41,7 @@ configure_v8_infrastructure_pipeline() {
 
   fly -t $FLY_TARGET_NAME set-pipeline \
     -p $name \
-    -c $pipelines_path/infrastructure/v7-pipeline.yml \
+    -c $pipelines_path/infrastructure/v8-pipeline.yml \
     -l <(lpass show "Concourse Credentials" --notes) \
     -l <(lpass show "$creds" --notes) \
     -v pool-name=$pool
