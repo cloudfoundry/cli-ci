@@ -36,6 +36,11 @@ configure_v7_infrastructure_pipeline() {
   local name=$1
   local creds=$2
   local potato=$3
+  local cf_deployment_version=$4
+
+  if [[ -z $cf_deployment_version ]]; then
+    cf_deployment_version="v*"
+  fi
 
   printf "configuring the $name pipeline...\n"
 
@@ -44,7 +49,8 @@ configure_v7_infrastructure_pipeline() {
     -c $pipelines_path/infrastructure/v7-pipeline.yml \
     -l <(lpass show "Concourse Credentials" --notes) \
     -l <(lpass show "$creds" --notes) \
-    -v pool-name=$potato
+    -v pool-name=$potato \
+    -v cf-deployment-version=$cf_deployment_version
 }
 
 
@@ -62,3 +68,5 @@ configure_v7_infrastructure_pipeline inf-delfina delfina-pipeline mashed-potato
 configure_v7_infrastructure_pipeline inf-nopa nopa-pipeline mashed-potato
 configure_v7_infrastructure_pipeline inf-zerozero zerozero-pipeline mashed-potato
 configure_v7_infrastructure_pipeline inf-zuni zuni-pipeline mashed-potato
+configure_v7_infrastructure_pipeline inf-samovar samovar-pipeline hasselback-potato "v13.5.0"
+configure_v7_infrastructure_pipeline inf-ozaoza ozaoza-pipeline hasselback-potato "v13.5.0"
