@@ -17,7 +17,7 @@ resources:
     type: slack-notification
     icon: slack
     source:
-      url: ((vat-slack-webhook-url))
+      url: ((slack-webhook-url))
 
   - name: start-of-work-day
     type: time
@@ -45,9 +45,9 @@ jobs:
 
       - put: slack-alert
         params:
-          channel: '#v3-acceleration-team'
+          channel: '#cli-dev-internal'
           text: >
-            Hi team! Your cloud workstations will automatically shut down in 20 minutes. If you're still working,
+            Hi VAT team! Your cloud workstations will automatically shut down in 20 minutes. If you're still working,
             pause the shutdown job for your workstation to prevent this! :v3-acceleration:
 
       - task: wait-20-minutes
