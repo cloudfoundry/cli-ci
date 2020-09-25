@@ -335,7 +335,7 @@ jobs:
       on_failure:
         put: slack-alert
         params:
-          channel: '#cats-cli-v7-migration'
+          channel: '#cli-dev-internal'
           text: *slack_notification_text
   ensure:
     put: gcp-bosh-pool
@@ -396,7 +396,7 @@ jobs:
       on_failure:
         put: slack-alert
         params:
-          channel: '#cats-cli-v7-migration'
+          channel: '#cli-dev-internal'
           text: *slack_notification_text
   ensure:
     put: gcp-bosh-pool-only-v3-capi
