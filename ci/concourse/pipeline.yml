@@ -12,13 +12,22 @@ jobs:
     - get: golang-windows
     - get: ci
   - in_parallel:
-    - task: install-go-windows-worker-0
-      tags: ["windows-worker-0"]
-      file: ci/tasks/install-go-windows.yml
-    - task: install-git-windows-worker-0
-      tags: ["windows-worker-0"]
-      file: ci/tasks/choco-install.yml
-      params: {PACKAGE: git}
+    - do:
+      - task: install-go-windows-worker-0
+        tags: ["windows-worker-0"]
+        file: ci/tasks/install-go-windows.yml
+      - task: install-git-windows-worker-0
+        tags: ["windows-worker-0"]
+        file: ci/tasks/choco-install.yml
+        params: {PACKAGE: git}
+      - task: install-zip-windows-worker-0
+        tags: ["windows-worker-0"]
+        file: ci/tasks/choco-install.yml
+        params: {PACKAGE: 7zip}
+      - task: install-openssl-windows-worker-0
+        tags: ["windows-worker-0"]
+        file: ci/tasks/choco-install.yml
+        params: {PACKAGE: openssl}
 
 - name: install-windows-deps-1
   serial: true
@@ -27,13 +36,22 @@ jobs:
     - get: golang-windows
     - get: ci
   - in_parallel:
-    - task: install-go-windows-worker-1
-      tags: ["windows-worker-1"]
-      file: ci/tasks/install-go-windows.yml
-    - task: install-git-windows-worker-1
-      tags: ["windows-worker-1"]
-      file: ci/tasks/choco-install.yml
-      params: {PACKAGE: git}
+    - do:
+      - task: install-go-windows-worker-1
+        tags: ["windows-worker-1"]
+        file: ci/tasks/install-go-windows.yml
+      - task: install-git-windows-worker-1
+        tags: ["windows-worker-1"]
+        file: ci/tasks/choco-install.yml
+        params: {PACKAGE: git}
+      - task: install-zip-windows-worker-1
+        tags: ["windows-worker-1"]
+        file: ci/tasks/choco-install.yml
+        params: {PACKAGE: 7zip}
+      - task: install-openssl-windows-worker-1
+        tags: ["windows-worker-1"]
+        file: ci/tasks/choco-install.yml
+        params: {PACKAGE: openssl}
 
 resources:
 - name: golang-windows
