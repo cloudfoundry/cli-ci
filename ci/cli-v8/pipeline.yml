@@ -120,7 +120,7 @@ jobs:
           channel: '#cli-dev-internal'
           text: *slack_notification_text
     - task: units-windows
-      tags: [cli-windows]
+      tags: [cli-windows-int]
       file: cli-ci/ci/cli-v7/tasks/units-windows.yml
       on_failure:
         put: slack-alert
@@ -209,7 +209,7 @@ jobs:
     - task: cleanup-integration
       file: cli-ci/ci/cli-v8/tasks/cleanup-integration.yml
     - task: integration
-      tags: [cli-windows]
+      tags: [cli-windows-int]
       file: cli-ci/ci/cli-v8/tasks/integration-windows.yml
       params:
         <<: *integration_params
@@ -261,7 +261,7 @@ jobs:
     - task: cleanup-integration
       file: cli-ci/ci/cli-v8/tasks/cleanup-integration.yml
     - task: integration
-      tags: [cli-windows]
+      tags: [cli-windows-int]
       file: cli-ci/ci/cli-v8/tasks/integration-windows.yml
       params:
         <<: *integration_params
