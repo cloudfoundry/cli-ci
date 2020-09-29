@@ -11,7 +11,6 @@ ginkgo.exe -r `
 	-randomizeAllSpecs `
 	./integration/shared/isolated `
 	./integration/v7/isolated `
-	./integration/shared/plugin `
 	./integration/shared/experimental `
 	./integration/v7/experimental `
 	./integration/v7/push
