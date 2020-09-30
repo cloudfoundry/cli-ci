@@ -114,26 +114,26 @@ jobs:
     params:
       SYSTEM_DOMAIN: ((stack-name)).cli.fun
       OPS_FILES:
-        add-dummy-windows-stack.yml
-        add-lb-ca-cert.yml
-        add-oidc-provider.yml
         add-persistent-isolation-segment-diego-cell.yml
-        add-uaa-client-credentials.yml
-        adjust-user-retry-attempts.yml
+        use-compiled-releases.yml
         cli-isolation-cell-overrides.yml
         default-app-memory.yml
+        skip-ssl-override.yml
+        scale-to-one-az.yml
         diego-cell-instances.yml
         doppler-instances.yml
-        enable-mysql-audit-logging.yml
-        enable-service-discovery.yml
-        enable-v3-deployments-endpoint.yml
-        increase-route-registration-interval.yml
-        reduce-async-service-polling.yml
-        scale-to-one-az.yml
-        skip-ssl-override.yml
         uaa-vm_type-override.yml
-        use-compiled-releases.yml
+        add-uaa-client-credentials.yml
+        add-dummy-windows-stack.yml
+        reduce-async-service-polling.yml
+        add-oidc-provider.yml
+        adjust-user-retry-attempts.yml
+        enable-v3-deployments-endpoint.yml
+        enable-mysql-audit-logging.yml
         use-internal-lookup-for-route-services.yml
+        add-lb-ca-cert.yml
+        enable-service-discovery.yml
+        increase-route-registration-interval.yml
       VARS_FILES: vars.yml
       BBL_STATE_DIR: ci/infrastructure/((stack-name))
   - task: bosh-cleanup
