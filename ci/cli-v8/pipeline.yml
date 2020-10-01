@@ -15,14 +15,6 @@ resources:
     branch: master
     pool: v8-pool
 
-- name: gcp-bosh-pool-only-v3-capi
-  type: pool
-  source:
-    uri: git@github.com:cloudfoundry/cli-pools
-    private_key: ((cli-pools-github-private-key))
-    branch: master
-    pool: v8-pool-v3-capi
-
 - name: cli-ci
   type: git
   source:
@@ -56,17 +48,7 @@ resources:
   type: git
   icon: github-box
   source:
-    branch: release-candidate
-    uri: https://github.com/cloudfoundry/cf-acceptance-tests.git
-    ignore_paths:
-    - ci/*.yml
-    - .envrc
-
-- name: cf-acceptance-tests-v3-only
-  type: git
-  icon: github-box
-  source:
-    branch: capi-v3-only
+    branch: master
     uri: https://github.com/cloudfoundry/cf-acceptance-tests.git
     ignore_paths:
     - ci/*.yml
@@ -341,65 +323,3 @@ jobs:
     put: gcp-bosh-pool
     params:
       release: bosh-lock
-
-- name: v3-only-cats
-  serial: true
-  plan:
-  - in_parallel:
-    - get: cli
-      passed:
-      - integration-linux
-      - integration-linux-client-creds
-      - integration-windows
-      - integration-windows-client-creds
-    - get: cf-acceptance-tests-v3-only
-      trigger: true
-    - get: cf-deployment-concourse-tasks
-    - get: cf-cli-binaries
-      passed:
-      - integration-linux
-      - integration-linux-client-creds
-      - integration-windows
-      - integration-windows-client-creds
-      trigger: true
-    - get: cli-ci
-    - get: vars-store
-    - put: bosh-lock
-      resource: gcp-bosh-pool-only-v3-capi
-      timeout: 2h
-      params:
-        acquire: true
-  - do:
-    - task: cleanup-integration
-      file: cli-ci/ci/cli-v8/tasks/cleanup-integration.yml
-    - task: config
-      file: cli-ci/ci/cli-v8/tasks/v3-only-cats-config.yml
-      params:
-        INCLUDE_V3: true
-        BROKER_START_TIMEOUT: 330
-        CF_PUSH_TIMEOUT: 210
-        DEFAULT_TIMEOUT: 60
-        LONG_CURL_TIMEOUT: 210
-    - task: extract-linux-binary
-      file: cli-ci/ci/cli-v8/tasks/extract-linux-binary.yml
-    - task: run-tests
-      file: cf-deployment-concourse-tasks/run-cats-with-provided-cli/task.yml
-      input_mapping:
-        cf-acceptance-tests: cf-acceptance-tests-v3-only
-        integration-config: v3-only-cats-config
-        cf-cli: linux-cf-binary
-      params:
-        NODES: 16
-        SKIP_REGEXP: "transparently proxies both reserved"
-        REPORTER_CONFIG_FILE_PATH: ""
-        FLAKE_ATTEMPTS: 2
-      on_failure:
-        put: slack-alert
-        params:
-          channel: '#cli-dev-internal'
-          text: *slack_notification_text
-  ensure:
-    put: gcp-bosh-pool-only-v3-capi
-    params:
-      release: bosh-lock
-
