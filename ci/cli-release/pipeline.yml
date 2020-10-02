@@ -232,13 +232,53 @@ resources:
     region_name: us-west-1
 
 jobs:
+- name: match-installer-sha-v6
+  serial: true
+  plan:
+    - get: cli-ci
+    - get: cli
+      resource: cli-v6
+    - get: edge-linux-binary-32
+      resource: edge-linux-binary-32-v6
+    - get: edge-linux-binary-64
+      resource: edge-linux-binary-64-v6
+    - get: edge-osx-binary-64
+      resource: edge-osx-binary-64-v6
+    - get: edge-windows-binary-32
+      resource: edge-windows-binary-32-v6
+    - get: edge-windows-binary-64
+      resource: edge-windows-binary-64-v6
+    - get: edge-deb-installer-32
+      resource: edge-deb-installer-32-v6
+    - get: edge-deb-installer-64
+      resource: edge-deb-installer-64-v6
+    - get: edge-redhat-installer-32
+      resource: edge-redhat-installer-32-v6
+    - get: edge-redhat-installer-64
+      resource: edge-redhat-installer-64-v6
+    - get: edge-osx-installer-64
+      resource: edge-osx-installer-64-v6
+    - task: match-installer-sha
+      file: cli-ci/ci/cli-release/tasks/match-installer-sha.yml
+
 - name: final-release-checks-v6
   serial: true
   plan:
     - get: cli-ci
     - get: cli
       resource: cli-v6
+      trigger: true
+      passed: [match-installer-sha-v6]
     - task: check-build-version
+      file: cli-ci/ci/cli-release/tasks/check-build-version.yml
+
+- name: match-installer-sha-v7
+  serial: true
+  plan:
+    - get: cli-ci
+    - get: cli
+      resource: cli-v7
+    - task: match-installer-sha
       file: cli-ci/ci/cli-release/tasks/check-build-version.yml
 
 - name: final-release-checks-v7
@@ -247,6 +287,8 @@ jobs:
     - get: cli-ci
     - get: cli
       resource: cli-v7
+      trigger: true
+      passed: [match-installer-sha-v7]
     - task: check-build-version
       file: cli-ci/ci/cli-release/tasks/check-build-version.yml
 
