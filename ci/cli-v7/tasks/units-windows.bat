@@ -1,5 +1,8 @@
 SET TARGET_V7=true
 SET GOPATH=%CD%\gopath
+
+call C:\ProgramData\chocolatey\bin\RefreshEnv.cmd
+
 SET PATH=C:\ProgramData\chocolatey\bin;%PATH%
 SET PATH=C:\Go\bin;C:\Program Files\Git\cmd\;%GOPATH%\bin;%PATH%
 
