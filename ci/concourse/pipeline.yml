@@ -35,6 +35,10 @@ jobs:
       tags: ["windows-worker-0"]
       file: ci/tasks/choco-install.yml
       params: {PACKAGE: innosetup}
+    - task: install-mingw-windows-worker-0
+      tags: ["windows-worker-0"]
+      file: ci/tasks/choco-install.yml
+      params: {PACKAGE: mingw}
 
 - name: install-windows-deps-1
   serial: true
@@ -66,6 +70,10 @@ jobs:
       tags: ["windows-worker-1"]
       file: ci/tasks/choco-install.yml
       params: {PACKAGE: innosetup}
+    - task: install-mingw-windows-worker1
+      tags: ["windows-worker-1"]
+      file: ci/tasks/choco-install.yml
+      params: {PACKAGE: mingw}
 
 resources:
 - name: golang-windows
