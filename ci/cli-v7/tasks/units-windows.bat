@@ -15,4 +15,6 @@ go get -u github.com/onsi/ginkgo/ginkgo
 
 ginkgo version
 
-call make units-full
+call make out/cf-cli_winx64.exe
+call make units-plugin
+call make units-non-plugin
