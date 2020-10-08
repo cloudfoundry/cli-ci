@@ -1,11 +1,10 @@
 SET TARGET_V7=true
 SET GOPATH=%CD%\gopath
 
-call C:\ProgramData\chocolatey\bin\RefreshEnv.cmd
+C:\ProgramData\chocolatey\bin\RefreshEnv.cmd
 
 SET PATH=C:\ProgramData\chocolatey\bin;%PATH%
 SET PATH=C:\Go\bin;C:\Program Files\Git\cmd\;%GOPATH%\bin;%PATH%
-
 cd %GOPATH%\src\code.cloudfoundry.org\cli
 
 powershell -command set-executionpolicy remotesigned
