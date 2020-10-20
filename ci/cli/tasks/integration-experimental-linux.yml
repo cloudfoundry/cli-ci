@@ -66,4 +66,4 @@ run:
     echo "CF_INT_CLIENT_CREDENTIALS_TEST_MODE: $CF_INT_CLIENT_CREDENTIALS_TEST_MODE"
 
     cd $GOPATH/src/code.cloudfoundry.org/cli
-    ginkgo -r -nodes=16 -flakeAttempts=2 -slowSpecThreshold=60 -randomizeAllSpecs integration/shared/experimental integration/v6/experimental
+    make integration-tests-experimental-ci
