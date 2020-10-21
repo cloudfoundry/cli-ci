@@ -82,7 +82,7 @@ resources:
   source:
     endpoint: storage.googleapis.com
     bucket: golang
-    regexp: 'go(1\.13\.8)\.windows-amd64\.msi'
+    regexp: 'go(1\.13\.15)\.windows-amd64\.msi'
     # regexp: 'go(\d+\.\d+(\.\d+)?)\.windows-amd64\.msi'
 # ~/workspace/concourse/ci
 - name: ci
