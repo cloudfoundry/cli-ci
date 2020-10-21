@@ -36,3 +36,4 @@ echo "GOPATH:            $Env:GOPATH"
 go get -v -u github.com/onsi/ginkgo/ginkgo
 
 $Env:RUN_ID=(openssl rand -hex 16)
+$Env:GOFLAGS = "-mod=vendor"
