@@ -5,14 +5,14 @@
     <key>EnvironmentVariables</key>
     <dict>
       <key>PATH</key>
-      <string>/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:</string>
+      <string>/usr/local/opt/findutils/libexec/gnubin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:</string>
       <key>HOME</key>
-      <string>/Users/pivotal</string>
+      <string>/Users/vmware</string>
     </dict>
     <key>Label</key>
-    <string>com.pivotal.ConcourseWorker</string>
+    <string>com.vmware.ConcourseWorker</string>
     <key>Program</key>
-    <string>/Users/pivotal/bin/concourse_worker</string>
+    <string>/Users/vmware/workspace/cli-ci/ci/bin/concourse_worker</string>
     <key>RunAtLoad</key>
     <true/>
     <key>KeepAlive</key>
