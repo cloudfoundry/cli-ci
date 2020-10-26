@@ -25,4 +25,5 @@ test -s "$concourse_pub_key" || exit 1
   --team "$concourse_team" \
   --tsa-host "$concourse_tsa":"$concourse_port" \
   --tsa-public-key "$concourse_pub_key" \
-  --tsa-worker-private-key "$concourse_pvt_key"
+  --tsa-worker-private-key "$concourse_pvt_key" \
+  --tag "mac-pro"
