@@ -261,6 +261,7 @@ jobs:
     - get: cli-ci
   - in_parallel:
     - task: lint
+      timeout: 3h
       file: cli-ci/ci/cli-v7/tasks/lint.yml
       params:
         TARGET_V7: true
@@ -272,6 +273,7 @@ jobs:
             $BUILD_JOB_NAME failed :(
             $ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME - (Viewable internally only)
     - task: units-linux
+      timeout: 3h
       file: cli-ci/ci/cli-v7/tasks/units-linux.yml
       on_failure:
         put: slack-alert
@@ -279,6 +281,7 @@ jobs:
           channel: '#cli-dev-internal'
           text: *slack_notification_text
     - task: units-osx
+      timeout: 3h
       file: cli-ci/ci/cli-v7/tasks/units-osx.yml
       on_failure:
         put: slack-alert
@@ -286,6 +289,7 @@ jobs:
           channel: '#cli-dev-internal'
           text: *slack_notification_text
     - task: units-windows
+      timeout: 3h
       tags: [cli-windows-int]
       file: cli-ci/ci/cli-v7/tasks/units-windows.yml
       on_failure:
@@ -304,6 +308,7 @@ jobs:
     - get: cli-ci
     - get: cli-i18n
   - task: build-i18n
+    timeout: 3h
     file: cli-ci/ci/cli-v7/tasks/generate-i18n-resources.yml
     on_failure:
       put: slack-alert
@@ -312,6 +317,7 @@ jobs:
         text: *slack_notification_text
   - in_parallel:
     - task: build
+      timeout: 3h
       file: cli-ci/ci/cli-v7/tasks/build-binaries.yml
       params:
         TARGET_GO_VERSION: go1.13.15
@@ -321,6 +327,7 @@ jobs:
           channel: '#cli-dev-internal'
           text: *slack_notification_text
     - task: build-osx
+      timeout: 3h
       file: cli-ci/ci/cli-v7/tasks/build-osx-binary.yml
       params:
         TARGET_GO_VERSION: go1.13.15
@@ -330,6 +337,7 @@ jobs:
           channel: '#cli-dev-internal'
           text: *slack_notification_text
   - task: combine-binaries
+    timeout: 3h
     file: cli-ci/ci/cli-v7/tasks/combine-binaries.yml
   - put: cf-cli-binaries
     params:
@@ -352,8 +360,10 @@ jobs:
         acquire: true
   - do:
     - task: cleanup-integration
+      timeout: 3h
       file: cli-ci/ci/cli-v7/tasks/cleanup-integration.yml
     - task: integration
+      timeout: 3h
       file: cli-ci/ci/cli-v7/tasks/integration-linux.yml
       on_failure:
         put: slack-alert
@@ -403,16 +413,20 @@ jobs:
           dns_zone_name: ((bosh-lite-dns-zone-name))
     - do:
         - task: create-bosh-lite
+          timeout: 3h
           file: capi-ci/ci/bosh-lite/create-bosh-lite.yml
           params:
             GCP_JSON_KEY: ((bosh-lite-gcp-json-key))
             GCP_INSTANCE_TYPE: n1-highmem-16
         - do:
             - task: create-env-vars-file
+              timeout: 3h
               file: capi-ci/ci/bosh-lite/create-env-vars-file.yml
             - task: upload-cf-assets
+              timeout: 3h
               file: capi-ci/ci/bosh-lite/upload-cf-assets.yml
             - task: write-bosh-target-file
+              timeout: 3h
               file: capi-ci/ci/bosh-lite/write-bosh-target-file.yml
             - put: cf-deploy
               params:
@@ -437,6 +451,7 @@ jobs:
                 - cli-ci/ci/infrastructure/operations/give-cf-admin-clients-read-scope.yml
                 - cli-ci/ci/infrastructure/operations/add-uaa-client-credentials.yml
             - task: upload-to-gcs
+              timeout: 3h
               file: capi-ci/ci/gcs/upload-to-gcs.yml
               input_mapping:
                 environment: terraform
@@ -466,6 +481,7 @@ jobs:
           action: destroy
   - do:
     - task: integration
+      timeout: 3h
       file: cli-ci/ci/cli-v7/tasks/integration-linux-bosh-lite.yml
       on_failure:
         put: slack-alert
@@ -476,6 +492,7 @@ jobs:
     ensure:
       do:
         - task: delete-bosh-lite
+          timeout: 3h
           file: capi-ci/ci/bosh-lite/delete-bosh-lite.yml
         - put: terraform
           params:
@@ -498,8 +515,10 @@ jobs:
   - in_parallel: *integration_resources
   - do:
     - task: cleanup-integration
+      timeout: 3h
       file: cli-ci/ci/cli-v7/tasks/cleanup-integration.yml
     - task: integration
+      timeout: 3h
       file: cli-ci/ci/cli-v7/tasks/integration-linux.yml
       on_failure:
         put: slack-alert
@@ -523,8 +542,10 @@ jobs:
   - in_parallel: *integration_resources
   - do:
     - task: cleanup-integration
+      timeout: 3h
       file: cli-ci/ci/cli-v7/tasks/cleanup-integration.yml
     - task: integration
+      timeout: 3h
       tags: [cli-windows-int]
       file: cli-ci/ci/cli-v7/tasks/integration-windows.yml
       params:
@@ -550,8 +571,10 @@ jobs:
   - in_parallel: *integration_resources
   - do:
     - task: cleanup-integration
+      timeout: 3h
       file: cli-ci/ci/cli-v7/tasks/cleanup-integration.yml
     - task: integration
+      timeout: 3h
       tags: [cli-windows-int]
       file: cli-ci/ci/cli-v7/tasks/integration-windows.yml
       params:
@@ -590,8 +613,10 @@ jobs:
         acquire: true
   - do:
     - task: cleanup-integration
+      timeout: 3h
       file: cli-ci/ci/cli-v7/tasks/cleanup-integration.yml
     - task: integration
+      timeout: 3h
       file: cli-ci/ci/cli-v7/tasks/integration-linux.yml
       params:
         <<: *integration_params
@@ -615,8 +640,10 @@ jobs:
   - in_parallel: *integration_legacy_resources
   - do:
     - task: cleanup-integration
+      timeout: 3h
       file: cli-ci/ci/cli-v7/tasks/cleanup-integration.yml
     - task: integration
+      timeout: 3h
       file: cli-ci/ci/cli-v7/tasks/integration-linux.yml
       params:
         <<: *integration_params
@@ -658,6 +685,7 @@ jobs:
       - integration-legacy-client-creds
       trigger: true
   - task: extract-binaries
+    timeout: 3h
     file: cli-ci/ci/cli-v7/tasks/extract-binaries.yml
     on_failure:
       put: slack-alert
@@ -668,6 +696,7 @@ jobs:
           $ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
   - in_parallel:
     - task: unix
+      timeout: 3h
       file: cli-ci/ci/cli-v7/tasks/create-installers.yml
       on_failure:
         put: slack-alert
@@ -677,6 +706,7 @@ jobs:
             :ubuntu: create unix installers failed :redhat:
             $ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
     - task: windows
+      timeout: 3h
       tags: [cli-windows-int]
       file: cli-ci/ci/cli-v7/tasks/create-edge-installers-windows.yml
       on_failure:
@@ -687,6 +717,7 @@ jobs:
             create windows installer failed :winc:
             $ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
   - task: package-binaries
+    timeout: 3h
     file: cli-ci/ci/cli-v7/tasks/package-binaries.yml
     on_failure:
       put: slack-alert
@@ -756,6 +787,7 @@ jobs:
     - get: ubuntu-32-image
   - in_parallel:
     - task: deb-64
+      timeout: 3h
       image: ubuntu-64-image
       file: cli-ci/ci/shared/tasks/integration-debian-installers.yml
       input_mapping:
@@ -764,6 +796,7 @@ jobs:
         MAJOR_VERSION: 7
         ARCH: x86-64
     - task: deb-32
+      timeout: 3h
       image: ubuntu-32-image
       file: cli-ci/ci/shared/tasks/integration-debian-installers.yml
       input_mapping:
@@ -772,6 +805,7 @@ jobs:
         MAJOR_VERSION: 7
         ARCH: i686
     - task: rpm-64
+      timeout: 3h
       file: cli-ci/ci/shared/tasks/integration-rpm-installers.yml
       input_mapping:
         installer: edge-redhat-installer-64
@@ -779,6 +813,7 @@ jobs:
         MAJOR_VERSION: 7
         ARCH: x86-64
     - task: rpm-32
+      timeout: 3h
       file: cli-ci/ci/shared/tasks/integration-rpm-installers.yml
       input_mapping:
         installer: edge-redhat-installer-32
@@ -819,8 +854,10 @@ jobs:
         acquire: true
   - do:
     - task: cleanup-integration
+      timeout: 3h
       file: cli-ci/ci/cli-v7/tasks/cleanup-integration.yml
     - task: config
+      timeout: 3h
       file: cli-ci/ci/cli-v7/tasks/cats-config.yml
       params:
         INCLUDE_V3: true
@@ -829,8 +866,10 @@ jobs:
         DEFAULT_TIMEOUT: 60
         LONG_CURL_TIMEOUT: 210
     - task: extract-linux-binary
+      timeout: 3h
       file: cli-ci/ci/cli-v7/tasks/extract-linux-binary.yml
     - task: run-tests
+      timeout: 3h
       file: cf-deployment-concourse-tasks/run-cats-with-provided-cli/task.yml
       input_mapping:
         cf-acceptance-tests: cf-acceptance-tests-v7
