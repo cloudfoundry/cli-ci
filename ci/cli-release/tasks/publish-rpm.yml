@@ -4,6 +4,8 @@ image_resource:
   type: docker-image
   source:
     repository: cfcli/cli-package
+  version:
+    digest: "sha256:82aa794e0ae32e85cbf68d7fe18cb6dfdd448fd6bf734031893ceb3a4dd43b0c"
 
 inputs:
 - name: certificates
