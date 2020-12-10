@@ -36,7 +36,7 @@ resources:
   - name: capi-ci
     type: git
     source:
-      branch: master
+      branch: main
       uri: git@github.com:cloudfoundry/capi-ci.git
       private_key: ((bosh-lite-pools-github-private-key))
   - name: bosh-deployment

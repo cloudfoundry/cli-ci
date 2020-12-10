@@ -30,7 +30,7 @@ resources:
 - name: capi-ci
   type: git
   source:
-    branch: master
+    branch: main
     uri: https://github.com/cloudfoundry/capi-ci
 
 - name: bosh-deployment
