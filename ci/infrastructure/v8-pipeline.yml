@@ -22,7 +22,7 @@ resources:
   type: git
   source:
     uri: https://github.com/cloudfoundry/cf-deployment
-    tag_filter: "v13.23.0"
+    tag_filter: v*
 - name: state
   type: git
   source:
