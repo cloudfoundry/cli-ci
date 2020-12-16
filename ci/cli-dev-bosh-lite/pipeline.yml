@@ -98,7 +98,7 @@ resources:
     type: bosh-deployment
     source:
       skip_check: true
-  - name: 5m
+  - name: five-minutes
     type: time
     source:
       interval: 5m
@@ -279,7 +279,7 @@ jobs:
         - get: capi-ci
         - get: cli-ci
         - get: pool-repo
-        - get: 5m
+        - get: five-minutes
           trigger: true
       - task: check-pool-size
         file: capi-ci/ci/bosh-lite/check-pool-size.yml
