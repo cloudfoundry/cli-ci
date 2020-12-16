@@ -99,7 +99,6 @@ configure_pipeline V6 $pipelines_path/cli/pipeline.yml
 configure_pipeline oslo-scan-status $pipelines_path/oslo-scan-status/pipeline.yml
 configure_pipeline concourse $pipelines_path/concourse/pipeline.yml
 configure_pipeline docker-images $pipelines_path/docker-images/pipeline.yml
-configure_workstation_scheduler_pipeline vat-workstation-scheduler $pipelines_path/workstation-scheduler/vat-pipeline.yml
 configure_workstation_scheduler_pipeline cli-workstation-scheduler $pipelines_path/workstation-scheduler/cli-pipeline.yml
 
 configure_infrastructure_pipeline inf-beque beque-pipeline baked-potato
