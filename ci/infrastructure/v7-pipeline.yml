@@ -44,7 +44,7 @@ jobs:
   serial_groups: [((stack-name))]
   build_logs_to_retain: 100
   plan:
-  - aggregate:
+  - in_parallel:
     - get: cf-deployment
       trigger: true
     - get: cf-deployment-concourse-tasks
@@ -144,7 +144,7 @@ jobs:
       BBL_STATE_DIR: ci/infrastructure/((stack-name))
       CLEAN_ALL: true
   ensure:
-    aggregate:
+    in_parallel:
       - put: state
         params:
           repository: updated-bbl-state
@@ -159,7 +159,7 @@ jobs:
   serial_groups: [((stack-name))]
   build_logs_to_retain: 100
   plan:
-  - aggregate:
+  - in_parallel:
     - get: cf-deployment-concourse-tasks
     - get: state
     - put: gcp-bosh-pool
@@ -186,7 +186,7 @@ jobs:
       BBL_STATE_DIR: ci/infrastructure/((stack-name))
       BBL_GCP_SERVICE_ACCOUNT_KEY: ((google-account-creds))
   ensure:
-    aggregate:
+    in_parallel:
     - put: state
       params:
         repository: updated-bbl-state
