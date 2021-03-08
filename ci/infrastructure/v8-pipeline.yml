@@ -147,7 +147,6 @@ jobs:
         enable-v3-deployments-endpoint.yml
         enable-mysql-audit-logging.yml
         use-internal-lookup-for-route-services.yml
-        add-lb-ca-cert.yml
         enable-service-discovery.yml
         increase-route-registration-interval.yml
       VARS_FILES: vars.yml
