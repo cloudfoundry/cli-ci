@@ -6,6 +6,7 @@ cd $Env:ROOT
 echo "Working Directory: $pwd"
 echo "GOPATH:            $Env:GOPATH"
 
+$Env:GOPATH="$pwd\go"
 $Env:PATH="$Env:GOPATH\bin;" + "$Env:PATH"
 $Env:PATH="$pwd;" + "$Env:PATH"
 
