@@ -24,9 +24,9 @@ pushd $Env:GOPATH\src\code.cloudfoundry.org\cli
 	
 	echo "debugging 2"
 	
-	go version
+	$Env:GOPATH\bin\go version
 
-	go get -u github.com/onsi/ginkgo/ginkgo
+	$Env:GOPATH\bin\go get -u github.com/onsi/ginkgo/ginkgo
 
 	ginkgo version
 
