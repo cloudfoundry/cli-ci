@@ -12,6 +12,7 @@ $Env:PATH="$pwd;" + "$Env:PATH"
 
 echo "(2nd time) Working Directory: $pwd"
 echo "(2nd time) GOPATH:            $Env:GOPATH"
+echo "PATH:                         $Env:PATH"
 
 pushd $Env:GOPATH\src\code.cloudfoundry.org\cli
 	set-executionpolicy remotesigned
