@@ -18,7 +18,7 @@ pushd $Env:GOPATH\src\code.cloudfoundry.org\cli
 	
 	echo "debugging 1"
 	
-	which go
+	(Get-Command go).Path
 	
 	echo "debugging 2"
 	
