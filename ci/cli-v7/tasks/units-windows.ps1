@@ -19,13 +19,14 @@ pushd $Env:GOPATH\src\code.cloudfoundry.org\cli
 	
 	echo "debugging 1"
 	
-	(Get-Command go).Path
+	echo "Working Directory: $pwd"
+	echo "GOPATH:            $Env:GOPATH"
 	
 	echo "debugging 2"
 	
-	C:\Go\bin\go.exe version
+	go version
 
-	C:\Go\bin\go.exe get -u github.com/onsi/ginkgo/ginkgo
+	go get -u github.com/onsi/ginkgo/ginkgo
 
 	ginkgo version
 
