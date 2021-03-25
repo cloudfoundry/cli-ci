@@ -16,7 +16,11 @@ echo "(2nd time) GOPATH:            $Env:GOPATH"
 pushd $Env:GOPATH\src\code.cloudfoundry.org\cli
 	set-executionpolicy remotesigned
 	
-	echo "debugging"
+	echo "debugging 1"
+	
+	which go
+	
+	echo "debugging 2"
 	
 	go version
 
