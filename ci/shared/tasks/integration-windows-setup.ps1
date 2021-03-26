@@ -35,6 +35,10 @@ if ((Get-Command "git.exe" -ErrorAction SilentlyContinue) -eq $null) {
   choco install --no-progress -r -y git --force
 }
 
+if ((Get-Command "openssl.exe" -ErrorAction SilentlyContinue) -eq $null) {
+  choco install --no-progress -r -y openssl --force
+}
+
 if ((Get-Command "ginkgo.exe" -ErrorAction SilentlyContinue) -eq $null) {
   go get -v -u github.com/onsi/ginkgo/ginkgo
 }
