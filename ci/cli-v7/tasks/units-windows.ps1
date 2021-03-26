@@ -1,3 +1,6 @@
+$ErrorActionPreference = "Stop";
+trap { $host.SetShouldExit(1) }
+
 echo "PWD: $pwd"
 
 $Env:ROOT="$pwd"
