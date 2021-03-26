@@ -1,6 +1,22 @@
 $ErrorActionPreference = "Stop"
 $Env:CF_DIAL_TIMEOUT=15
 
+if ((Get-Command "7z.exe" -ErrorAction SilentlyContinue) -eq $null) {
+  choco install --no-progress -r -y 7zip --force
+}
+
+if ((Get-Command "git.exe" -ErrorAction SilentlyContinue) -eq $null) {
+  choco install --no-progress -r -y git --force
+}
+
+if ((Get-Command "openssl.exe" -ErrorAction SilentlyContinue) -eq $null) {
+  choco install --no-progress -r -y openssl --force
+}
+
+if ((Get-Command "ginkgo.exe" -ErrorAction SilentlyContinue) -eq $null) {
+  go get -v -u github.com/onsi/ginkgo/ginkgo
+}
+
 $Env:ROOT="$pwd"
 Import-Module C:\ProgramData\chocolatey\helpers\chocolateyProfile.psm1
 refreshenv
@@ -26,22 +42,6 @@ $CF_INT_NAME = $DOMAIN.split(".")[0]
 Import-Certificate -Filepath "$pwd\cf-credentials\cert_dir\$CF_INT_NAME.lb.cert" -CertStoreLocation "cert:\LocalMachine\root"
 
 Import-Certificate -Filepath "$pwd\cf-credentials\cert_dir\$CF_INT_NAME.router.ca" -CertStoreLocation "cert:\LocalMachine\root"
-
-if ((Get-Command "7z.exe" -ErrorAction SilentlyContinue) -eq $null) {
-  choco install --no-progress -r -y 7zip --force
-}
-
-if ((Get-Command "git.exe" -ErrorAction SilentlyContinue) -eq $null) {
-  choco install --no-progress -r -y git --force
-}
-
-if ((Get-Command "openssl.exe" -ErrorAction SilentlyContinue) -eq $null) {
-  choco install --no-progress -r -y openssl --force
-}
-
-if ((Get-Command "ginkgo.exe" -ErrorAction SilentlyContinue) -eq $null) {
-  go get -v -u github.com/onsi/ginkgo/ginkgo
-}
 
 pushd $pwd\cf-cli-binaries
 	7z e cf-cli-binaries.tgz -y
