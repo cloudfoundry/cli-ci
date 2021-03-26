@@ -27,6 +27,14 @@ Import-Certificate -Filepath "$pwd\cf-credentials\cert_dir\$CF_INT_NAME.lb.cert"
 
 Import-Certificate -Filepath "$pwd\cf-credentials\cert_dir\$CF_INT_NAME.router.ca" -CertStoreLocation "cert:\LocalMachine\root"
 
+if ((Get-Command "7z.exe" -ErrorAction SilentlyContinue) -eq $null) {
+  choco install --no-progress -r -y 7zip --force
+}
+
+if ((Get-Command "git.exe" -ErrorAction SilentlyContinue) -eq $null) {
+  choco install --no-progress -r -y git --force
+}
+
 if ((Get-Command "ginkgo.exe" -ErrorAction SilentlyContinue) -eq $null) {
   go get -v -u github.com/onsi/ginkgo/ginkgo
 }
