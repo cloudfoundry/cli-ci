@@ -1,6 +1,9 @@
 $ErrorActionPreference = "Stop"
 
-. "$PSScriptRoot\integration-windows-setup.ps1"
+. "$PSScriptRoot\..\..\shared\tasks\integration-windows-setup.ps1"
+
+$Env:CF_INT_CUSTOM_CLIENT_ID="cf-custom"
+$Env:CF_INT_CUSTOM_CLIENT_SECRET=(Get-Content $pwd\cf-credentials\uaa-custom-client-secret -Raw).trim()
 
 echo "CF_INT_CLIENT_CREDENTIALS_TEST_MODE: $Env:CF_INT_CLIENT_CREDENTIALS_TEST_MODE"
 
