@@ -2,7 +2,6 @@ groups:
 - name: workers
   jobs:
   - install-windows-deps-0
-  - install-windows-deps-1
 
 jobs:
 - name: install-windows-deps-0
@@ -37,41 +36,6 @@ jobs:
       params: {PACKAGE: innosetup}
     - task: install-make-windows-worker-0
       tags: ["windows-worker-0"]
-      file: ci/tasks/choco-install.yml
-      params: {PACKAGE: make}
-
-- name: install-windows-deps-1
-  serial: true
-  plan:
-  - in_parallel:
-    - get: golang-windows
-    - get: ci
-  - do:
-    - task: install-go-windows-worker-1
-      tags: ["windows-worker-1"]
-      file: ci/tasks/install-go-windows.yml
-    - task: install-git-windows-worker-1
-      tags: ["windows-worker-1"]
-      file: ci/tasks/choco-install.yml
-      params: {PACKAGE: git}
-    - task: install-zip-windows-worker-1
-      tags: ["windows-worker-1"]
-      file: ci/tasks/choco-install.yml
-      params: {PACKAGE: 7zip}
-    - task: install-openssl-windows-worker-1
-      tags: ["windows-worker-1"]
-      file: ci/tasks/choco-install.yml
-      params: {PACKAGE: openssl}
-    - task: install-sed-windows-worker-1
-      tags: ["windows-worker-1"]
-      file: ci/tasks/choco-install.yml
-      params: {PACKAGE: sed}
-    - task: install-innosetup-windows-worker-1
-      tags: ["windows-worker-1"]
-      file: ci/tasks/choco-install.yml
-      params: {PACKAGE: innosetup}
-    - task: install-make-windows-worker1
-      tags: ["windows-worker-1"]
       file: ci/tasks/choco-install.yml
       params: {PACKAGE: make}
 

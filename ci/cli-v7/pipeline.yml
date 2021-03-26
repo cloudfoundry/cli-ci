@@ -290,7 +290,6 @@ jobs:
           text: *slack_notification_text
     - task: units-windows
       timeout: 3h
-      tags: [cli-windows-int]
       file: cli-ci/ci/cli-v7/tasks/units-windows.yml
       on_failure:
         put: slack-alert
@@ -546,7 +545,6 @@ jobs:
       file: cli-ci/ci/cli-v7/tasks/cleanup-integration.yml
     - task: integration
       timeout: 3h
-      tags: [cli-windows-int]
       file: cli-ci/ci/cli-v7/tasks/integration-windows.yml
       params:
         <<: *integration_params
@@ -575,7 +573,6 @@ jobs:
       file: cli-ci/ci/cli-v7/tasks/cleanup-integration.yml
     - task: integration
       timeout: 3h
-      tags: [cli-windows-int]
       file: cli-ci/ci/cli-v7/tasks/integration-windows.yml
       params:
         <<: *integration_params
@@ -707,7 +704,6 @@ jobs:
             $ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
     - task: windows
       timeout: 3h
-      tags: [cli-windows-int]
       file: cli-ci/ci/cli-v7/tasks/create-edge-installers-windows.yml
       on_failure:
         put: slack-alert

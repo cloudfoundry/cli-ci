@@ -106,7 +106,6 @@ jobs:
           text: *slack_notification_text
     - task: units-windows
       timeout: 3h
-      tags: [cli-windows-int]
       file: cli-ci/ci/cli-v7/tasks/units-windows.yml
       on_failure:
         put: slack-alert
@@ -202,7 +201,6 @@ jobs:
       file: cli-ci/ci/cli-v8/tasks/cleanup-integration.yml
     - task: integration
       timeout: 3h
-      tags: [cli-windows-int]
       file: cli-ci/ci/cli-v8/tasks/integration-windows.yml
       params:
         <<: *integration_params
@@ -258,7 +256,6 @@ jobs:
       file: cli-ci/ci/cli-v8/tasks/cleanup-integration.yml
     - task: integration
       timeout: 3h
-      tags: [cli-windows-int]
       file: cli-ci/ci/cli-v8/tasks/integration-windows.yml
       params:
         <<: *integration_params
