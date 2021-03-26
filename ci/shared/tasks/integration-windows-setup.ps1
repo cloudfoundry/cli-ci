@@ -6,7 +6,10 @@ Import-Module C:\ProgramData\chocolatey\helpers\chocolateyProfile.psm1
 refreshenv
 cd $Env:ROOT
 
-$Env:GOPATH="$pwd\go"
+$null = New-Item -ItemType Directory -Force -Path $Env:TEMP
+
+$Env:GOPATH="$Env:ROOT\go"
+
 $Env:PATH="C:\Go\bin;" + "$Env:PATH"
 $Env:PATH="$Env:GOPATH\bin;" + "$Env:PATH"
 $Env:PATH="C:\Program Files\GnuWin32\bin;" + "$Env:PATH"
@@ -23,6 +26,10 @@ $CF_INT_NAME = $DOMAIN.split(".")[0]
 Import-Certificate -Filepath "$pwd\cf-credentials\cert_dir\$CF_INT_NAME.lb.cert" -CertStoreLocation "cert:\LocalMachine\root"
 
 Import-Certificate -Filepath "$pwd\cf-credentials\cert_dir\$CF_INT_NAME.router.ca" -CertStoreLocation "cert:\LocalMachine\root"
+
+if ((Get-Command "ginkgo.exe" -ErrorAction SilentlyContinue) -eq $null) {
+  go get -v -u github.com/onsi/ginkgo/ginkgo
+}
 
 pushd $pwd\cf-cli-binaries
 	7z e cf-cli-binaries.tgz -y
