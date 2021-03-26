@@ -5,7 +5,7 @@ Import-Module C:\ProgramData\chocolatey\helpers\chocolateyProfile.psm1
 refreshenv
 cd $Env:ROOT
 
-$Env:GOPATH=C:\Go
+$Env:GOPATH="C:\Go"
 
 $Env:PATH="$Env:GOPATH\bin;" + "$Env:PATH"
 $Env:PATH="$pwd;" + "$Env:PATH"
