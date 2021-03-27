@@ -10,4 +10,6 @@ outputs:
 - name: winstallers
 
 run:
-  path: cli-ci/ci/cli-v7/tasks/create-installers-windows.bat
+  path: powershell
+  args:
+  - cli-ci/ci/cli-v7/tasks/create-installers-windows.ps1
