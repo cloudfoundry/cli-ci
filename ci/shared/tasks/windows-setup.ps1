@@ -49,8 +49,8 @@ Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
 refreshenv
 cd $Env:ROOT
 
-#$Env:GOPATH="$Env:ROOT\go"
-$Env:GOPATH="C:\Windows\system32\config\systemprofile\go"
+$Env:GOPATH="$Env:ROOT\go"
+#$Env:GOPATH="C:\Windows\system32\config\systemprofile\go"
 
 $Env:PATH="C:\Go\bin;" + "$Env:PATH"
 $Env:PATH="$Env:GOPATH\bin;" + "$Env:PATH"
