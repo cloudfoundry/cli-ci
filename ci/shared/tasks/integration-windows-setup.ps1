@@ -1,7 +1,7 @@
 $ErrorActionPreference = "Stop"
 trap { $host.SetShouldExit(1) }
 
-. "$PSScriptRoot\integration-windows-setup.ps1"
+. "$PSScriptRoot\windows-setup.ps1"
 
 $DOMAIN=(Get-Content $pwd\bosh-lock\name -Raw).trim()
 $Env:CF_INT_PASSWORD=(Get-Content $pwd\cf-credentials\cf-password -Raw).trim()
