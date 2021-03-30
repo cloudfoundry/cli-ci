@@ -7,4 +7,6 @@ inputs:
 - name: cli-ci
 
 run:
-  path: cli-ci/ci/cli/tasks/units-windows.ps1
+  path: powershell
+  args:
+    - cli-ci/ci/cli/tasks/units-windows.ps1
