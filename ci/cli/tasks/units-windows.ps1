@@ -13,6 +13,5 @@ pushd $Env:ROOT\go\src\code.cloudfoundry.org\cli
   -randomizeAllSpecs `
   -randomizeSuites `
   -skipPackage integration `
-  -flakeAttempts=2 `
-  -tags="V7"
+  -flakeAttempts=2
 popd
