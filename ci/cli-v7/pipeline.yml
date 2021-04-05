@@ -251,6 +251,11 @@ resources:
   source:
     repository: i386/ubuntu
 
+- name: fedora-image
+  type: registry-image
+  source:
+    repository: fedora
+
 jobs:
 - name: units
   serial: true
@@ -781,6 +786,7 @@ jobs:
       passed: [create-installers]
     - get: ubuntu-64-image
     - get: ubuntu-32-image
+    - get: fedora-image
   - in_parallel:
     - task: deb-64
       timeout: 3h
@@ -802,6 +808,7 @@ jobs:
         ARCH: i686
     - task: rpm-64
       timeout: 3h
+      image: fedora-image
       file: cli-ci/ci/shared/tasks/integration-rpm-installers.yml
       input_mapping:
         installer: edge-redhat-installer-64
@@ -810,6 +817,7 @@ jobs:
         ARCH: x86-64
     - task: rpm-32
       timeout: 3h
+      image: fedora-image
       file: cli-ci/ci/shared/tasks/integration-rpm-installers.yml
       input_mapping:
         installer: edge-redhat-installer-32
