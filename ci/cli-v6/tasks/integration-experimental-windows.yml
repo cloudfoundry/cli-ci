@@ -5,21 +5,20 @@ inputs:
 - name: cli
   path: go/src/code.cloudfoundry.org/cli
 - name: cf-cli-binaries
-- name: cli-ci
 - name: bosh-lock
+- name: cli-ci
 - name: cf-credentials
 
 params:
-  CF_CLI_EXPERIMENTAL: false
-  CF_INT_CLIENT_CREDENTIALS_TEST_MODE: false
   CF_INT_CLIENT_ID:
   CF_INT_CLIENT_SECRET:
+  CF_INT_CLIENT_CREDENTIALS_TEST_MODE: false
   CF_INT_DOCKER_IMAGE:
   CF_INT_DOCKER_USERNAME:
   CF_INT_DOCKER_PASSWORD:
-  CF_INT_IGNORE_API_VERSION_CHECK:
+  CF_INT_IGNORE_API_VERSION_CHECK: false
 
 run:
   path: powershell
   args:
-  - cli-ci/ci/cli/tasks/integration-windows.ps1
+  - cli-ci/ci/cli-v6/tasks/integration-experimental-windows.ps1

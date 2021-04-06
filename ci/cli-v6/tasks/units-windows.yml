@@ -9,4 +9,4 @@ inputs:
 run:
   path: powershell
   args:
-    - cli-ci/ci/cli/tasks/units-windows.ps1
+    - cli-ci/ci/cli-v6/tasks/units-windows.ps1

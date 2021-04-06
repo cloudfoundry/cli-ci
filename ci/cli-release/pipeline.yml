@@ -312,7 +312,7 @@ jobs:
         params:
           TARGET_V7: false
       - task: create-windows-installers
-        file: cli-ci/ci/cli/tasks/create-installers-windows.yml
+        file: cli-ci/ci/cli-v6/tasks/create-installers-windows.yml
         params:
           TARGET_V7: false
       - task: sign-and-repackage-installers-and-binaries

@@ -230,7 +230,7 @@ jobs:
             $ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME - (Viewable internally only)
     - task: units-linux
       timeout: 3h
-      file: cli-ci/ci/cli/tasks/units-linux.yml
+      file: cli-ci/ci/cli-v6/tasks/units-linux.yml
       on_failure:
         put: slack-alert
         params:
@@ -238,7 +238,7 @@ jobs:
           text: *slack_notification_text
     - task: units-osx
       timeout: 3h
-      file: cli-ci/ci/cli/tasks/units-osx.yml
+      file: cli-ci/ci/cli-v6/tasks/units-osx.yml
       on_failure:
         put: slack-alert
         params:
@@ -246,7 +246,7 @@ jobs:
           text: *slack_notification_text
     - task: units-windows
       timeout: 3h
-      file: cli-ci/ci/cli/tasks/units-windows.yml
+      file: cli-ci/ci/cli-v6/tasks/units-windows.yml
       on_failure:
         put: slack-alert
         params:
@@ -264,7 +264,7 @@ jobs:
     - get: cli-i18n
   - task: build-i18n
     timeout: 3h
-    file: cli-ci/ci/cli/tasks/generate-i18n-resources.yml
+    file: cli-ci/ci/cli-v6/tasks/generate-i18n-resources.yml
     on_failure:
       put: slack-alert
       params:
@@ -273,7 +273,7 @@ jobs:
   - in_parallel:
     - task: build
       timeout: 3h
-      file: cli-ci/ci/cli/tasks/build-binaries.yml
+      file: cli-ci/ci/cli-v6/tasks/build-binaries.yml
       params:
         TARGET_GO_VERSION: go1.13.15
       on_failure:
@@ -283,7 +283,7 @@ jobs:
           text: *slack_notification_text
     - task: build-osx
       timeout: 3h
-      file: cli-ci/ci/cli/tasks/build-osx-binary.yml
+      file: cli-ci/ci/cli-v6/tasks/build-osx-binary.yml
       params:
         TARGET_GO_VERSION: go1.13.15
       on_failure:
@@ -293,7 +293,7 @@ jobs:
           text: *slack_notification_text
   - task: combine-binaries
     timeout: 3h
-    file: cli-ci/ci/cli/tasks/combine-binaries.yml
+    file: cli-ci/ci/cli-v6/tasks/combine-binaries.yml
   - put: cf-cli-binaries
     params:
       file: compiled/cf-cli-binaries.tgz
@@ -317,10 +317,10 @@ jobs:
   - do:
     - task: cleanup-integration
       timeout: 3h
-      file: cli-ci/ci/cli/tasks/cleanup-integration.yml
+      file: cli-ci/ci/cli-v6/tasks/cleanup-integration.yml
     - task: integration
       timeout: 3h
-      file: cli-ci/ci/cli/tasks/integration-linux.yml
+      file: cli-ci/ci/cli-v6/tasks/integration-linux.yml
       on_failure:
         put: slack-alert
         params:
@@ -328,7 +328,7 @@ jobs:
           text: *slack_notification_text
       ensure:
         task: cleanup-integration
-        file: cli-ci/ci/cli/tasks/cleanup-integration.yml
+        file: cli-ci/ci/cli-v6/tasks/cleanup-integration.yml
       params: &integration_params
         CF_INT_CLIENT_ID: 'potato-face'
         CF_INT_CLIENT_SECRET: ((client-secret))
@@ -348,10 +348,10 @@ jobs:
   - do:
     - task: cleanup-integration
       timeout: 3h
-      file: cli-ci/ci/cli/tasks/cleanup-integration.yml
+      file: cli-ci/ci/cli-v6/tasks/cleanup-integration.yml
     - task: integration
       timeout: 3h
-      file: cli-ci/ci/cli/tasks/integration-linux.yml
+      file: cli-ci/ci/cli-v6/tasks/integration-linux.yml
       on_failure:
         put: slack-alert
         params:
@@ -359,7 +359,7 @@ jobs:
           text: *slack_notification_text
       ensure:
         task: cleanup-integration
-        file: cli-ci/ci/cli/tasks/cleanup-integration.yml
+        file: cli-ci/ci/cli-v6/tasks/cleanup-integration.yml
       params:
         <<: *integration_params
         CF_INT_CLIENT_CREDENTIALS_TEST_MODE: true
@@ -375,10 +375,10 @@ jobs:
   - do:
     - task: cleanup-integration
       timeout: 3h
-      file: cli-ci/ci/cli/tasks/cleanup-integration.yml
+      file: cli-ci/ci/cli-v6/tasks/cleanup-integration.yml
     - task: integration
       timeout: 3h
-      file: cli-ci/ci/cli/tasks/integration-windows.yml
+      file: cli-ci/ci/cli-v6/tasks/integration-windows.yml
       params:
         <<: *integration_params
       input_mapping:
@@ -390,7 +390,7 @@ jobs:
           text: *slack_notification_text
       ensure:
         task: cleanup-integration
-        file: cli-ci/ci/cli/tasks/cleanup-integration.yml
+        file: cli-ci/ci/cli-v6/tasks/cleanup-integration.yml
   ensure:
     put: gcp-bosh-pool
     params:
@@ -403,10 +403,10 @@ jobs:
   - do:
     - task: cleanup-integration
       timeout: 3h
-      file: cli-ci/ci/cli/tasks/cleanup-integration.yml
+      file: cli-ci/ci/cli-v6/tasks/cleanup-integration.yml
     - task: integration
       timeout: 3h
-      file: cli-ci/ci/cli/tasks/integration-windows.yml
+      file: cli-ci/ci/cli-v6/tasks/integration-windows.yml
       params:
         <<: *integration_params
         CF_INT_CLIENT_CREDENTIALS_TEST_MODE: true
@@ -419,7 +419,7 @@ jobs:
           text: *slack_notification_text
       ensure:
         task: cleanup-integration
-        file: cli-ci/ci/cli/tasks/cleanup-integration.yml
+        file: cli-ci/ci/cli-v6/tasks/cleanup-integration.yml
   ensure:
     put: gcp-bosh-pool
     params:
@@ -432,10 +432,10 @@ jobs:
   - do:
     - task: cleanup-integration
       timeout: 3h
-      file: cli-ci/ci/cli/tasks/cleanup-integration.yml
+      file: cli-ci/ci/cli-v6/tasks/cleanup-integration.yml
     - task: integration-windows
       timeout: 3h
-      file: cli-ci/ci/cli/tasks/integration-experimental-windows.yml
+      file: cli-ci/ci/cli-v6/tasks/integration-experimental-windows.yml
       params:
         <<: *integration_params
       input_mapping:
@@ -447,10 +447,10 @@ jobs:
           text: *slack_notification_text
       ensure:
         task: cleanup-integration
-        file: cli-ci/ci/cli/tasks/cleanup-integration.yml
+        file: cli-ci/ci/cli-v6/tasks/cleanup-integration.yml
     - task: integration-linux
       timeout: 3h
-      file: cli-ci/ci/cli/tasks/integration-experimental-linux.yml
+      file: cli-ci/ci/cli-v6/tasks/integration-experimental-linux.yml
       params:
         <<: *integration_params
       on_failure:
@@ -460,7 +460,7 @@ jobs:
           text: *slack_notification_text
       ensure:
         task: cleanup-integration
-        file: cli-ci/ci/cli/tasks/cleanup-integration.yml
+        file: cli-ci/ci/cli-v6/tasks/cleanup-integration.yml
   ensure:
     put: gcp-bosh-pool
     params:
@@ -473,10 +473,10 @@ jobs:
   - do:
     - task: cleanup-integration
       timeout: 3h
-      file: cli-ci/ci/cli/tasks/cleanup-integration.yml
+      file: cli-ci/ci/cli-v6/tasks/cleanup-integration.yml
     - task: integration-windows
       timeout: 3h
-      file: cli-ci/ci/cli/tasks/integration-experimental-windows.yml
+      file: cli-ci/ci/cli-v6/tasks/integration-experimental-windows.yml
       params:
         <<: *integration_params
         CF_INT_CLIENT_CREDENTIALS_TEST_MODE: true
@@ -489,10 +489,10 @@ jobs:
           text: *slack_notification_text
       ensure:
         task: cleanup-integration
-        file: cli-ci/ci/cli/tasks/cleanup-integration.yml
+        file: cli-ci/ci/cli-v6/tasks/cleanup-integration.yml
     - task: integration-linux
       timeout: 3h
-      file: cli-ci/ci/cli/tasks/integration-experimental-linux.yml
+      file: cli-ci/ci/cli-v6/tasks/integration-experimental-linux.yml
       params:
         <<: *integration_params
         CF_INT_CLIENT_CREDENTIALS_TEST_MODE: true
@@ -503,7 +503,7 @@ jobs:
           text: *slack_notification_text
       ensure:
         task: cleanup-integration
-        file: cli-ci/ci/cli/tasks/cleanup-integration.yml
+        file: cli-ci/ci/cli-v6/tasks/cleanup-integration.yml
   ensure:
     put: gcp-bosh-pool
     params:
@@ -528,10 +528,10 @@ jobs:
   - do:
     - task: cleanup-integration
       timeout: 3h
-      file: cli-ci/ci/cli/tasks/cleanup-integration.yml
+      file: cli-ci/ci/cli-v6/tasks/cleanup-integration.yml
     - task: integration
       timeout: 3h
-      file: cli-ci/ci/cli/tasks/integration-linux.yml
+      file: cli-ci/ci/cli-v6/tasks/integration-linux.yml
       params:
         <<: *integration_params
         NODES: 12
@@ -542,7 +542,7 @@ jobs:
           text: *slack_notification_text
       ensure:
         task: cleanup-integration
-        file: cli-ci/ci/cli/tasks/cleanup-integration.yml
+        file: cli-ci/ci/cli-v6/tasks/cleanup-integration.yml
   ensure:
     put: legacy-gcp-bosh-pool
     params:
@@ -555,10 +555,10 @@ jobs:
   - do:
     - task: cleanup-integration
       timeout: 3h
-      file: cli-ci/ci/cli/tasks/cleanup-integration.yml
+      file: cli-ci/ci/cli-v6/tasks/cleanup-integration.yml
     - task: integration
       timeout: 3h
-      file: cli-ci/ci/cli/tasks/integration-linux.yml
+      file: cli-ci/ci/cli-v6/tasks/integration-linux.yml
       params:
         <<: *integration_params
         NODES: 12
@@ -570,7 +570,7 @@ jobs:
           text: *slack_notification_text
       ensure:
         task: cleanup-integration
-        file: cli-ci/ci/cli/tasks/cleanup-integration.yml
+        file: cli-ci/ci/cli-v6/tasks/cleanup-integration.yml
   ensure:
     put: legacy-gcp-bosh-pool
     params:
@@ -604,7 +604,7 @@ jobs:
     - get: cli-ci
   - task: extract-binaries
     timeout: 3h
-    file: cli-ci/ci/cli/tasks/extract-binaries.yml
+    file: cli-ci/ci/cli-v6/tasks/extract-binaries.yml
     on_failure:
       put: slack-alert
       params:
@@ -613,7 +613,7 @@ jobs:
   - in_parallel:
     - task: unix
       timeout: 3h
-      file: cli-ci/ci/cli/tasks/create-installers.yml
+      file: cli-ci/ci/cli-v6/tasks/create-installers.yml
       on_failure:
         put: slack-alert
         params:
@@ -621,7 +621,7 @@ jobs:
           text: "create unix installers failed :("
     - task: windows
       timeout: 3h
-      file: cli-ci/ci/cli/tasks/create-installers-windows.yml
+      file: cli-ci/ci/cli-v6/tasks/create-installers-windows.yml
       on_failure:
         put: slack-alert
         params:
@@ -629,7 +629,7 @@ jobs:
           text: "create windows installer failed :("
   - task: package-binaries
     timeout: 3h
-    file: cli-ci/ci/cli/tasks/package-binaries.yml
+    file: cli-ci/ci/cli-v6/tasks/package-binaries.yml
     on_failure:
       put: slack-alert
       params:
@@ -774,10 +774,10 @@ jobs:
   - do:
     - task: cleanup-integration
       timeout: 3h
-      file: cli-ci/ci/cli/tasks/cleanup-integration.yml
+      file: cli-ci/ci/cli-v6/tasks/cleanup-integration.yml
     - task: config
       timeout: 3h
-      file: cli-ci/ci/cli/tasks/cats-config.yml
+      file: cli-ci/ci/cli-v6/tasks/cats-config.yml
       params:
         INCLUDE_V3: true
         BROKER_START_TIMEOUT: 330
@@ -786,7 +786,7 @@ jobs:
         LONG_CURL_TIMEOUT: 210
     - task: extract-linux-binary
       timeout: 3h
-      file: cli-ci/ci/cli/tasks/extract-linux-binary.yml
+      file: cli-ci/ci/cli-v6/tasks/extract-linux-binary.yml
     - task: run-tests
       timeout: 3h
       file: cf-deployment-concourse-tasks/run-cats-with-provided-cli/task.yml

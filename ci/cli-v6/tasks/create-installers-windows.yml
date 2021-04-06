@@ -12,4 +12,4 @@ params:
   TARGET_V7:
 
 run:
-  path: cli-ci/ci/cli/tasks/create-installers-windows.bat
+  path: cli-ci/ci/cli-v6/tasks/create-installers-windows.bat
