@@ -95,7 +95,7 @@ lpass sync
 
 pipelines_path=$(cd $(dirname $0)/.. && pwd)
 
-configure_pipeline v6 $pipelines_path/cli/pipeline.yml
+configure_pipeline v6 $pipelines_path/cli-v6/pipeline.yml
 configure_pipeline oslo-scan-status $pipelines_path/oslo-scan-status/pipeline.yml
 configure_pipeline concourse $pipelines_path/concourse/pipeline.yml
 configure_pipeline docker-images $pipelines_path/docker-images/pipeline.yml
