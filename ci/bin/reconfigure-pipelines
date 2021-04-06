@@ -104,9 +104,9 @@ configure_workstation_scheduler_pipeline cli-workstation-scheduler $pipelines_pa
 configure_infrastructure_pipeline inf-beque beque-pipeline baked-potato
 configure_infrastructure_pipeline inf-burmaclub burmaclub-pipeline baked-potato
 configure_infrastructure_pipeline inf-hardknox hardknox-pipeline baked-potato
-configure_infrastructure_pipeline inf-kinkhao kinkhao-pipeline baked-potato
+configure_infrastructure_pipeline inf-kinkhao kinkhao-pipeline baked-potato "$pipelines_path/infrastructure/pipeline.yml" "v13.23.0"
 configure_infrastructure_pipeline inf-lovingcup lovingcup-pipeline baked-potato
-configure_infrastructure_pipeline inf-starbelly starbelly-pipeline baked-potato
+configure_infrastructure_pipeline inf-starbelly starbelly-pipeline baked-potato "$pipelines_path/infrastructure/pipeline.yml" "v13.23.0"
 configure_infrastructure_pipeline inf-tartine tartine-pipeline baked-potato
 configure_infrastructure_pipeline inf-tropisueno tropisueno-pipeline baked-potato
 
