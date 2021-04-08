@@ -63,7 +63,7 @@ run:
       "include_isolation_segments": true,
       "isolation_segment_name": "persistent_isolation_segment",
       "include_private_docker_registry": false,
-      "include_route_services": true,
+      "include_route_services": false,
       "include_routing": true,
       "include_routing_isolation_segments": false,
       "include_security_groups": true,
