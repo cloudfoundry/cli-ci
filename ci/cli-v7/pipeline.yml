@@ -57,7 +57,7 @@ resources:
     branch: main
     uri: https://github.com/cloudfoundry/cf-deployment-concourse-tasks.git
 
-- name: cf-acceptance-tests-v7
+- name: cf-acceptance-tests
   type: git
   icon: github-box
   source:
@@ -837,7 +837,7 @@ jobs:
       - integration-windows-client-creds
       - integration-legacy
       - integration-legacy-client-creds
-    - get: cf-acceptance-tests-v7
+    - get: cf-acceptance-tests
       trigger: true
     - get: cf-deployment-concourse-tasks
     - get: cf-cli-binaries
@@ -876,7 +876,7 @@ jobs:
       timeout: 3h
       file: cf-deployment-concourse-tasks/run-cats-with-provided-cli/task.yml
       input_mapping:
-        cf-acceptance-tests: cf-acceptance-tests-v7
+        cf-acceptance-tests: cf-acceptance-tests
         integration-config: cats-config
         cf-cli: linux-cf-binary
       params:
