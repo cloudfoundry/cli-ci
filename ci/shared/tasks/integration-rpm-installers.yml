@@ -29,11 +29,6 @@ run:
 
     rpm -i "installer/cf${SUFFIX}-cli-installer_edge_${ARCH}.rpm"
 
-    if ! [ -x "$(command -v cf)" ]; then
-      echo 'Error: cf is not installed.' >&2
-      exit 1
-    fi
-
     EXPECTED_CLI_VERSION="$(cat cli/BUILD_VERSION)"
     CF_VERSION="$(cf -v)"
 
