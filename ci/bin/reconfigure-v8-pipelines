@@ -31,8 +31,7 @@ configure_pipeline() {
     -v bosh-lite-dns-zone-name=bosh-lite-pool \
     -v bosh-lite-system-domain-suffix=lite.cli.fun
 }
-
-configure_v8_infrastructure_pipeline() {
+configure_v8_infrastructure_minimum_capi_pipeline() {
   local name=$1
   local creds=$2
   local pool=$3
@@ -42,6 +41,21 @@ configure_v8_infrastructure_pipeline() {
   echo $1
   echo $2
   echo $3
+
+  fly -t $FLY_TARGET_NAME set-pipeline \
+    -p $name \
+    -c $pipelines_path/infrastructure/v8-pipeline-minimum-supported-capi.yml \
+    -l <(lpass show "Concourse Credentials" --notes) \
+    -l <(lpass show "$creds" --notes) \
+    -v pool-name=$pool
+}
+
+configure_v8_infrastructure_pipeline() {
+  local name=$1
+  local creds=$2
+  local pool=$3
+
+  printf "configuring the $name pipeline...\n"
 
   fly -t $FLY_TARGET_NAME set-pipeline \
     -p $name \
@@ -66,5 +80,5 @@ configure_v8_infrastructure_pipeline inf-arizmendi arizmendi-pipeline v8-pool
 configure_v8_infrastructure_pipeline inf-cliffhouse cliffhouse-pipeline v8-pool
 configure_v8_infrastructure_pipeline inf-garaje garaje-pipeline v8-pool
 configure_v8_infrastructure_pipeline inf-montesacro montesacro-pipeline v8-pool
-configure_v8_infrastructure_pipeline inf-chipotle chipotle-pipeline v8-pool
+configure_v8_infrastructure_pipeline inf-chipotle chipotle-pipeline v8-pool-minimum-capi
 configure_v8_infrastructure_pipeline inf-meowtropolitan meowtropolitan-pipeline v8-pool-v3-capi
