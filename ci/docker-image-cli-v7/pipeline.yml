@@ -13,6 +13,14 @@ resources:
     uri: https://github.com/cloudfoundry/cli-ci
     branch: docker-image-cli
 
+- name: cf-cli-push
+  type: registry-image
+  icon: docker
+  source:
+    repository: cfcli/cf-cli-test
+    username: ((username))
+    password: ((password))
+
 jobs:
 - name: docker-image-cli-v7
   plan:
@@ -46,3 +54,5 @@ jobs:
     file: cli-ci/ci/shared/tasks/test-docker-image.yml
     params:
       VERSION: 7
+  - put: cf-cli-push
+    params: {image: image/image.tar}

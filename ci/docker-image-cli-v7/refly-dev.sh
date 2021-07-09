@@ -19,7 +19,9 @@ configure_pipeline() {
   fly -t ci set-pipeline \
     -p $name \
     -c $pipeline \
-    -l <(lpass show 'Shared-CLI/Release Process/release-pipeline-concourse-credentials-dev.yml' --notes)
+    -l <(lpass show 'Shared-CLI/Release Process/release-pipeline-concourse-credentials-dev.yml' --notes) \
+    --var="username=$(lpass show 'Shared-CLI/CF CLI Dockerhub' --username)" \
+    --var="password=$(lpass show 'Shared-CLI/CF CLI Dockerhub' --password)"
 }
 check_installed lpass
 check_installed fly
