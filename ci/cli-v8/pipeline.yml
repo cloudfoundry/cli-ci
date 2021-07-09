@@ -15,6 +15,14 @@ resources:
     branch: master
     pool: v8-pool
 
+- name: gcp-bosh-pool-minimum-capi
+  type: pool
+  source:
+    uri: git@github.com:cloudfoundry/cli-pools
+    private_key: ((cli-pools-github-private-key))
+    branch: master
+    pool: v8-pool-minimum-capi
+
 - name: cli-ci
   type: git
   source:
@@ -275,6 +283,47 @@ jobs:
     params:
       release: bosh-lock
 
+- name: integration-linux-minimum-capi
+  serial: true
+  plan:
+  - in_parallel: &integration_resources
+    - get: cli
+      passed: [build-binaries]
+    - get: cli-ci
+    - get: cf-cli-binaries
+      passed: [build-binaries]
+      trigger: true
+    - get: vars-store
+    - put: bosh-lock
+      resource: gcp-bosh-pool-minimum-capi
+      params:
+        acquire: true
+  - do:
+    - task: cleanup-integration
+      timeout: 3h
+      file: cli-ci/ci/cli-v8/tasks/cleanup-integration.yml
+    - task: integration
+      timeout: 3h
+      file: cli-ci/ci/cli-v8/tasks/integration-linux.yml
+      on_failure:
+        put: slack-alert
+        params:
+          channel: '#cli-dev-internal'
+          text: *slack_notification_text
+      ensure:
+        task: cleanup-integration
+        file: cli-ci/ci/cli-v8/tasks/cleanup-integration.yml
+      params: &integration_params
+        CF_INT_CLIENT_ID: 'potato-face'
+        CF_INT_CLIENT_SECRET: ((client-secret))
+        CF_INT_DOCKER_IMAGE: ((dockerhub-private-image))
+        CF_INT_DOCKER_USERNAME: ((dockerhub-username))
+        CF_INT_DOCKER_PASSWORD: ((dockerhub-password))
+        CF_INT_IGNORE_API_VERSION_CHECK: false
+  ensure:
+    put: gcp-bosh-pool-minimum-capi
+    params:
+      release: bosh-lock
 - name: cats
   serial: true
   plan:
@@ -285,6 +334,7 @@ jobs:
       - integration-linux-client-creds
       - integration-windows
       - integration-windows-client-creds
+      - integration-linux-minimum-capi
     - get: cf-acceptance-tests-rc
       trigger: true
     - get: cf-deployment-concourse-tasks
@@ -294,6 +344,7 @@ jobs:
       - integration-linux-client-creds
       - integration-windows
       - integration-windows-client-creds
+      - integration-linux-minimum-capi
       trigger: true
     - get: cli-ci
     - get: vars-store
@@ -337,5 +388,72 @@ jobs:
           text: *slack_notification_text
   ensure:
     put: gcp-bosh-pool
+    params:
+      release: bosh-lock
+
+- name: cats-minimum-capi
+  serial: true
+  plan:
+  - in_parallel:
+    - get: cli
+      passed:
+      - integration-linux
+      - integration-linux-client-creds
+      - integration-windows
+      - integration-windows-client-creds
+      - integration-linux-minimum-capi
+    - get: cf-acceptance-tests-rc
+      trigger: true
+    - get: cf-deployment-concourse-tasks
+    - get: cf-cli-binaries
+      passed:
+      - integration-linux
+      - integration-linux-client-creds
+      - integration-windows
+      - integration-windows-client-creds
+      - integration-linux-minimum-capi
+      trigger: true
+    - get: cli-ci
+    - get: vars-store
+    - put: bosh-lock
+      resource: gcp-bosh-pool-minimum-capi
+      timeout: 2h
+      params:
+        acquire: true
+  - do:
+    - task: cleanup-integration
+      timeout: 3h
+      file: cli-ci/ci/cli-v8/tasks/cleanup-integration.yml
+    - task: config
+      timeout: 3h
+      file: cli-ci/ci/cli-v8/tasks/cats-config.yml
+      params:
+        INCLUDE_V3: true
+        BROKER_START_TIMEOUT: 330
+        CF_PUSH_TIMEOUT: 210
+        DEFAULT_TIMEOUT: 60
+        LONG_CURL_TIMEOUT: 210
+    - task: extract-linux-binary
+      timeout: 3h
+      file: cli-ci/ci/cli-v8/tasks/extract-linux-binary.yml
+    - task: run-tests
+      timeout: 3h
+      file: cf-deployment-concourse-tasks/run-cats-with-provided-cli/task.yml
+      input_mapping:
+        cf-acceptance-tests: cf-acceptance-tests-rc
+        integration-config: cats-config
+        cf-cli: linux-cf-binary
+      params:
+        NODES: 16
+        SKIP_REGEXP: "transparently proxies both reserved"
+        REPORTER_CONFIG_FILE_PATH: ""
+        FLAKE_ATTEMPTS: 2
+      on_failure:
+        put: slack-alert
+        params:
+          channel: '#cli-dev-internal'
+          text: *slack_notification_text
+  ensure:
+    put: gcp-bosh-pool-minimum-capi
     params:
       release: bosh-lock
