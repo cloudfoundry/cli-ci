@@ -1,0 +1,48 @@
+---
+resources:
+- name: cli
+  type: git
+  icon: console
+  source:
+    uri: https://github.com/cloudfoundry/cli
+    branch: v7
+
+- name: cli-ci
+  type: git
+  source:
+    uri: https://github.com/cloudfoundry/cli-ci
+    branch: docker-image-cli
+
+jobs:
+- name: docker-image-cli-v7
+  plan:
+  - in_parallel:
+    - get: cli
+  - task: build-image
+    privileged: true
+    config:
+      run:
+        path: "build"
+      platform: linux
+
+      image_resource:
+        type: registry-image
+        source:
+          repository: concourse/oci-build-task
+
+      inputs:
+      - name: cli
+        path: .
+
+      outputs:
+      - name: image
+
+      params:
+        CONTEXT: docker
+        UNPACK_ROOTFS: true
+  - task: test-image
+    image: image
+    config:
+      platform: linux
+      run:
+        path: ls

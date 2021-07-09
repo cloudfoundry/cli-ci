@@ -1,0 +1,13 @@
+platform: linux
+
+inputs:
+- name: cli
+
+
+run:
+  path: bash
+  args:
+  - -c
+  - |
+    set -eux
+    echo "HELLOOOOO"
