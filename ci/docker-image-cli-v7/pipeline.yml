@@ -43,4 +43,6 @@ jobs:
         UNPACK_ROOTFS: true
   - task: test-image
     image: image
-    file: cli-ci/ci/docker-image-cli-v7/test-docker-image.yml
+    file: cli-ci/ci/shared/tasks/test-docker-image.yml
+    params:
+      VERSION: 7
