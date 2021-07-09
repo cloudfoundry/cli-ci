@@ -4,7 +4,7 @@ inputs:
 params:
   VERSION:
 run:
-  path: bash
+  path: sh
   args:
   - -c
   - |
