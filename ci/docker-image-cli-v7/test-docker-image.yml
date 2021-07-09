@@ -1,7 +1,7 @@
 platform: linux
 
 inputs:
-- name: cli
+- name: cli-ci
 
 
 run:

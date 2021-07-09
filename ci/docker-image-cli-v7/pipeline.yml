@@ -18,6 +18,7 @@ jobs:
   plan:
   - in_parallel:
     - get: cli
+    - get: cli-ci
   - task: build-image
     privileged: true
     config:
@@ -42,7 +43,4 @@ jobs:
         UNPACK_ROOTFS: true
   - task: test-image
     image: image
-    config:
-      platform: linux
-      run:
-        path: ls
+    file: cli-ci/ci/docker-image-cli-v7/test-docker-image.yml
