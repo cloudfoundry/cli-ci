@@ -38,11 +38,11 @@ resources:
     private_key: ((cli-pools-github-private-key))
     branch: master
     pool: ((pool-name))
-- name: edge-capi-release
+- name: capi-release-109
   type: s3
   source:
     bucket: capi-releases
-    regexp: capi-(.*)-.*-.*.tgz
+    regexp: capi-(1.109.0)-.*-.*.tgz
 
 jobs:
 - name: deploy
@@ -52,7 +52,7 @@ jobs:
   - in_parallel:
     - get: cf-deployment
       trigger: true
-    - get: edge-capi-release
+    - get: capi-release-109
       trigger: true
     - get: cf-deployment-concourse-tasks
     - get: state
@@ -111,12 +111,11 @@ jobs:
         input2/ci/infrastructure/operations/reduce-async-service-polling.yml
         input2/ci/infrastructure/operations/skip-ssl-override.yml
         input2/ci/infrastructure/operations/uaa-vm_type-override.yml
-        input2/ci/infrastructure/operations/use-latest-capi.yml
   - task: upload-edge-capi
     file: cli-ci/ci/infrastructure/tasks/upload-edge-capi.yml
     input_mapping:
       bbl-state: updated-bbl-state
-      release-tarball: edge-capi-release
+      release-tarball: capi-release-109
     params:
       BBL_STATE_DIR: "ci/infrastructure/((stack-name))"
   - task: deploy-cf
