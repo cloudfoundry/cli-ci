@@ -5,7 +5,7 @@ resources:
   icon: console
   source:
     uri: https://github.com/cloudfoundry/cli
-    branch: v7
+    branch: ((cli-branch))
 
 - name: cli-ci
   type: git
@@ -22,7 +22,7 @@ resources:
     password: ((password))
 
 jobs:
-- name: docker-image-cli-v7
+- name: cf-cli-((cli-version))
   plan:
   - in_parallel:
     - get: cli
@@ -33,19 +33,15 @@ jobs:
       run:
         path: "build"
       platform: linux
-
       image_resource:
         type: registry-image
         source:
           repository: concourse/oci-build-task
-
       inputs:
       - name: cli
         path: .
-
       outputs:
       - name: image
-
       params:
         CONTEXT: docker
         UNPACK_ROOTFS: true
@@ -53,6 +49,19 @@ jobs:
     image: image
     file: cli-ci/ci/shared/tasks/test-docker-image.yml
     params:
-      VERSION: 7
+      VERSION: ((cli-version))
+  - task: get-version
+    image: image
+    config:
+      platform: linux
+      run:
+        path: sh
+        args:
+        - -exec
+        - cf version | grep -E '([0-9]\d*)\.([0-9]\d*)\.([0-9]\d*)' -o >> ./files/tag.txt
+      outputs:
+      - name: files
   - put: cf-cli-push
-    params: {image: image/image.tar}
+    params:
+      image: image/image.tar
+      additional_tags: ./files/tag.txt
