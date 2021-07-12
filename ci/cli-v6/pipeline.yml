@@ -166,14 +166,6 @@ resources:
     branch: master
     pool: baked-potato
 
-- name: legacy-gcp-bosh-pool
-  type: pool
-  source:
-    uri: git@github.com:cloudfoundry/cli-pools
-    private_key: ((cli-pools-github-private-key))
-    branch: master
-    pool: kloesse
-
 - name: cf-cli-tracker
   type: tracker
   source:
@@ -509,73 +501,6 @@ jobs:
     params:
       release: bosh-lock
 
-- name: integration-legacy
-  serial: true
-  plan:
-  - in_parallel: &integration_legacy_resources
-    - get: cli
-      passed: [build-binaries]
-    - get: cf-cli-binaries
-      passed: [build-binaries]
-      trigger: true
-    - get: cli-ci
-    - get: vars-store
-    - put: bosh-lock
-      resource: legacy-gcp-bosh-pool
-      timeout: 2h
-      params:
-        acquire: true
-  - do:
-    - task: cleanup-integration
-      timeout: 3h
-      file: cli-ci/ci/cli-v6/tasks/cleanup-integration.yml
-    - task: integration
-      timeout: 3h
-      file: cli-ci/ci/cli-v6/tasks/integration-linux.yml
-      params:
-        <<: *integration_params
-        NODES: 12
-      on_failure:
-        put: slack-alert
-        params:
-          channel: '#cli-dev-internal'
-          text: *slack_notification_text
-      ensure:
-        task: cleanup-integration
-        file: cli-ci/ci/cli-v6/tasks/cleanup-integration.yml
-  ensure:
-    put: legacy-gcp-bosh-pool
-    params:
-      release: bosh-lock
-
-- name: integration-legacy-client-creds
-  serial: true
-  plan:
-  - in_parallel: *integration_legacy_resources
-  - do:
-    - task: cleanup-integration
-      timeout: 3h
-      file: cli-ci/ci/cli-v6/tasks/cleanup-integration.yml
-    - task: integration
-      timeout: 3h
-      file: cli-ci/ci/cli-v6/tasks/integration-linux.yml
-      params:
-        <<: *integration_params
-        NODES: 12
-        CF_INT_CLIENT_CREDENTIALS_TEST_MODE: true
-      on_failure:
-        put: slack-alert
-        params:
-          channel: '#cli-dev-internal'
-          text: *slack_notification_text
-      ensure:
-        task: cleanup-integration
-        file: cli-ci/ci/cli-v6/tasks/cleanup-integration.yml
-  ensure:
-    put: legacy-gcp-bosh-pool
-    params:
-      release: bosh-lock
-
 - name: create-installers
   serial: true
   plan:
@@ -588,8 +513,6 @@ jobs:
       - integration-windows-client-creds
       - integration-experimental
       - integration-experimental-client-creds
-      - integration-legacy
-      - integration-legacy-client-creds
     - get: cf-cli-binaries
       passed:
       - integration-linux
@@ -598,8 +521,6 @@ jobs:
       - integration-windows-client-creds
       - integration-experimental
       - integration-experimental-client-creds
-      - integration-legacy
-      - integration-legacy-client-creds
       trigger: true
     - get: cli-ci
   - task: extract-binaries
@@ -749,8 +670,6 @@ jobs:
       - integration-windows-client-creds
       - integration-experimental
       - integration-experimental-client-creds
-      - integration-legacy
-      - integration-legacy-client-creds
     - get: cf-acceptance-tests
     - get: cf-deployment-concourse-tasks
     - get: cf-cli-binaries
@@ -761,8 +680,6 @@ jobs:
       - integration-windows-client-creds
       - integration-experimental
       - integration-experimental-client-creds
-      - integration-legacy
-      - integration-legacy-client-creds
       trigger: true
     - get: cli-ci
     - get: vars-store
