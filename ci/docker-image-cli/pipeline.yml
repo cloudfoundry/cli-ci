@@ -1,0 +1,68 @@
+---
+resources:
+- name: cli
+  type: git
+  icon: console
+  source:
+    uri: https://github.com/cloudfoundry/cli
+    branch: ((cli-branch))
+
+- name: cli-ci
+  type: git
+  source:
+    uri: https://github.com/cloudfoundry/cli-ci
+    branch: docker-image-cli
+
+- name: cf-cli-push
+  type: registry-image
+  icon: docker
+  source:
+    repository: cfcli/cf-cli
+    username: ((username))
+    password: ((password))
+
+jobs:
+- name: cf-cli-((cli-version))
+  plan:
+  - in_parallel:
+    - get: cli
+    - get: cli-ci
+  - task: build-image
+    privileged: true
+    config:
+      run:
+        path: "build"
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          repository: concourse/oci-build-task
+      inputs:
+      - name: cli
+        path: .
+      outputs:
+      - name: image
+      params:
+        CONTEXT: docker
+        UNPACK_ROOTFS: true
+    output_mapping: {image: cf-cli-image}
+  - task: test-image
+    image: cf-cli-image
+    file: cli-ci/ci/shared/tasks/test-docker-image.yml
+    params:
+      VERSION: ((cli-version))
+  - task: get-version
+    image: cf-cli-image
+    config:
+      platform: linux
+      run:
+        path: sh
+        args:
+        - -exec
+        - cf version | grep -E '([0-9]\d*)\.([0-9]\d*)\.([0-9]\d*)' -o >> ./files/tag.txt
+      outputs:
+      - name: files
+  - put: cf-cli-push
+    params:
+      image: cf-cli-image/image.tar
+      additional_tags: ./files/tag.txt

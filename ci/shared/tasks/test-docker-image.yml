@@ -1,0 +1,23 @@
+platform: linux
+inputs:
+- name: cli
+params:
+  VERSION:
+run:
+  path: sh
+  args:
+  - -c
+  - |
+      set -eux
+
+      if ! [ -x "$(command -v cf)" ]; then
+        echo 'Error: cf is not installed.' >&2
+        exit 1
+      fi
+
+      CF_VERSION="$(cf -v)"
+
+      if [[ ! "${CF_VERSION}" == *"cf version $VERSION"* ]]; then
+        echo "Error: cli/BUILD_VERSION did not match cf -v"
+        exit 1
+      fi
