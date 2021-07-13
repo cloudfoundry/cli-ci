@@ -45,13 +45,14 @@ jobs:
       params:
         CONTEXT: docker
         UNPACK_ROOTFS: true
+    output_mapping: {image: cf-cli-image}
   - task: test-image
-    image: image
+    image: cf-cli-image
     file: cli-ci/ci/shared/tasks/test-docker-image.yml
     params:
       VERSION: ((cli-version))
   - task: get-version
-    image: image
+    image: cf-cli-image
     config:
       platform: linux
       run:
@@ -63,5 +64,5 @@ jobs:
       - name: files
   - put: cf-cli-push
     params:
-      image: image/image.tar
+      image: cf-cli-image/image.tar
       additional_tags: ./files/tag.txt
