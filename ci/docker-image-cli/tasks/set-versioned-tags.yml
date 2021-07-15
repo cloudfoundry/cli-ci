@@ -15,6 +15,6 @@ run:
     else
       echo "${semver}" > ./files/tag.txt
     fi
-    echo "tags: ${cat ./files/tag.txt}"
+    echo "tags: $(cat ./files/tag.txt)"
 outputs:
 - name: files
