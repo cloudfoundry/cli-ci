@@ -10,7 +10,7 @@ run:
   - |
     semver=$(cf version | grep -E '([0-9]\d*)\.([0-9]\d*)\.([0-9]\d*)' -o)
     major=$(expr substr ${semver} 1 1)
-    if [[ "${major}" ==  "$CURRENT_MAJOR"]]; then
+    if [[ "${major}" ==  "$CURRENT_MAJOR" ]]; then
       echo "latest ${semver}" > ./files/tag.txt
     else
       echo "${semver}" > ./files/tag.txt
