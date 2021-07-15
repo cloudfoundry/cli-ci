@@ -18,6 +18,8 @@ run:
       CF_VERSION="$(cf -v)"
 
       if [[ ! "${CF_VERSION}" == *"cf version $VERSION"* ]]; then
-        echo "Error: cli/BUILD_VERSION did not match cf -v"
+        echo "Error: cf -v did not match expected version"
+        echo "Expected: $VERSION"
+        echo "Got ${CF_VERSION}"
         exit 1
       fi
