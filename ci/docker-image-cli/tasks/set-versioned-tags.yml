@@ -1,0 +1,20 @@
+---
+platform: linux
+
+params:
+  CURRENT_MAJOR:
+run:
+  path: sh
+  args:
+  - -exec
+  - |
+    semver=$(cf version | grep -E '([0-9]\d*)\.([0-9]\d*)\.([0-9]\d*)' -o)
+    major=$(expr substr ${semver} 1 1)
+    if [[ "${major}" ==  "$CURRENT_MAJOR"]]; then
+      echo "latest ${semver}" > ./files/tag.txt
+    else
+      echo "${semver}" > ./files/tag.txt
+    fi
+    echo "tags: ${cat ./files/tag.txt}"
+  outputs:
+  - name: files

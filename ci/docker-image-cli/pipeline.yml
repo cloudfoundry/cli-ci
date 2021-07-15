@@ -11,13 +11,14 @@ resources:
   type: git
   source:
     uri: https://github.com/cloudfoundry/cli-ci
-    branch: docker-image-cli
+    branch: master
 
 - name: cf-cli-push
   type: registry-image
   icon: docker
   source:
     repository: cfcli/cf-cli
+    tag: ((cli-version))
     username: ((username))
     password: ((password))
 
@@ -53,15 +54,9 @@ jobs:
       VERSION: ((cli-version))
   - task: get-version
     image: cf-cli-image
-    config:
-      platform: linux
-      run:
-        path: sh
-        args:
-        - -exec
-        - cf version | grep -E '([0-9]\d*)\.([0-9]\d*)\.([0-9]\d*)' -o >> ./files/tag.txt
-      outputs:
-      - name: files
+    params:
+      CURRENT_MAJOR: ((cli-current-major))
+    file: cli-ci/ci/docker-image-cli/tasks/set-versioned-tags.yml
   - put: cf-cli-push
     params:
       image: cf-cli-image/image.tar
