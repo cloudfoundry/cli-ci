@@ -16,5 +16,5 @@ run:
       echo "${semver}" > ./files/tag.txt
     fi
     echo "tags: ${cat ./files/tag.txt}"
-  outputs:
-  - name: files
+outputs:
+- name: files

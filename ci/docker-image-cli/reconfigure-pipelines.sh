@@ -25,7 +25,7 @@ configure_pipeline() {
     --var="password=$(lpass show 'Shared-CLI/CF CLI Dockerhub' --password)" \
     --var="cli-version=$cli_version" \
     --var="cli-branch=$cli_branch" \
-    --var="cli-current-major='7'"
+    --var="cli-current-major=7"
 }
 check_installed lpass
 check_installed fly
