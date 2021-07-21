@@ -487,7 +487,7 @@ jobs:
       file: cli-ci/ci/cli-v8/tasks/create-installers.yml
     - task: windows
       timeout: 3h
-      file: cli-ci/ci/cli-v7/tasks/create-edge-installers-windows.yml
+      file: cli-ci/ci/cli-v8/tasks/create-edge-installers-windows.yml
   - task: package-binaries
     timeout: 3h
     file: cli-ci/ci/cli-v7/tasks/package-binaries.yml
