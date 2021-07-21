@@ -480,7 +480,7 @@ jobs:
       trigger: true
   - task: extract-binaries
     timeout: 3h
-    file: cli-ci/ci/cli-v7/tasks/extract-binaries.yml
+    file: cli-ci/ci/cli-v8/tasks/extract-binaries.yml
   - in_parallel:
     - task: unix
       timeout: 3h
