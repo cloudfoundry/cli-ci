@@ -1,4 +1,4 @@
-FROM golang:1.13.15
+FROM golang:1.16
 
 RUN go version
 
