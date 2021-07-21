@@ -484,7 +484,7 @@ jobs:
   - in_parallel:
     - task: unix
       timeout: 3h
-      file: cli-ci/ci/cli-v7/tasks/create-installers.yml
+      file: cli-ci/ci/cli-v8/tasks/create-installers.yml
     - task: windows
       timeout: 3h
       file: cli-ci/ci/cli-v7/tasks/create-edge-installers-windows.yml
