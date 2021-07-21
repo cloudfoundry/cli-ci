@@ -490,7 +490,7 @@ jobs:
       file: cli-ci/ci/cli-v8/tasks/create-edge-installers-windows.yml
   - task: package-binaries
     timeout: 3h
-    file: cli-ci/ci/cli-v7/tasks/package-binaries.yml
+    file: cli-ci/ci/cli-v8/tasks/package-binaries.yml
   - in_parallel:
     - put: edge-linux-binary-32
       params:
