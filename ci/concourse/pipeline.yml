@@ -13,30 +13,30 @@ jobs:
   - do:
     - task: install-go-windows-worker-0
       tags: ["windows-worker-0"]
-      file: ci/tasks/install-go-windows.yml
+      file: cli/ci/concourse/tasks/install-go-windows.yml
     - task: install-git-windows-worker-0
       tags: ["windows-worker-0"]
-      file: ci/tasks/choco-install.yml
+      file: cli/ci/concourse/tasks/choco-install.yml
       params: {PACKAGE: git}
     - task: install-zip-windows-worker-0
       tags: ["windows-worker-0"]
-      file: ci/tasks/choco-install.yml
+      file: cli/ci/concourse/tasks/choco-install.yml
       params: {PACKAGE: 7zip}
     - task: install-openssl-windows-worker-0
       tags: ["windows-worker-0"]
-      file: ci/tasks/choco-install.yml
+      file: cli/ci/concourse/tasks/choco-install.yml
       params: {PACKAGE: openssl}
     - task: install-sed-windows-worker-0
       tags: ["windows-worker-0"]
-      file: ci/tasks/choco-install.yml
+      file: cli/ci/concourse/tasks/choco-install.yml
       params: {PACKAGE: sed}
     - task: install-innosetup-windows-worker-0
       tags: ["windows-worker-0"]
-      file: ci/tasks/choco-install.yml
+      file: cli/ci/concourse/tasks/choco-install.yml
       params: {PACKAGE: innosetup}
     - task: install-make-windows-worker-0
       tags: ["windows-worker-0"]
-      file: ci/tasks/choco-install.yml
+      file: cli/ci/concourse/tasks/choco-install.yml
       params: {PACKAGE: make}
 
 resources:
@@ -46,7 +46,7 @@ resources:
   source:
     endpoint: storage.googleapis.com
     bucket: golang
-    regexp: 'go(1\.13\.15)\.windows-amd64\.msi'
+    regexp: 'go(1\.16\.6)\.windows-amd64\.msi'
     # regexp: 'go(\d+\.\d+(\.\d+)?)\.windows-amd64\.msi'
 # ~/workspace/concourse/ci
 - name: ci
