@@ -53,5 +53,5 @@ resources:
   type: git
   icon: &git-icon github
   source:
-    uri: https://github.com/concourse/ci.git
+    uri: https://github.com/cloudfoundry/cli-ci
     branch: master
