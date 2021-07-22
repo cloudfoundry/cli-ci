@@ -3,10 +3,9 @@ platform: windows
 
 inputs:
 - name: cli-ci
-- name: golang-windows
 
 run:
   path: powershell.exe
   args:
   - -File
-  - '.\ci\tasks\scripts\install-go-windows.ps1'
+  - '.\ci\shared\tasks\windows-setup.ps1'
