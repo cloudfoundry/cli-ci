@@ -2,7 +2,7 @@
 platform: windows
 
 inputs:
-- name: ci
+- name: cli-ci
 - name: golang-windows
 
 run:
