@@ -54,9 +54,8 @@ refreshenv
 cd $Env:ROOT
 
 $Env:GOPATH="$Env:ROOT\go"
-#$Env:GOPATH="C:\Windows\system32\config\systemprofile\go"
 
-$Env:PATH="C:\Go\bin;" + "$Env:PATH"
+$Env:PATH="$Env:HOME\go\bin;" + "$Env:PATH"
 $Env:PATH="$Env:GOPATH\bin;" + "$Env:PATH"
 $Env:PATH="$pwd;" + "$Env:PATH"
 
