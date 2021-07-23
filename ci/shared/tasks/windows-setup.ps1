@@ -13,7 +13,7 @@ if ((Get-Command "choco" -ErrorAction SilentlyContinue) -eq $null) {
   iex ($tempvar)
 }
 
-Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
+Import-Module "C:\ProgramData\chocolatey\helpers\chocolateyProfile.psm1"
 refreshenv
 cd $Env:ROOT
 
@@ -45,7 +45,7 @@ if ((Get-Command "make" -ErrorAction SilentlyContinue) -eq $null) {
   choco install --no-progress -r -y make --force
 }
 
-Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
+Import-Module "C:\ProgramData\chocolatey\helpers\chocolateyProfile.psm1"
 refreshenv
 cd $Env:ROOT
 
