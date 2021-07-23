@@ -27,7 +27,7 @@ resources:
   type: git
   source:
     uri: https://github.com/cloudfoundry/cli-ci
-    branch: master
+    branch: v8-pipeline-add-installers
 
 - name: cli
   type: git
