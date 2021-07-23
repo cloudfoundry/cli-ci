@@ -8,4 +8,4 @@ run:
   path: powershell.exe
   args:
   - -File
-  - '.\ci\shared\tasks\windows-setup.ps1'
+  - 'cli-ci\ci\shared\tasks\windows-setup.ps1'

@@ -8,7 +8,6 @@ jobs:
   serial: true
   plan:
   - in_parallel:
-    - get: golang-windows
     - get: cli-ci
   - do:
     - task: install-go-windows-worker-0
