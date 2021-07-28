@@ -70,3 +70,4 @@ configure_v7_infrastructure_pipeline inf-zerozero zerozero-pipeline mashed-potat
 configure_v7_infrastructure_pipeline inf-zuni zuni-pipeline mashed-potato
 configure_v7_infrastructure_pipeline inf-samovar samovar-pipeline hasselback-potato "v13.5.0"
 configure_v7_infrastructure_pipeline inf-ozaoza ozaoza-pipeline hasselback-potato "v13.5.0"
+configure_v7_infrastructure_pipeline inf-mourad mourad-pipeline hasselback-potato "v13.5.0"
