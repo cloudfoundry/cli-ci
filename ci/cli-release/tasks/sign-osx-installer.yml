@@ -5,7 +5,7 @@ params:
   CERT_COMMON_NAME:
   CERT_LOCATION:
   CERT_PASSWORD_LOCATION:
-  TARGET_V7:
+  TARGET_MAJOR_VERSION:
 
 inputs:
 - name: certificates
@@ -22,9 +22,12 @@ run:
   - |
     set -ex
 
-    if [ "$TARGET_V7" == "true" ]; then
+    if [ "$TARGET_MAJOR_VERSION" == "7" ]; then
       VERSION=$(cat cli/BUILD_VERSION)
       SUFFIX="7"
+    elif [ "$TARGET_MAJOR_VERSION" == "8" ]; then
+      VERSION=$(cat cli/BUILD_VERSION)
+      SUFFIX="8"
     else
       VERSION=$(cat cli/BUILD_VERSION)
       SUFFIX=""

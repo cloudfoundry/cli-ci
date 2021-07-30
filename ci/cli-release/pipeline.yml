@@ -18,6 +18,16 @@ resources:
     ignore_paths:
     - ci
 
+- name: cli-v8
+  type: git
+  source:
+    uri: https://github.com/cloudfoundry/cli
+    branch: v8-release
+    tag_filter: "v8*"
+    ignore_paths:
+    - ci
+
+
 - name: cli-ci
   type: git
   source:
@@ -51,6 +61,17 @@ resources:
     versioned_file: master/cf7-cli_edge_linux_i686.tgz
     region_name: us-west-1
 
+
+- name: edge-linux-binary-32-v8
+  type: s3
+  source:
+    bucket: cf-cli-dev
+    prefix: v8-cf-cli-releases
+    access_key_id: ((cli-production-release-access-key-id))
+    secret_access_key: ((cli-production-release-secret-access-key))
+    versioned_file: master/cf8-cli_edge_linux_i686.tgz
+    region_name: us-west-1
+
 - name: edge-linux-binary-64-v6
   type: s3
   source:
@@ -69,6 +90,16 @@ resources:
     access_key_id: ((cli-production-release-access-key-id))
     secret_access_key: ((cli-production-release-secret-access-key))
     versioned_file: master/cf7-cli_edge_linux_x86-64.tgz
+    region_name: us-west-1
+
+- name: edge-linux-binary-64-v8
+  type: s3
+  source:
+    bucket: cf-cli-dev
+    prefix: v8-cf-cli-releases
+    access_key_id: ((cli-production-release-access-key-id))
+    secret_access_key: ((cli-production-release-secret-access-key))
+    versioned_file: master/cf8-cli_edge_linux_x86-64.tgz
     region_name: us-west-1
 
 - name: edge-osx-binary-64-v6
@@ -91,6 +122,16 @@ resources:
     versioned_file: master/cf7-cli_edge_osx.tgz
     region_name: us-west-1
 
+- name: edge-osx-binary-64-v8
+  type: s3
+  source:
+    bucket: cf-cli-dev
+    prefix: v8-cf-cli-releases
+    access_key_id: ((cli-production-release-access-key-id))
+    secret_access_key: ((cli-production-release-secret-access-key))
+    versioned_file: master/cf8-cli_edge_osx.tgz
+    region_name: us-west-1
+
 - name: edge-windows-binary-32-v6
   type: s3
   source:
@@ -109,6 +150,16 @@ resources:
     access_key_id: ((cli-production-release-access-key-id))
     secret_access_key: ((cli-production-release-secret-access-key))
     versioned_file: master/cf7-cli_edge_win32.zip
+    region_name: us-west-1
+
+- name: edge-windows-binary-32-v8
+  type: s3
+  source:
+    bucket: cf-cli-dev
+    prefix: v8-cf-cli-releases
+    access_key_id: ((cli-production-release-access-key-id))
+    secret_access_key: ((cli-production-release-secret-access-key))
+    versioned_file: master/cf8-cli_edge_win32.zip
     region_name: us-west-1
 
 - name: edge-windows-binary-64-v6
@@ -131,6 +182,16 @@ resources:
     versioned_file: master/cf7-cli_edge_winx64.zip
     region_name: us-west-1
 
+- name: edge-windows-binary-64-v8
+  type: s3
+  source:
+    bucket: cf-cli-dev
+    prefix: v8-cf-cli-releases
+    access_key_id: ((cli-production-release-access-key-id))
+    secret_access_key: ((cli-production-release-secret-access-key))
+    versioned_file: master/cf8-cli_edge_winx64.zip
+    region_name: us-west-1
+
 - name: edge-deb-installer-32-v6
   type: s3
   source:
@@ -149,6 +210,16 @@ resources:
     access_key_id: ((cli-production-release-access-key-id))
     secret_access_key: ((cli-production-release-secret-access-key))
     versioned_file: master/cf7-cli-installer_edge_i686.deb
+    region_name: us-west-1
+
+- name: edge-deb-installer-32-v8
+  type: s3
+  source:
+    bucket: cf-cli-dev
+    prefix: v8-cf-cli-releases
+    access_key_id: ((cli-production-release-access-key-id))
+    secret_access_key: ((cli-production-release-secret-access-key))
+    versioned_file: master/cf8-cli-installer_edge_i686.deb
     region_name: us-west-1
 
 - name: edge-deb-installer-64-v6
@@ -171,6 +242,16 @@ resources:
     versioned_file: master/cf7-cli-installer_edge_x86-64.deb
     region_name: us-west-1
 
+- name: edge-deb-installer-64-v8
+  type: s3
+  source:
+    bucket: cf-cli-dev
+    prefix: v8-cf-cli-releases
+    access_key_id: ((cli-production-release-access-key-id))
+    secret_access_key: ((cli-production-release-secret-access-key))
+    versioned_file: master/cf8-cli-installer_edge_x86-64.deb
+    region_name: us-west-1
+
 - name: edge-redhat-installer-32-v6
   type: s3
   source:
@@ -189,6 +270,16 @@ resources:
     access_key_id: ((cli-production-release-access-key-id))
     secret_access_key: ((cli-production-release-secret-access-key))
     versioned_file: master/cf7-cli-installer_edge_i686.rpm
+    region_name: us-west-1
+
+- name: edge-redhat-installer-32-v8
+  type: s3
+  source:
+    bucket: cf-cli-dev
+    prefix: v8-cf-cli-releases
+    access_key_id: ((cli-production-release-access-key-id))
+    secret_access_key: ((cli-production-release-secret-access-key))
+    versioned_file: master/cf8-cli-installer_edge_i686.rpm
     region_name: us-west-1
 
 - name: edge-redhat-installer-64-v6
@@ -211,6 +302,16 @@ resources:
     versioned_file: master/cf7-cli-installer_edge_x86-64.rpm
     region_name: us-west-1
 
+- name: edge-redhat-installer-64-v8
+  type: s3
+  source:
+    bucket: cf-cli-dev
+    prefix: v8-cf-cli-releases
+    access_key_id: ((cli-production-release-access-key-id))
+    secret_access_key: ((cli-production-release-secret-access-key))
+    versioned_file: master/cf8-cli-installer_edge_x86-64.rpm
+    region_name: us-west-1
+
 - name: edge-osx-installer-64-v6
   type: s3
   source:
@@ -231,6 +332,16 @@ resources:
     versioned_file: master/cf7-cli-installer_edge_osx.pkg
     region_name: us-west-1
 
+- name: edge-osx-installer-64-v8
+  type: s3
+  source:
+    bucket: cf-cli-dev
+    prefix: v8-cf-cli-releases
+    access_key_id: ((cli-production-release-access-key-id))
+    secret_access_key: ((cli-production-release-secret-access-key))
+    versioned_file: master/cf8-cli-installer_edge_osx.pkg
+    region_name: us-west-1
+
 jobs:
 - name: final-release-checks-v6
   serial: true
@@ -247,6 +358,15 @@ jobs:
     - get: cli-ci
     - get: cli
       resource: cli-v7
+    - task: check-build-version
+      file: cli-ci/ci/cli-release/tasks/check-build-version.yml
+
+- name: final-release-checks-v8
+  serial: true
+  plan:
+    - get: cli-ci
+    - get: cli
+      resource: cli-v8
     - task: check-build-version
       file: cli-ci/ci/cli-release/tasks/check-build-version.yml
 
@@ -290,7 +410,7 @@ jobs:
     - task: repackage-binaries-and-installers
       file: cli-ci/ci/cli-release/tasks/repackage-binaries-and-installers.yml
       params:
-        TARGET_V7: false
+        TARGET_MAJOR_VERSION: "6"
 
     - task: sign-osx-installer
       file: cli-ci/ci/cli-release/tasks/sign-osx-installer.yml
@@ -298,34 +418,32 @@ jobs:
         CERT_COMMON_NAME: ((osx-certificate-common-name))
         CERT_LOCATION: ((osx-certificate-location))
         CERT_PASSWORD_LOCATION: ((osx-certificate-password-location))
-        TARGET_V7: false
+        TARGET_MAJOR_VERSION: "6"
 
     - task: sign-redhat-installers
       file: cli-ci/ci/cli-release/tasks/sign-redhat-installers.yml
       params:
         GPG_KEY_LOCATION: ((gpg-key-location))
-        TARGET_V7: false
+        TARGET_MAJOR_VERSION: "6"
 
     - do:
       - task: sign-windows-binaries
         file: cli-ci/ci/cli-release/tasks/sign-windows-binaries.yml
         params:
-          TARGET_V7: false
+          TARGET_MAJOR_VERSION: "6"
       - task: create-windows-installers
         file: cli-ci/ci/cli-v6/tasks/create-installers-windows.yml
-        params:
-          TARGET_V7: false
       - task: sign-and-repackage-installers-and-binaries
         file: cli-ci/ci/cli-release/tasks/sign-and-repackage-installers-and-binaries.yml
         params:
-          TARGET_V7: false
+          TARGET_MAJOR_VERSION: "6"
 
   - task: upload-releases
     file: cli-ci/ci/cli-release/tasks/upload-releases.yml
     params:
       AWS_ACCESS_KEY_ID: ((cli-production-release-access-key-id))
       AWS_SECRET_ACCESS_KEY: ((cli-production-release-secret-access-key))
-      TARGET_V7: false
+      TARGET_MAJOR_VERSION: "6"
 
 - name: create-and-sign-installers-v7
   serial: true
@@ -367,7 +485,7 @@ jobs:
     - task: repackage-binaries-and-installers
       file: cli-ci/ci/cli-release/tasks/repackage-binaries-and-installers.yml
       params:
-        TARGET_V7: true
+        TARGET_MAJOR_VERSION: "7"
 
     - task: sign-osx-installer
       file: cli-ci/ci/cli-release/tasks/sign-osx-installer.yml
@@ -375,32 +493,107 @@ jobs:
         CERT_COMMON_NAME: ((osx-certificate-common-name))
         CERT_LOCATION: ((osx-certificate-location))
         CERT_PASSWORD_LOCATION: ((osx-certificate-password-location))
-        TARGET_V7: true
+        TARGET_MAJOR_VERSION: "7"
 
     - task: sign-redhat-installers
       file: cli-ci/ci/cli-release/tasks/sign-redhat-installers.yml
       params:
         GPG_KEY_LOCATION: ((gpg-key-location))
-        TARGET_V7: true
+        TARGET_MAJOR_VERSION: "7"
 
     - do:
       - task: sign-windows-binaries
         file: cli-ci/ci/cli-release/tasks/sign-windows-binaries.yml
         params:
-          TARGET_V7: true
+          TARGET_MAJOR_VERSION: "7"
       - task: create-windows-installers
         file: cli-ci/ci/cli-v7/tasks/create-installers-windows.yml
       - task: sign-and-repackage-installers-and-binaries
         file: cli-ci/ci/cli-release/tasks/sign-and-repackage-installers-and-binaries.yml
         params:
-          TARGET_V7: true
+          TARGET_MAJOR_VERSION: "7"
 
   - task: upload-releases
     file: cli-ci/ci/cli-release/tasks/upload-releases.yml
     params:
       AWS_ACCESS_KEY_ID: ((cli-production-release-access-key-id))
       AWS_SECRET_ACCESS_KEY: ((cli-production-release-secret-access-key))
-      TARGET_V7: true
+      TARGET_MAJOR_VERSION: "7"
+
+- name: create-and-sign-installers-v8
+  serial: true
+  plan:
+  - in_parallel:
+    - get: cli-ci
+    - get: cli
+      resource: cli-v8
+      passed: [final-release-checks-v8]
+    - get: edge-linux-binary-32
+      resource: edge-linux-binary-32-v8
+    - get: edge-linux-binary-64
+      resource: edge-linux-binary-64-v8
+    - get: edge-osx-binary-64
+      resource: edge-osx-binary-64-v8
+    - get: edge-windows-binary-32
+      resource: edge-windows-binary-32-v8
+    - get: edge-windows-binary-64
+      resource: edge-windows-binary-64-v8
+    - get: edge-deb-installer-32
+      resource: edge-deb-installer-32-v8
+    - get: edge-deb-installer-64
+      resource: edge-deb-installer-64-v8
+    - get: edge-redhat-installer-32
+      resource: edge-redhat-installer-32-v8
+    - get: edge-redhat-installer-64
+      resource: edge-redhat-installer-64-v8
+    - get: edge-osx-installer-64
+      resource: edge-osx-installer-64-v8
+
+  - task: obtain-certificates
+    file: cli-ci/ci/cli-release/tasks/obtain-certificates.yml
+    params:
+      CERT_PATH: ((osx-certificate-store))
+  - task: copy-certificates
+    file: cli-ci/ci/cli-release/tasks/copy-certificates.yml
+
+  - in_parallel:
+    - task: repackage-binaries-and-installers
+      file: cli-ci/ci/cli-release/tasks/repackage-binaries-and-installers.yml
+      params:
+        TARGET_MAJOR_VERSION: "8"
+
+    - task: sign-osx-installer
+      file: cli-ci/ci/cli-release/tasks/sign-osx-installer.yml
+      params:
+        CERT_COMMON_NAME: ((osx-certificate-common-name))
+        CERT_LOCATION: ((osx-certificate-location))
+        CERT_PASSWORD_LOCATION: ((osx-certificate-password-location))
+        TARGET_MAJOR_VERSION: "8"
+
+    - task: sign-redhat-installers
+      file: cli-ci/ci/cli-release/tasks/sign-redhat-installers.yml
+      params:
+        GPG_KEY_LOCATION: ((gpg-key-location))
+        TARGET_MAJOR_VERSION: "8"
+
+    - do:
+      - task: sign-windows-binaries
+        file: cli-ci/ci/cli-release/tasks/sign-windows-binaries.yml
+        params:
+          TARGET_MAJOR_VERSION: "8"
+      - task: create-windows-installers
+        file: cli-ci/ci/cli-v8/tasks/create-installers-windows.yml
+      - task: sign-and-repackage-installers-and-binaries
+        file: cli-ci/ci/cli-release/tasks/sign-and-repackage-installers-and-binaries.yml
+        params:
+          TARGET_MAJOR_VERSION: "8"
+
+  - task: upload-releases
+    file: cli-ci/ci/cli-release/tasks/upload-releases.yml
+    params:
+      AWS_ACCESS_KEY_ID: ((cli-production-release-access-key-id))
+      AWS_SECRET_ACCESS_KEY: ((cli-production-release-secret-access-key))
+      TARGET_MAJOR_VERSION: "8"
 
 - name: update-claw-v6
   serial: true
@@ -415,6 +608,13 @@ jobs:
     - get: cli
       resource: cli-v7
       passed: [create-and-sign-installers-v7]
+
+- name: update-claw-v8
+  serial: true
+  plan:
+    - get: cli
+      resource: cli-v8
+      passed: [create-and-sign-installers-v8]
 
 - name: update-debian-repo-v6
   serial: true
@@ -464,6 +664,30 @@ jobs:
       GPG_KEY_LOCATION: ((gpg-key-location))
       KEY_ID_LOCATION: ((gpg-key-id-location))
 
+- name: update-debian-repo-v8
+  serial: true
+  plan:
+  - in_parallel:
+    - get: cli
+      resource: cli-v8
+      trigger: true
+      passed: [update-claw-v8]
+    - get: cli-ci
+  - task: obtain-certificates
+    file: cli-ci/ci/cli-release/tasks/obtain-certificates.yml
+    params:
+      CERT_PATH: ((osx-certificate-store))
+  - task: copy-certificates
+    file: cli-ci/ci/cli-release/tasks/copy-certificates.yml
+  - task: publish-debian
+    file: cli-ci/ci/cli-release/tasks/publish-debian-v8.yml
+    params:
+      AWS_ACCESS_KEY_ID: ((cli-production-release-access-key-id))
+      AWS_BUCKET_NAME: cf-cli-debian-repo
+      AWS_SECRET_ACCESS_KEY: ((cli-production-release-secret-access-key))
+      GPG_KEY_LOCATION: ((gpg-key-location))
+      KEY_ID_LOCATION: ((gpg-key-id-location))
+
 - name: update-homebrew-v6
   serial: true
   plan:
@@ -492,6 +716,22 @@ jobs:
     - get: homebrew-tap
   - task: update-brew-formula
     file: cli-ci/ci/cli-release/tasks/update-brew-formula-v7.yml
+  - put: homebrew-tap
+    params:
+      repository: update-brew-formula-output/homebrew-tap
+
+- name: update-homebrew-v8
+  serial: true
+  plan:
+  - in_parallel:
+    - get: cli
+      resource: cli-v8
+      trigger: true
+      passed: [update-claw-v8]
+    - get: cli-ci
+    - get: homebrew-tap
+  - task: update-brew-formula
+    file: cli-ci/ci/cli-release/tasks/update-brew-formula-v8.yml
   - put: homebrew-tap
     params:
       repository: update-brew-formula-output/homebrew-tap
@@ -540,3 +780,24 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ((cli-production-release-secret-access-key))
       GPG_KEY_LOCATION: ((gpg-key-location))
 
+- name: update-rpm-repo-v8
+  serial: true
+  plan:
+  - in_parallel:
+    - get: cli-v8
+      resource: cli-v8
+      trigger: true
+      passed: [update-claw-v8]
+    - get: cli-ci
+  - task: obtain-certificates
+    file: cli-ci/ci/cli-release/tasks/obtain-certificates.yml
+    params:
+      CERT_PATH: ((osx-certificate-store))
+  - task: copy-certificates
+    file: cli-ci/ci/cli-release/tasks/copy-certificates.yml
+  - task: publish-rpm
+    file: cli-ci/ci/cli-release/tasks/publish-rpm.yml
+    params:
+      AWS_ACCESS_KEY_ID: ((cli-production-release-access-key-id))
+      AWS_SECRET_ACCESS_KEY: ((cli-production-release-secret-access-key))
+      GPG_KEY_LOCATION: ((gpg-key-location))

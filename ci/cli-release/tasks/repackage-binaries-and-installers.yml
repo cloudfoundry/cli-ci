@@ -18,7 +18,7 @@ outputs:
 - name: repackaged-binaries-and-installers
 
 params:
-  TARGET_V7:
+  TARGET_MAJOR_VERSION:
 
 run:
   path: bash
@@ -27,9 +27,12 @@ run:
   - |
     set -ex
 
-    if [ "$TARGET_V7" == "true" ]; then
+    if [ "$TARGET_MAJOR_VERSION" == "7" ]; then
       VERSION=$(cat cli/BUILD_VERSION)
       SUFFIX="7"
+    elif [ "$TARGET_MAJOR_VERSION" == "8" ]; then
+      VERSION=$(cat cli/BUILD_VERSION)
+      SUFFIX="8"
     else
       VERSION=$(cat cli/BUILD_VERSION)
       SUFFIX=""
