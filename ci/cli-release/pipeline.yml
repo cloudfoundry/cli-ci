@@ -22,7 +22,7 @@ resources:
   type: git
   source:
     uri: https://github.com/cloudfoundry/cli
-    branch: master
+    branch: v8-release
     tag_filter: "v8*"
     ignore_paths:
     - ci
