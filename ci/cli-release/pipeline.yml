@@ -6,8 +6,6 @@ resources:
     uri: https://github.com/cloudfoundry/cli
     branch: v6
     tag_filter: "v6*"
-    ignore_paths:
-    - ci
 
 - name: cli-v7
   type: git
@@ -15,8 +13,6 @@ resources:
     uri: https://github.com/cloudfoundry/cli
     branch: v7
     tag_filter: "v7*"
-    ignore_paths:
-    - ci
 
 - name: cli-v8
   type: git
@@ -24,9 +20,6 @@ resources:
     uri: https://github.com/cloudfoundry/cli
     branch: v8-release
     tag_filter: "v8*"
-    ignore_paths:
-    - ci
-
 
 - name: cli-ci
   type: git
@@ -185,7 +178,7 @@ resources:
     access_key_id: ((cli-production-release-access-key-id))
     secret_access_key: ((cli-production-release-secret-access-key))
     versioned_file: master/cf8-cli_edge_winx64.zip
-    region_name: us-east-1
+    region_name: us-west-1
 
 - name: edge-deb-installer-32-v6
   type: s3
