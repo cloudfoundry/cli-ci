@@ -52,7 +52,7 @@ resources:
     access_key_id: ((cli-production-release-access-key-id))
     secret_access_key: ((cli-production-release-secret-access-key))
     versioned_file: master/cf7-cli_edge_linux_i686.tgz
-    region_name: us-east-1
+    region_name: us-west-1
 
 
 - name: edge-linux-binary-32-v8
