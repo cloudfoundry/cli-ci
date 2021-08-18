@@ -40,7 +40,7 @@ run:
     if [ "$TARGET_MAJOR_VERSION" == "7" ]; then
       VERSION=$(cat cli/BUILD_VERSION)
       SUFFIX="7"
-    if [ "$TARGET_MAJOR_VERSION" == "8" ]; then
+    elif [ "$TARGET_MAJOR_VERSION" == "8" ]; then
       VERSION=$(cat cli/BUILD_VERSION)
       SUFFIX="8"
     else
