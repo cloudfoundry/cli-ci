@@ -74,7 +74,7 @@ function Get-Env-Info {
 Get-Env-Info
 
 $Env:RUN_ID=(openssl rand -hex 16)
-$Env:GOFLAGS = "-mod=vendor"
+$Env:GOFLAGS = "-mod=mod"
 
 if ((Get-Command "ginkgo" -ErrorAction SilentlyContinue) -eq $null) {
 	go get -v -u github.com/onsi/ginkgo/ginkgo
