@@ -18,7 +18,7 @@ resources:
   type: git
   source:
     uri: https://github.com/cloudfoundry/cli
-    branch: v8-release
+    branch: v8
     tag_filter: "v8*"
 
 - name: cli-ci
