@@ -565,7 +565,7 @@ jobs:
         params:
           TARGET_MAJOR_VERSION: "8"
       - task: create-windows-installers
-        file: cli-ci/ci/cli-v8/tasks/create-installers-windows.yml
+        file: cli-ci/ci/cli-release/tasks/v8/create-installers-windows.yml
       - task: sign-and-repackage-installers-and-binaries
         file: cli-ci/ci/cli-release/tasks/sign-and-repackage-installers-and-binaries.yml
         params:
