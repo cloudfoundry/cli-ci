@@ -17,7 +17,7 @@ resources:
   type: registry-image
   icon: docker
   source:
-    repository: cfcli/cf-cli
+    repository: cloudfoundry/cli
     tag: ((cli-version))
     username: ((username))
     password: ((password))
