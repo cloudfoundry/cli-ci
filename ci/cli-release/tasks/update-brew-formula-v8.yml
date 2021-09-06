@@ -1,0 +1,88 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: cfcli/cli-package
+
+inputs:
+- name: cli
+- name: cli-ci
+- name: homebrew-tap
+
+outputs:
+- name: update-brew-formula-output
+
+params:
+  OUTPUT_PATH: update-brew-formula-output
+
+run:
+  path: bash
+  args:
+  - -c
+  - |
+    set -ex
+
+    VERSION=$(cat cli/BUILD_VERSION)
+
+    mkdir cf8-cli-osx-tarball cf8-cli-linux-tarball
+    curl -L "https://packages.cloudfoundry.org/stable?release=macosx64-binary&version=${VERSION}&source=github-rel" > cf8-cli-osx-tarball/cf8-cli_${VERSION}_osx.tgz
+    curl -L "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=${VERSION}&source=github-rel" > cf8-cli-linux-tarball/cf8-cli_${VERSION}_linux64.tgz
+
+    pushd cf8-cli-osx-tarball
+      CLI_OSX_SHA256=$(shasum -a 256 cf8-cli_*_osx.tgz | cut -d ' ' -f 1)
+    popd
+
+    pushd cf8-cli-linux-tarball
+      CLI_LINUX_64_SHA256=$(shasum -a 256 cf8-cli_*_linux64.tgz | cut -d ' ' -f 1)
+    popd
+
+    pushd homebrew-tap
+      cat <<EOF > cf-cli@8.rb
+    require 'formula'
+
+    class CfCliAT7 < Formula
+      homepage 'https://code.cloudfoundry.org/cli'
+      version '${VERSION}'
+
+      if OS.mac?
+        url 'https://packages.cloudfoundry.org/homebrew/cf8-${VERSION}.tgz'
+        sha256 '${CLI_OSX_SHA256}'
+      elsif OS.linux?
+        url 'https://packages.cloudfoundry.org/stable?release=linux64-binary&version=${VERSION}&source=homebrew'
+        sha256 '${CLI_LINUX_64_SHA256}'
+      end
+
+      depends_on :arch => :x86_64
+
+      def install
+        bin.install 'cf8'
+        bin.install_symlink 'cf8' => 'cf'
+        (bash_completion/"cf8-cli").write <<-completion
+    $(cat ../cli-ci/ci/installers/completion/cf8)
+        completion
+        doc.install 'LICENSE'
+        doc.install 'NOTICE'
+      end
+
+      test do
+        system "#{bin}/cf8"
+      end
+    end
+    EOF
+
+    git add cf-cli@8.rb
+    if ! [ -z "$(git status --porcelain)"];
+    then
+      git config --global user.email "cf-cli-eng@pivotal.io"
+      git config --global user.name "Concourse CI"
+      git commit -m "Release ${VERSION}"
+    else
+        echo "no new version to commit"
+    fi
+    cat cf-cli@8.rb
+    popd
+
+    cp -R homebrew-tap $OUTPUT_PATH
+
