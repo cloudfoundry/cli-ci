@@ -6,6 +6,10 @@ $Env:ROOT="$pwd"
 
 $null = New-Item -ItemType Directory -Force -Path $Env:TEMP
 
+Import-Module "C:\ProgramData\chocolatey\helpers\chocolateyProfile.psm1"
+refreshenv
+cd $Env:ROOT
+
 if ((Get-Command "choco" -ErrorAction SilentlyContinue) -eq $null) {
   Set-ExecutionPolicy Bypass -Scope Process -Force
   [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
@@ -50,9 +54,8 @@ refreshenv
 cd $Env:ROOT
 
 $Env:GOPATH="$Env:ROOT\go"
-#$Env:GOPATH="C:\Windows\system32\config\systemprofile\go"
 
-$Env:PATH="C:\Go\bin;" + "$Env:PATH"
+$Env:PATH="$Env:HOME\go\bin;" + "$Env:PATH"
 $Env:PATH="$Env:GOPATH\bin;" + "$Env:PATH"
 $Env:PATH="$pwd;" + "$Env:PATH"
 
@@ -71,7 +74,7 @@ function Get-Env-Info {
 Get-Env-Info
 
 $Env:RUN_ID=(openssl rand -hex 16)
-$Env:GOFLAGS = "-mod=vendor"
+$Env:GOFLAGS = "-mod=mod"
 
 if ((Get-Command "ginkgo" -ErrorAction SilentlyContinue) -eq $null) {
 	go get -v -u github.com/onsi/ginkgo/ginkgo

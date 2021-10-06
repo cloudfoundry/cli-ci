@@ -9,7 +9,7 @@ image_resource:
 params:
   AWS_ACCESS_KEY_ID:
   AWS_SECRET_ACCESS_KEY:
-  TARGET_V7:
+  TARGET_MAJOR_VERSION:
 
 inputs:
 - name: cli
@@ -28,9 +28,12 @@ run:
   - |
     set -ex
 
-    if [ "$TARGET_V7" == "true" ]; then
+    if [ "$TARGET_MAJOR_VERSION" == "7" ]; then
       VERSION=$(cat cli/BUILD_VERSION)
       BUCKET_PREFIX=v7-
+    elif [ "$TARGET_MAJOR_VERSION" == "8" ]; then
+      VERSION=$(cat cli/BUILD_VERSION)
+      BUCKET_PREFIX=v8-
     else
       VERSION=$(cat cli/BUILD_VERSION)
       BUCKET_PREFIX=

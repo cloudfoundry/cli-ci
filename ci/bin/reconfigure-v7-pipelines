@@ -68,3 +68,4 @@ configure_v7_infrastructure_pipeline inf-delfina delfina-pipeline mashed-potato
 configure_v7_infrastructure_pipeline inf-nopa nopa-pipeline mashed-potato
 configure_v7_infrastructure_pipeline inf-zerozero zerozero-pipeline mashed-potato
 configure_v7_infrastructure_pipeline inf-zuni zuni-pipeline mashed-potato
+configure_v7_infrastructure_pipeline inf-mourad mourad-pipeline hasselback-potato "v13.5.0"

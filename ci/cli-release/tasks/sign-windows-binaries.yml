@@ -10,7 +10,7 @@ outputs:
 - name: extracted-binaries
 
 params:
-  TARGET_V7:
+  TARGET_MAJOR_VERSION:
 
 run:
   path: powershell.exe
@@ -20,8 +20,10 @@ run:
     # Print current directory & contents to make debugging easier, for we cannot hijack, but we can `cd`
     Get-ChildItem
 
-    if ($env:TARGET_V7 -eq "true") {
+    if ($env:TARGET_MAJOR_VERSION -eq "7") {
       Set-Variable Suffix "7"
+    } elseif ($env:TARGET_MAJOR_VERSION -eq "8") {
+      Set-Variable Suffix "8"
     } else {
       Set-Variable Suffix ""
     }
