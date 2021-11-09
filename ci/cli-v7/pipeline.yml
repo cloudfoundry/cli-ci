@@ -207,6 +207,7 @@ resources:
   type: registry-image
   source:
     repository: ubuntu
+    tag: latest
 
 - name: ubuntu-32-image
   type: registry-image
