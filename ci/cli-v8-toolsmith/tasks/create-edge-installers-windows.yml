@@ -1,0 +1,13 @@
+---
+platform: windows
+
+inputs:
+- name: extracted-binaries
+- name: cli
+- name: cli-ci
+
+outputs:
+- name: winstallers
+
+run:
+  path: cli-ci/ci/cli-v8/tasks/create-edge-installers-windows.bat

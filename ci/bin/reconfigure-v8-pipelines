@@ -74,7 +74,7 @@ lpass sync
 
 pipelines_path=$(cd $(dirname $0)/.. && pwd)
 
-configure_pipeline v8 $pipelines_path/cli-v8/pipeline.yml
+configure_pipeline v8-toolsmith $pipelines_path/cli-v8-toolsmith/pipeline.yml
 
 configure_v8_infrastructure_pipeline inf-arizmendi arizmendi-pipeline v8-pool
 configure_v8_infrastructure_pipeline inf-cliffhouse cliffhouse-pipeline v8-pool
