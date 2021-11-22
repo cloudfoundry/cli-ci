@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+
+set -e
+set -o pipefail
+
+FLY_TARGET_NAME=${1:-ci}
+echo "Pipeline: $FLY_TARGET_NAME"
+
+check_installed() {
+  if ! command -v $1 > /dev/null 2>&1; then
+    printf "$1 must be installed before running this script!"
+    exit 1
+  fi
+}
+
+configure_pipeline() {
+  local name=$1
+  local pipeline=$2
+
+  printf "configuring the $name pipeline...\n"
+
+  fly -t $FLY_TARGET_NAME set-pipeline \
+    -p $name \
+    -c $pipeline \
+    -l <(lpass show "Concourse Credentials" --notes) \
+    -l <(lpass show "Shared-CLI/Concourse/Concourse Credentials" --notes) \
+    -l <(lpass show "VAT Concourse Credentials" --notes) \
+    -v bosh-lite-gcp-json-key="$(lpass show Shared-CLI/bosh-service-account-gcp-creds --notes | jq -c . )" \
+    -v bosh-lite-storage-bucket=bosh-lites \
+    -v bosh-lite-project-id=cf-cli \
+    -v bosh-lite-dns-zone-name=bosh-lite-pool \
+    -v bosh-lite-system-domain-suffix=lite.cli.fun
+}
+configure_v8_infrastructure_minimum_capi_pipeline() {
+  local name=$1
+  local creds=$2
+  local pool=$3
+
+  printf "configuring the $name pipeline...\n"
+
+  echo $1
+  echo $2
+  echo $3
+
+  fly -t $FLY_TARGET_NAME set-pipeline \
+    -p $name \
+    -c $pipelines_path/infrastructure/v8-pipeline-minimum-supported-capi.yml \
+    -l <(lpass show "Concourse Credentials" --notes) \
+    -l <(lpass show "$creds" --notes) \
+    -v pool-name=$pool
+}
+
+configure_v8_infrastructure_pipeline() {
+  local name=$1
+  local creds=$2
+  local pool=$3
+
+  printf "configuring the $name pipeline...\n"
+
+  fly -t $FLY_TARGET_NAME set-pipeline \
+    -p $name \
+    -c $pipelines_path/infrastructure/v8-pipeline.yml \
+    -l <(lpass show "Concourse Credentials" --notes) \
+    -l <(lpass show "$creds" --notes) \
+    -v pool-name=$pool
+}
+
+
+check_installed lpass
+check_installed fly
+
+# Make sure we're up to date and that we're logged in.
+lpass sync
+
+pipelines_path=$(cd $(dirname $0)/.. && pwd)
+
+configure_pipeline edge $pipelines_path/cli-v8/pipeline.yml
+
+configure_v8_infrastructure_pipeline inf-arizmendi arizmendi-pipeline v8-pool
+configure_v8_infrastructure_pipeline inf-cliffhouse cliffhouse-pipeline v8-pool
+configure_v8_infrastructure_pipeline inf-garaje garaje-pipeline v8-pool
+configure_v8_infrastructure_pipeline inf-montesacro montesacro-pipeline v8-pool
+configure_v8_infrastructure_minimum_capi_pipeline inf-chipotle chipotle-pipeline v8-pool-minimum-capi
