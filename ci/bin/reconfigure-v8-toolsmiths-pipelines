@@ -25,6 +25,7 @@ configure_pipeline() {
     -l <(lpass show "Concourse Credentials" --notes) \
     -l <(lpass show "Shared-CLI/Concourse/Concourse Credentials" --notes) \
     -l <(lpass show "VAT Concourse Credentials" --notes) \
+    -l <(lpass show "Shared-CLI/CF CLI Toolsmiths API token" --notes) \
     -v bosh-lite-gcp-json-key="$(lpass show Shared-CLI/bosh-service-account-gcp-creds --notes | jq -c . )" \
     -v bosh-lite-storage-bucket=bosh-lites \
     -v bosh-lite-project-id=cf-cli \
@@ -74,7 +75,8 @@ lpass sync
 
 pipelines_path=$(cd $(dirname $0)/.. && pwd)
 
-configure_pipeline v8 $pipelines_path/cli-v8/pipeline.yml
+# This is the one Brandon is working on HERE
+configure_pipeline v8-toolsmith $pipelines_path/cli-v8-toolsmith/pipeline.yml
 
 #configure_v8_infrastructure_pipeline inf-arizmendi arizmendi-pipeline v8-pool
 #configure_v8_infrastructure_pipeline inf-cliffhouse cliffhouse-pipeline v8-pool

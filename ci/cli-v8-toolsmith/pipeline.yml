@@ -292,14 +292,19 @@ jobs:
       passed: [build-binaries]
       trigger: true
     - get: vars-store
-    - put: bosh-lock
+    #- put: bosh-lock
       resource: gcp-bosh-pool
       params:
         acquire: true
   - do:
-    - task: cleanup-integration
+   # - task: cleanup-integration
+    #  timeout: 3h
+    #  file: cli-ci/ci/cli-v8-toolsmith/tasks/cleanup-integration.yml
+    - task: install-toolsmith
       timeout: 3h
-      file: cli-ci/ci/cli-v8-toolsmith/tasks/cleanup-integration.yml
+      file: cli-ci/ci/cli-v8-toolsmith/new_tasks/install-toolsmith.yml
+      params:
+        TOOLSMITHS_TOKEN: ((toolsmiths-api-token))
     - task: integration
       timeout: 3h
       file: cli-ci/ci/cli-v8-toolsmith/tasks/integration-linux.yml
@@ -320,8 +325,8 @@ jobs:
         CF_INT_IGNORE_API_VERSION_CHECK: false
   ensure:
     put: gcp-bosh-pool
-    params:
-      release: bosh-lock
+   # params:
+     # release: bosh-lock
 
 # - name: integration-windows
 #   serial: true

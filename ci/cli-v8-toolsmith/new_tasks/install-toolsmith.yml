@@ -1,0 +1,52 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: cfcli/cli-base
+
+#inputs:
+#- name: cli
+#- name: cf-cli-binaries
+#- name: bosh-lock
+#- name: vars-store
+
+params:
+  CF_CLI_EXPERIMENTAL: false
+  CF_INT_CLIENT_ID:
+  CF_INT_CLIENT_SECRET:
+  CF_INT_DOCKER_IMAGE:
+  CF_INT_DOCKER_USERNAME:
+  CF_INT_DOCKER_PASSWORD:
+  CF_INT_IGNORE_API_VERSION_CHECK:
+  TOOLSMITHS_TOKEN:
+  FLAKE_ATTEMPTS: 2
+  TAGS: 'V7'
+  NODES: 16
+
+run:
+  path: bash
+  args:
+  - -c
+  - |
+    set -e
+
+    bindir=${PWD}/bin
+    mkdir -p ${bindir}
+    export PATH=${bindir}:$PATH
+    # TODO This could be a source of issues
+    # Install toolsmith here and add it bin folder
+    wget https://drive.google.com/uc\?id\=1WRZR990MWaS_KLLr6TLFqb1skrZKVHFG\&export\=download -O smith.tar.gz
+    tar -xvf smith.tar.gz
+    cd smith
+    go build
+    go install
+    # Sets up tool smith
+    touch $HOME/.smith-token-hook.sh
+    chmod +x $HOME/.smith-token-hook.sh
+    echo "TOOLSMITHS_API_TOKEN=${TOOLSMITHS_TOKEN}" >> $HOME/.smith-token-hook.sh
+    echo "echo $TOOSLSMITHS_API_TOKEN" >> $HOME/.smith-token-hook.sh
+    # Install OM
+    wget https://github.com/pivotal-cf/om/releases/download/7.4.1/om-linux-7.4.1.tar.gz
+    mv om-linux-7.4.1.tar.gz ${bindir}
