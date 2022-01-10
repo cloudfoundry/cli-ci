@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+set -e
+set -o pipefail
+
+FLY_TARGET_NAME=${1:-ci}
+echo "Pipeline: $FLY_TARGET_NAME"
+
+check_installed() {
+  if ! command -v $1 > /dev/null 2>&1; then
+    printf "$1 must be installed before running this script!"
+    exit 1
+  fi
+}
+
+configure_pipeline() {
+  local name=$1
+  local pipeline=$2
+
+  printf "configuring the $name pipeline...\n"
+
+  fly -t $FLY_TARGET_NAME set-pipeline \
+    -p $name \
+    -c $pipeline \
+    -l <(lpass show "Concourse Credentials" --notes) \
+    -l <(lpass show "Shared-CLI/Concourse/Concourse Credentials" --notes) \
+    -l <(lpass show "VAT Concourse Credentials" --notes) \
+    -v integration-bucket-name=cf-cli-ga-integration
+}
+
+check_installed lpass
+check_installed fly
+
+# Make sure we're up to date and that we're logged in.
+lpass sync
+
+pipelines_path=$(cd $(dirname $0)/.. && pwd)
+
+configure_pipeline ga-integration $pipelines_path/cli-ga-integration/pipeline.yml
