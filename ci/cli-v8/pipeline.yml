@@ -34,7 +34,7 @@ resources:
   icon: console
   source:
     uri: https://github.com/cloudfoundry/cli
-    branch: master
+    branch: v8
 
 - name: cf-cli-binaries
   type: s3
@@ -258,7 +258,7 @@ jobs:
       timeout: 3h
       file: cli-ci/ci/cli-v8/tasks/build-binaries.yml
       params:
-        TARGET_GO_VERSION: go1.16.6
+        TARGET_GO_VERSION: go1.17.5
       on_failure:
         put: slack-alert
         params:
@@ -268,7 +268,7 @@ jobs:
       timeout: 3h
       file: cli-ci/ci/cli-v8/tasks/build-osx-binary.yml
       params:
-        TARGET_GO_VERSION: go1.16.6
+        TARGET_GO_VERSION: go1.17.5
       on_failure:
         put: slack-alert
         params:
