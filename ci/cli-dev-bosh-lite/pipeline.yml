@@ -136,10 +136,29 @@ jobs:
             dns_zone_name: ((bosh-lite-dns-zone-name))
       - do:
           - task: create-bosh-lite
-            file: capi-ci/ci/bosh-lite/create-bosh-lite.yml
-            params:
-              GCP_JSON_KEY: ((bosh-lite-gcp-json-key))
-              GCP_INSTANCE_TYPE: n2-highmem-8
+            # file: capi-ci/ci/bosh-lite/create-bosh-lite.yml
+            config:
+              platform: linux
+              image_resource:
+                type: docker-image
+                source:
+                  repository: cloudfoundry/bosh-cli
+                  tag: latest
+
+              inputs:
+                - name: capi-ci
+                - name: bosh-deployment
+                - name: terraform
+
+              outputs:
+                - name: director-state
+
+              run:
+                path: capi-ci/ci/bosh-lite/create-bosh-lite.sh
+
+              params:
+                GCP_JSON_KEY: ((bosh-lite-gcp-json-key))
+                GCP_INSTANCE_TYPE: n2-highmem-8
           - do:
               - task: create-env-vars-file
                 file: capi-ci/ci/bosh-lite/create-env-vars-file.yml
@@ -244,7 +263,21 @@ jobs:
             GCP_PATH: director-state
             USE_ENV_NAMED_SUBDIR: true
         - task: delete-bosh-lite
-          file: capi-ci/ci/bosh-lite/delete-bosh-lite.yml
+          # file: capi-ci/ci/bosh-lite/delete-bosh-lite.yml
+          config:
+            platform: linux
+            image_resource:
+              type: docker-image
+              source:
+                repository: cloudfoundry/bosh-cli
+                tag: latest
+
+            inputs:
+              - name: capi-ci
+              - name: director-state
+
+            run:
+              path: capi-ci/ci/bosh-lite/delete-bosh-lite.sh
         - put: terraform
           params:
             action: destroy
