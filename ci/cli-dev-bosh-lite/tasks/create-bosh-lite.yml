@@ -1,0 +1,21 @@
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: cloudfoundry/bosh-cli
+    tag: latest
+
+inputs:
+  - name: capi-ci
+  - name: bosh-deployment
+  - name: terraform
+
+outputs:
+  - name: director-state
+
+run:
+  path: capi-ci/ci/bosh-lite/create-bosh-lite.sh
+
+params:
+  GCP_JSON_KEY: ((bosh-lite-gcp-json-key))
+  GCP_INSTANCE_TYPE: n2-highmem-8
