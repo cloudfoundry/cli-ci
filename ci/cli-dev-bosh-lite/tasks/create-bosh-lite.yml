@@ -15,3 +15,7 @@ outputs:
 
 run:
   path: capi-ci/ci/bosh-lite/create-bosh-lite.sh
+
+params:
+  GCP_JSON_KEY: ""
+  GCP_INSTANCE_TYPE: ~
