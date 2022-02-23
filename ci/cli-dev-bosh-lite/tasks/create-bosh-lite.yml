@@ -15,7 +15,3 @@ outputs:
 
 run:
   path: capi-ci/ci/bosh-lite/create-bosh-lite.sh
-
-params:
-  GCP_JSON_KEY: ((bosh-lite-gcp-json-key))
-  GCP_INSTANCE_TYPE: n2-highmem-8
