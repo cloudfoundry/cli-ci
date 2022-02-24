@@ -226,6 +226,7 @@ jobs:
         - get: destroy-bosh-lite-trigger
           version: every
           trigger: true
+        - get: cli-ci
         - get: capi-ci
         - get: bosh-deployment
         - put: deleting-pool
