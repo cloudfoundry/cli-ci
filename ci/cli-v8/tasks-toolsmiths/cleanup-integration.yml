@@ -24,8 +24,8 @@ run:
   - -c
   - |
     set -e
-    exc
-    ls -la gcp-env && cat gcp-env/name && cat gcp-env/metadata && cat gcp-env/pcf.yml
+    cat gcp-env/metadata
+    #ls -la gcp-env && cat gcp-env/name && cat gcp-env/metadata && cat gcp-env/pcf.yml
     ENV=$(cat bosh-lock/name | cut -d "." -f 1)
     CERT_DIR=$PWD/cleanup-integration-outputs/cert_dir
     mkdir -p $CERT_DIR
