@@ -10,6 +10,7 @@ inputs:
 - name: cli
 - name: cf-cli-binaries
 - name: vars-store
+- name: gcp-env
 
 outputs:
 - name: cleanup-integration-outputs
@@ -24,6 +25,7 @@ run:
   - |
     set -e
 
+    ls -la gcp-env && cat gcp-env/name && cat gcp-env/metadata && cat gcp-env/pcf.yml
     ENV=$(cat bosh-lock/name | cut -d "." -f 1)
     CERT_DIR=$PWD/cleanup-integration-outputs/cert_dir
     mkdir -p $CERT_DIR

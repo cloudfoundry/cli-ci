@@ -539,6 +539,7 @@ jobs:
         params:
           channel: '#cli-dev-internal'
           text: *slack_notification_text
+  ensure:
     put: gcp-env
     params:
       action: unclaim
