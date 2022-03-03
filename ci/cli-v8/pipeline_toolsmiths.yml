@@ -5,48 +5,52 @@ resource_types:
   source:
     repository: cfcommunity/slack-notification-resource
     tag: latest
-
-- name: bosh-deployment
+- name: pcf-pool
   type: docker-image
   source:
-    repository: cloudfoundry/bosh-deployment-resource
+    repository: cftoolsmiths/toolsmiths-envs-resource
 
 resources:
+- name: gcp-env
+  type: pcf-pool
+  source:
+    api_token: ((toolsmiths-api-token))
+    hostname: environments.toolsmiths.cf-app.com
+    pool_name: cf-deployment
+- name: gcp-env-min-capi
+  type: pcf-pool
+  source:
+    api_token: ((toolsmiths-api-token))
+    hostname: environments.toolsmiths.cf-app.com
+    pool_name: cf-deployment
+# - name: gcp-bosh-pool
+#   type: pool
+#   source:
+#     uri: git@github.com:cloudfoundry/cli-pools
+#     private_key: ((cli-pools-github-private-key))
+#     branch: master
+#     pool: v8-pool
+
+# - name: gcp-bosh-pool-minimum-capi
+#   type: pool
+#   source:
+#     uri: git@github.com:cloudfoundry/cli-pools
+#     private_key: ((cli-pools-github-private-key))
+#     branch: master
+#     pool: v8-pool-minimum-capi
+
 - name: cli-ci
   type: git
   source:
     uri: https://github.com/cloudfoundry/cli-ci
     branch: master
 
-- name: cf-deployment-concourse-tasks
-  type: git
-  icon: github-box
-  source:
-    branch: main
-    uri: https://github.com/cloudfoundry/cf-deployment-concourse-tasks.git
-
-- name: cf-acceptance-tests
-  type: git
-  icon: github-box
-  source:
-    branch: main
-    uri: https://github.com/cloudfoundry/cf-acceptance-tests.git
-    ignore_paths:
-    - ci/*.yml
-    - .envrc
-
 - name: cli
   type: git
   icon: console
   source:
     uri: https://github.com/cloudfoundry/cli
-    branch: v7
-
-- name: cli-i18n
-  type: git
-  source:
-    uri: https://github.com/cloudfoundry/cli-i18n
-    branch: master
+    branch: v8
 
 - name: cf-cli-binaries
   type: s3
@@ -55,131 +59,24 @@ resources:
     bucket: ((staging-bucket-name))
     access_key_id: ((cli-team-aws-s3-access-key-id))
     secret_access_key: ((cli-team-aws-s3-secret-access-key))
-    versioned_file: "v7/cf-cli-binaries.tgz"
+    versioned_file: "v8/cf-cli-binaries.tgz"
 
-- name: edge-linux-binary-32
-  type: s3
+- name: cf-deployment-concourse-tasks
+  type: git
+  icon: github-box
   source:
-    bucket: v7-cf-cli-releases
-    access_key_id: ((cli-team-aws-s3-access-key-id))
-    secret_access_key: ((cli-team-aws-s3-secret-access-key))
-    versioned_file: master/cf7-cli_edge_linux_i686.tgz
-    region_name: us-west-1
+    branch: main
+    uri: https://github.com/cloudfoundry/cf-deployment-concourse-tasks.git
 
-- name: edge-linux-binary-64
-  type: s3
+- name: cf-acceptance-tests-rc
+  type: git
+  icon: github-box
   source:
-    bucket: v7-cf-cli-releases
-    access_key_id: ((cli-team-aws-s3-access-key-id))
-    secret_access_key: ((cli-team-aws-s3-secret-access-key))
-    versioned_file: master/cf7-cli_edge_linux_x86-64.tgz
-    region_name: us-west-1
-
-- name: edge-osx-binary-64
-  type: s3
-  source:
-    bucket: v7-cf-cli-releases
-    access_key_id: ((cli-team-aws-s3-access-key-id))
-    secret_access_key: ((cli-team-aws-s3-secret-access-key))
-    versioned_file: master/cf7-cli_edge_osx.tgz
-    region_name: us-west-1
-
-- name: edge-windows-binary-32
-  type: s3
-  source:
-    bucket: v7-cf-cli-releases
-    access_key_id: ((cli-team-aws-s3-access-key-id))
-    secret_access_key: ((cli-team-aws-s3-secret-access-key))
-    versioned_file: master/cf7-cli_edge_win32.zip
-    region_name: us-west-1
-
-- name: edge-windows-binary-64
-  type: s3
-  source:
-    bucket: v7-cf-cli-releases
-    access_key_id: ((cli-team-aws-s3-access-key-id))
-    secret_access_key: ((cli-team-aws-s3-secret-access-key))
-    versioned_file: master/cf7-cli_edge_winx64.zip
-    region_name: us-west-1
-
-- name: edge-deb-installer-32
-  type: s3
-  source:
-    bucket: v7-cf-cli-releases
-    access_key_id: ((cli-team-aws-s3-access-key-id))
-    secret_access_key: ((cli-team-aws-s3-secret-access-key))
-    versioned_file: master/cf7-cli-installer_edge_i686.deb
-    region_name: us-west-1
-
-- name: edge-deb-installer-64
-  type: s3
-  source:
-    bucket: v7-cf-cli-releases
-    access_key_id: ((cli-team-aws-s3-access-key-id))
-    secret_access_key: ((cli-team-aws-s3-secret-access-key))
-    versioned_file: master/cf7-cli-installer_edge_x86-64.deb
-    region_name: us-west-1
-
-- name: edge-redhat-installer-32
-  type: s3
-  source:
-    bucket: v7-cf-cli-releases
-    access_key_id: ((cli-team-aws-s3-access-key-id))
-    secret_access_key: ((cli-team-aws-s3-secret-access-key))
-    versioned_file: master/cf7-cli-installer_edge_i686.rpm
-    region_name: us-west-1
-
-- name: edge-redhat-installer-64
-  type: s3
-  source:
-    bucket: v7-cf-cli-releases
-    access_key_id: ((cli-team-aws-s3-access-key-id))
-    secret_access_key: ((cli-team-aws-s3-secret-access-key))
-    versioned_file: master/cf7-cli-installer_edge_x86-64.rpm
-    region_name: us-west-1
-
-- name: edge-osx-installer-64
-  type: s3
-  source:
-    bucket: v7-cf-cli-releases
-    access_key_id: ((cli-team-aws-s3-access-key-id))
-    secret_access_key: ((cli-team-aws-s3-secret-access-key))
-    versioned_file: master/cf7-cli-installer_edge_osx.pkg
-    region_name: us-west-1
-
-- name: edge-windows-installer-32
-  type: s3
-  source:
-    bucket: v7-cf-cli-releases
-    access_key_id: ((cli-team-aws-s3-access-key-id))
-    secret_access_key: ((cli-team-aws-s3-secret-access-key))
-    versioned_file: master/cf7-cli-installer_edge_win32.zip
-    region_name: us-west-1
-
-- name: edge-windows-installer-64
-  type: s3
-  source:
-    bucket: v7-cf-cli-releases
-    access_key_id: ((cli-team-aws-s3-access-key-id))
-    secret_access_key: ((cli-team-aws-s3-secret-access-key))
-    versioned_file: master/cf7-cli-installer_edge_winx64.zip
-    region_name: us-west-1
-
-- name: gcp-bosh-pool
-  type: pool
-  source:
-    uri: git@github.com:cloudfoundry/cli-pools
-    private_key: ((cli-pools-github-private-key))
-    branch: master
-    pool: mashed-potato
-
-- name: legacy-gcp-bosh-pool
-  type: pool
-  source:
-    uri: git@github.com:cloudfoundry/cli-pools
-    private_key: ((cli-pools-github-private-key))
-    branch: master
-    pool: hasselback-potato
+    branch: release-candidate
+    uri: https://github.com/cloudfoundry/cf-acceptance-tests.git
+    ignore_paths:
+    - ci/*.yml
+    - .envrc
 
 - name: slack-alert
   type: slack-notification
@@ -194,14 +91,113 @@ resources:
     private_key: ((cli-private-github-private-key))
     branch: master
 
-# values for this already exist in last pass, blocked on
-# blocked on https://github.com/concourse/concourse/issues/1407
-- name: cf-cli-tracker
-  type: tracker
+- name: edge-linux-binary-32
+  type: s3
   source:
-    token: ((cf-cli-public-tracker-token))
-    project_id: '2196383'
-    tracker_url: https://www.pivotaltracker.com
+    bucket: v8-cf-cli-releases
+    access_key_id: ((cli-team-aws-s3-access-key-id))
+    secret_access_key: ((cli-team-aws-s3-secret-access-key))
+    versioned_file: master/cf8-cli_edge_linux_i686.tgz
+    region_name: us-west-1
+
+- name: edge-linux-binary-64
+  type: s3
+  source:
+    bucket: v8-cf-cli-releases
+    access_key_id: ((cli-team-aws-s3-access-key-id))
+    secret_access_key: ((cli-team-aws-s3-secret-access-key))
+    versioned_file: master/cf8-cli_edge_linux_x86-64.tgz
+    region_name: us-west-1
+
+- name: edge-osx-binary-64
+  type: s3
+  source:
+    bucket: v8-cf-cli-releases
+    access_key_id: ((cli-team-aws-s3-access-key-id))
+    secret_access_key: ((cli-team-aws-s3-secret-access-key))
+    versioned_file: master/cf8-cli_edge_osx.tgz
+    region_name: us-west-1
+
+- name: edge-windows-binary-32
+  type: s3
+  source:
+    bucket: v8-cf-cli-releases
+    access_key_id: ((cli-team-aws-s3-access-key-id))
+    secret_access_key: ((cli-team-aws-s3-secret-access-key))
+    versioned_file: master/cf8-cli_edge_win32.zip
+    region_name: us-west-1
+
+- name: edge-windows-binary-64
+  type: s3
+  source:
+    bucket: v8-cf-cli-releases
+    access_key_id: ((cli-team-aws-s3-access-key-id))
+    secret_access_key: ((cli-team-aws-s3-secret-access-key))
+    versioned_file: master/cf8-cli_edge_winx64.zip
+    region_name: us-west-1
+
+- name: edge-deb-installer-32
+  type: s3
+  source:
+    bucket: v8-cf-cli-releases
+    access_key_id: ((cli-team-aws-s3-access-key-id))
+    secret_access_key: ((cli-team-aws-s3-secret-access-key))
+    versioned_file: master/cf8-cli-installer_edge_i686.deb
+    region_name: us-west-1
+
+- name: edge-deb-installer-64
+  type: s3
+  source:
+    bucket: v8-cf-cli-releases
+    access_key_id: ((cli-team-aws-s3-access-key-id))
+    secret_access_key: ((cli-team-aws-s3-secret-access-key))
+    versioned_file: master/cf8-cli-installer_edge_x86-64.deb
+    region_name: us-west-1
+
+- name: edge-redhat-installer-32
+  type: s3
+  source:
+    bucket: v8-cf-cli-releases
+    access_key_id: ((cli-team-aws-s3-access-key-id))
+    secret_access_key: ((cli-team-aws-s3-secret-access-key))
+    versioned_file: master/cf8-cli-installer_edge_i686.rpm
+    region_name: us-west-1
+
+- name: edge-redhat-installer-64
+  type: s3
+  source:
+    bucket: v8-cf-cli-releases
+    access_key_id: ((cli-team-aws-s3-access-key-id))
+    secret_access_key: ((cli-team-aws-s3-secret-access-key))
+    versioned_file: master/cf8-cli-installer_edge_x86-64.rpm
+    region_name: us-west-1
+
+- name: edge-osx-installer-64
+  type: s3
+  source:
+    bucket: v8-cf-cli-releases
+    access_key_id: ((cli-team-aws-s3-access-key-id))
+    secret_access_key: ((cli-team-aws-s3-secret-access-key))
+    versioned_file: master/cf8-cli-installer_edge_osx.pkg
+    region_name: us-west-1
+
+- name: edge-windows-installer-32
+  type: s3
+  source:
+    bucket: v8-cf-cli-releases
+    access_key_id: ((cli-team-aws-s3-access-key-id))
+    secret_access_key: ((cli-team-aws-s3-secret-access-key))
+    versioned_file: master/cf8-cli-installer_edge_win32.zip
+    region_name: us-west-1
+
+- name: edge-windows-installer-64
+  type: s3
+  source:
+    bucket: v8-cf-cli-releases
+    access_key_id: ((cli-team-aws-s3-access-key-id))
+    secret_access_key: ((cli-team-aws-s3-secret-access-key))
+    versioned_file: master/cf8-cli-installer_edge_winx64.zip
+    region_name: us-west-1
 
 - name: ubuntu-64-image
   type: registry-image
@@ -273,19 +269,10 @@ jobs:
       trigger: true
       passed: [units]
     - get: cli-ci
-    - get: cli-i18n
-  - task: build-i18n
-    timeout: 3h
-    file: cli-ci/ci/cli-v7/tasks/generate-i18n-resources.yml
-    on_failure:
-      put: slack-alert
-      params:
-        channel: '#cli-dev-internal'
-        text: *slack_notification_text
   - in_parallel:
     - task: build
       timeout: 3h
-      file: cli-ci/ci/cli-v7/tasks/build-binaries.yml
+      file: cli-ci/ci/cli-v8/tasks/build-binaries.yml
       params:
         TARGET_GO_VERSION: go1.17.6
       on_failure:
@@ -295,7 +282,7 @@ jobs:
           text: *slack_notification_text
     - task: build-osx
       timeout: 3h
-      file: cli-ci/ci/cli-v7/tasks/build-osx-binary.yml
+      file: cli-ci/ci/cli-v8/tasks/build-osx-binary.yml
       params:
         TARGET_GO_VERSION: go1.17.6
       on_failure:
@@ -305,7 +292,7 @@ jobs:
           text: *slack_notification_text
   - task: combine-binaries
     timeout: 3h
-    file: cli-ci/ci/cli-v7/tasks/combine-binaries.yml
+    file: cli-ci/ci/cli-v8/tasks/combine-binaries.yml
   - put: cf-cli-binaries
     params:
       file: compiled/cf-cli-binaries.tgz
@@ -321,17 +308,16 @@ jobs:
       passed: [build-binaries]
       trigger: true
     - get: vars-store
-    - put: bosh-lock
-      resource: gcp-bosh-pool
+    - put: gcp-env
       params:
-        acquire: true
+        action: claim
   - do:
     - task: cleanup-integration
       timeout: 3h
-      file: cli-ci/ci/cli-v7/tasks/cleanup-integration.yml
+      file: cli-ci/ci/cli-v8/tasks-toolsmiths/cleanup-integration.yml
     - task: integration
       timeout: 3h
-      file: cli-ci/ci/cli-v7/tasks/integration-linux.yml
+      file: cli-ci/ci/cli-v8/tasks-toolsmiths/integration-linux.yml
       on_failure:
         put: slack-alert
         params:
@@ -339,7 +325,7 @@ jobs:
           text: *slack_notification_text
       ensure:
         task: cleanup-integration
-        file: cli-ci/ci/cli-v7/tasks/cleanup-integration.yml
+        file: cli-ci/ci/cli-v8/tasks-toolsmiths/cleanup-integration.yml
       params: &integration_params
         CF_INT_CLIENT_ID: 'potato-face'
         CF_INT_CLIENT_SECRET: ((client-secret))
@@ -348,9 +334,43 @@ jobs:
         CF_INT_DOCKER_PASSWORD: ((dockerhub-password))
         CF_INT_IGNORE_API_VERSION_CHECK: false
   ensure:
-    put: gcp-bosh-pool
+    put: gcp-env
     params:
-      release: bosh-lock
+      action: unclaim
+      env_file: gcp-env/metadata
+    inputs:
+    - gcp-env
+    
+- name: integration-windows
+  serial: true
+  plan:
+  - in_parallel: *integration_resources
+  - do:
+    - task: cleanup-integration
+      timeout: 3h
+      file: cli-ci/ci/cli-v8/tasks-toolsmiths/cleanup-integration.yml
+    - task: integration
+      timeout: 3h
+      file: cli-ci/ci/cli-v8/tasks-toolsmiths/integration-windows.yml
+      params:
+        <<: *integration_params
+      input_mapping:
+        cf-credentials: cleanup-integration-outputs
+      on_failure:
+        put: slack-alert
+        params:
+          channel: '#cli-dev-internal'
+          text: *slack_notification_text
+      ensure:
+        task: cleanup-integration
+        file: cli-ci/ci/cli-v8/tasks-toolsmiths/cleanup-integration.yml
+  ensure:
+    put: gcp-env
+    params:
+      action: unclaim
+      env_file: gcp-env/metadata
+    inputs:
+    - gcp-env
 
 - name: integration-linux-client-creds
   serial: true
@@ -359,10 +379,10 @@ jobs:
   - do:
     - task: cleanup-integration
       timeout: 3h
-      file: cli-ci/ci/cli-v7/tasks/cleanup-integration.yml
+      file: cli-ci/ci/cli-v8/tasks-toolsmiths/cleanup-integration.yml
     - task: integration
       timeout: 3h
-      file: cli-ci/ci/cli-v7/tasks/integration-linux.yml
+      file: cli-ci/ci/cli-v8/tasks-toolsmiths/integration-linux.yml
       on_failure:
         put: slack-alert
         params:
@@ -370,42 +390,17 @@ jobs:
           text: *slack_notification_text
       ensure:
         task: cleanup-integration
-        file: cli-ci/ci/cli-v7/tasks/cleanup-integration.yml
+        file: cli-ci/ci/cli-v8/tasks-toolsmiths/cleanup-integration.yml
       params:
         <<: *integration_params
         CF_INT_CLIENT_CREDENTIALS_TEST_MODE: true
   ensure:
-    put: gcp-bosh-pool
+    put: gcp-env
     params:
-      release: bosh-lock
-
-- name: integration-windows
-  serial: true
-  plan:
-  - in_parallel: *integration_resources
-  - do:
-    - task: cleanup-integration
-      timeout: 3h
-      file: cli-ci/ci/cli-v7/tasks/cleanup-integration.yml
-    - task: integration
-      timeout: 3h
-      file: cli-ci/ci/cli-v7/tasks/integration-windows.yml
-      params:
-        <<: *integration_params
-      input_mapping:
-        cf-credentials: cleanup-integration-outputs
-      on_failure:
-        put: slack-alert
-        params:
-          channel: '#cli-dev-internal'
-          text: *slack_notification_text
-      ensure:
-        task: cleanup-integration
-        file: cli-ci/ci/cli-v7/tasks/cleanup-integration.yml
-  ensure:
-    put: gcp-bosh-pool
-    params:
-      release: bosh-lock
+      action: unclaim
+      env_file: gcp-env/metadata
+    inputs:
+    - gcp-env
 
 - name: integration-windows-client-creds
   serial: true
@@ -414,10 +409,10 @@ jobs:
   - do:
     - task: cleanup-integration
       timeout: 3h
-      file: cli-ci/ci/cli-v7/tasks/cleanup-integration.yml
+      file: cli-ci/ci/cli-v8/tasks-toolsmiths/cleanup-integration.yml
     - task: integration
       timeout: 3h
-      file: cli-ci/ci/cli-v7/tasks/integration-windows.yml
+      file: cli-ci/ci/cli-v8/tasks-toolsmiths/integration-windows.yml
       params:
         <<: *integration_params
         CF_INT_CLIENT_CREDENTIALS_TEST_MODE: true
@@ -430,38 +425,36 @@ jobs:
           text: *slack_notification_text
       ensure:
         task: cleanup-integration
-        file: cli-ci/ci/cli-v7/tasks/cleanup-integration.yml
+        file: cli-ci/ci/cli-v8/tasks-toolsmiths/cleanup-integration.yml
   ensure:
-    put: gcp-bosh-pool
+    put: gcp-env
     params:
-      release: bosh-lock
+      action: unclaim
+      env_file: gcp-env/metadata
+    inputs:
+    - gcp-env
 
-- name: integration-legacy
+- name: integration-linux-minimum-capi
   serial: true
   plan:
-  - in_parallel: &integration_legacy_resources
+  - in_parallel: &integration_resources
     - get: cli
       passed: [build-binaries]
+    - get: cli-ci
     - get: cf-cli-binaries
       passed: [build-binaries]
       trigger: true
-    - get: cli-ci
     - get: vars-store
-    - put: bosh-lock
-      resource: legacy-gcp-bosh-pool
-      timeout: 2h
+    - put: gcp-env-min-capi
       params:
-        acquire: true
+        action: claim
   - do:
     - task: cleanup-integration
       timeout: 3h
-      file: cli-ci/ci/cli-v7/tasks/cleanup-integration.yml
+      file: cli-ci/ci/cli-v8/tasks-toolsmiths/cleanup-integration.yml
     - task: integration
       timeout: 3h
-      file: cli-ci/ci/cli-v7/tasks/integration-linux.yml
-      params:
-        <<: *integration_params
-        NODES: 12
+      file: cli-ci/ci/cli-v8/tasks-toolsmiths/integration-linux.yml
       on_failure:
         put: slack-alert
         params:
@@ -469,39 +462,159 @@ jobs:
           text: *slack_notification_text
       ensure:
         task: cleanup-integration
-        file: cli-ci/ci/cli-v7/tasks/cleanup-integration.yml
+        file: cli-ci/ci/cli-v8/tasks-toolsmiths/cleanup-integration.yml
+      params: &integration_params
+        CF_INT_CLIENT_ID: 'potato-face'
+        CF_INT_CLIENT_SECRET: ((client-secret))
+        CF_INT_DOCKER_IMAGE: ((dockerhub-private-image))
+        CF_INT_DOCKER_USERNAME: ((dockerhub-username))
+        CF_INT_DOCKER_PASSWORD: ((dockerhub-password))
+        CF_INT_IGNORE_API_VERSION_CHECK: false
   ensure:
-    put: legacy-gcp-bosh-pool
+    put: gcp-env-min-capi
     params:
-      release: bosh-lock
+      action: unclaim
+      env_file: gcp-env-min-capi/metadata
+    inputs:
+    - gcp-env-min-capi
 
-- name: integration-legacy-client-creds
+- name: cats
   serial: true
   plan:
-  - in_parallel: *integration_legacy_resources
+  - in_parallel:
+    - get: cli
+      passed:
+      - integration-linux
+      - integration-linux-client-creds
+      - integration-windows
+      - integration-windows-client-creds
+      - integration-linux-minimum-capi
+    - get: cf-acceptance-tests-rc
+      trigger: true
+    - get: cf-deployment-concourse-tasks
+    - get: cf-cli-binaries
+      passed:
+      - integration-linux
+      - integration-linux-client-creds
+      - integration-windows
+      - integration-windows-client-creds
+      - integration-linux-minimum-capi
+      trigger: true
+    - get: cli-ci
+    - get: vars-store
+    - put: gcp-env
+      timeout: 2h
+      params:
+        action: claim
   - do:
     - task: cleanup-integration
       timeout: 3h
-      file: cli-ci/ci/cli-v7/tasks/cleanup-integration.yml
-    - task: integration
+      file: cli-ci/ci/cli-v8/tasks-toolsmiths/cleanup-integration.yml
+    - task: config
       timeout: 3h
-      file: cli-ci/ci/cli-v7/tasks/integration-linux.yml
+      file: cli-ci/ci/cli-v8/tasks-toolsmiths/cats-config.yml
       params:
-        <<: *integration_params
-        NODES: 12
-        CF_INT_CLIENT_CREDENTIALS_TEST_MODE: true
+        INCLUDE_V3: true
+        BROKER_START_TIMEOUT: 330
+        CF_PUSH_TIMEOUT: 210
+        DEFAULT_TIMEOUT: 60
+        LONG_CURL_TIMEOUT: 210
+    - task: extract-linux-binary
+      timeout: 3h
+      file: cli-ci/ci/cli-v8/tasks/extract-linux-binary.yml
+    - task: run-tests
+      timeout: 3h
+      file: cf-deployment-concourse-tasks/run-cats-with-provided-cli/task.yml
+      input_mapping:
+        cf-acceptance-tests: cf-acceptance-tests-rc
+        integration-config: cats-config
+        cf-cli: linux-cf-binary
+      params:
+        NODES: 16
+        SKIP_REGEXP: "transparently proxies both reserved"
+        REPORTER_CONFIG_FILE_PATH: ""
+        FLAKE_ATTEMPTS: 2
       on_failure:
         put: slack-alert
         params:
           channel: '#cli-dev-internal'
           text: *slack_notification_text
-      ensure:
-        task: cleanup-integration
-        file: cli-ci/ci/cli-v7/tasks/cleanup-integration.yml
   ensure:
-    put: legacy-gcp-bosh-pool
+    put: gcp-env
     params:
-      release: bosh-lock
+      action: unclaim
+      env_file: gcp-env/metadata
+    inputs:
+    - gcp-env
+
+- name: cats-minimum-capi
+  serial: true
+  plan:
+  - in_parallel:
+    - get: cli
+      passed:
+      - integration-linux
+      - integration-linux-client-creds
+      - integration-windows
+      - integration-windows-client-creds
+      - integration-linux-minimum-capi
+    - get: cf-acceptance-tests-rc
+      trigger: true
+    - get: cf-deployment-concourse-tasks
+    - get: cf-cli-binaries
+      passed:
+      - integration-linux
+      - integration-linux-client-creds
+      - integration-windows
+      - integration-windows-client-creds
+      - integration-linux-minimum-capi
+      trigger: true
+    - get: cli-ci
+    - get: vars-store
+    - put: gcp-env-min-capi
+      timeout: 2h
+      params:
+        action: claim    
+  - do:
+    - task: cleanup-integration
+      timeout: 3h
+      file: cli-ci/ci/cli-v8/tasks-toolsmiths/cleanup-integration.yml
+    - task: config
+      timeout: 3h
+      file: cli-ci/ci/cli-v8/tasks-toolsmiths/cats-config.yml
+      params:
+        INCLUDE_V3: true
+        BROKER_START_TIMEOUT: 330
+        CF_PUSH_TIMEOUT: 210
+        DEFAULT_TIMEOUT: 60
+        LONG_CURL_TIMEOUT: 210
+    - task: extract-linux-binary
+      timeout: 3h
+      file: cli-ci/ci/cli-v8/tasks/extract-linux-binary.yml
+    - task: run-tests
+      timeout: 3h
+      file: cf-deployment-concourse-tasks/run-cats-with-provided-cli/task.yml
+      input_mapping:
+        cf-acceptance-tests: cf-acceptance-tests-rc
+        integration-config: cats-config
+        cf-cli: linux-cf-binary
+      params:
+        NODES: 16
+        SKIP_REGEXP: "transparently proxies both reserved"
+        REPORTER_CONFIG_FILE_PATH: ""
+        FLAKE_ATTEMPTS: 2
+      on_failure:
+        put: slack-alert
+        params:
+          channel: '#cli-dev-internal'
+          text: *slack_notification_text
+  ensure:
+    put: gcp-env-min-capi
+    params:
+      action: unclaim
+      env_file: gcp-env-min-capi/metadata
+    inputs:
+    - gcp-env-min-capi
 
 - name: create-installers
   serial: true
@@ -514,95 +627,65 @@ jobs:
       - integration-linux-client-creds
       - integration-windows
       - integration-windows-client-creds
-      - integration-legacy
-      - integration-legacy-client-creds
+      - integration-linux-minimum-capi
     - get: cf-cli-binaries
       passed:
       - integration-linux
       - integration-linux-client-creds
       - integration-windows
       - integration-windows-client-creds
-      - integration-legacy
-      - integration-legacy-client-creds
+      - integration-linux-minimum-capi
       trigger: true
   - task: extract-binaries
     timeout: 3h
-    file: cli-ci/ci/cli-v7/tasks/extract-binaries.yml
-    on_failure:
-      put: slack-alert
-      params:
-        channel: '#cli-dev-internal'
-        text: |
-          extracting the binaries in installer creation failed :bart:
-          $ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
+    file: cli-ci/ci/cli-v8/tasks/extract-binaries.yml
   - in_parallel:
     - task: unix
       timeout: 3h
-      file: cli-ci/ci/cli-v7/tasks/create-installers.yml
-      on_failure:
-        put: slack-alert
-        params:
-          channel: '#cli-dev-internal'
-          text: |
-            :ubuntu: create unix installers failed :redhat:
-            $ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
+      file: cli-ci/ci/cli-v8/tasks/create-installers.yml
     - task: windows
       timeout: 3h
-      file: cli-ci/ci/cli-v7/tasks/create-edge-installers-windows.yml
-      on_failure:
-        put: slack-alert
-        params:
-          channel: '#cli-dev-internal'
-          text: |
-            create windows installer failed :winc:
-            $ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
+      file: cli-ci/ci/cli-v8/tasks/create-edge-installers-windows.yml
   - task: package-binaries
     timeout: 3h
-    file: cli-ci/ci/cli-v7/tasks/package-binaries.yml
-    on_failure:
-      put: slack-alert
-      params:
-        channel: '#cli-dev-internal'
-        text: |
-          extracting the binaries in installer creation failed :package:
-          $ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
+    file: cli-ci/ci/cli-v8/tasks/package-binaries.yml
   - in_parallel:
     - put: edge-linux-binary-32
       params:
-        file: archives/cf7-cli_edge_linux_i686.tgz
+        file: archives/cf8-cli_edge_linux_i686.tgz
     - put: edge-linux-binary-64
       params:
-        file: archives/cf7-cli_edge_linux_x86-64.tgz
+        file: archives/cf8-cli_edge_linux_x86-64.tgz
     - put: edge-osx-binary-64
       params:
-        file: archives/cf7-cli_edge_osx.tgz
+        file: archives/cf8-cli_edge_osx.tgz
     - put: edge-windows-binary-32
       params:
-        file: archives/cf7-cli_edge_win32.zip
+        file: archives/cf8-cli_edge_win32.zip
     - put: edge-windows-binary-64
       params:
-        file: archives/cf7-cli_edge_winx64.zip
+        file: archives/cf8-cli_edge_winx64.zip
     - put: edge-deb-installer-32
       params:
-        file: archives/cf7-cli-installer_i686.deb
+        file: archives/cf8-cli-installer_i686.deb
     - put: edge-deb-installer-64
       params:
-        file: archives/cf7-cli-installer_x86-64.deb
+        file: archives/cf8-cli-installer_x86-64.deb
     - put: edge-redhat-installer-32
       params:
-        file: archives/cf7-cli-installer_i686.rpm
+        file: archives/cf8-cli-installer_i686.rpm
     - put: edge-redhat-installer-64
       params:
-        file: archives/cf7-cli-installer_x86-64.rpm
+        file: archives/cf8-cli-installer_x86-64.rpm
     - put: edge-osx-installer-64
       params:
-        file: archives/cf7-cli-installer_osx.pkg
+        file: archives/cf8-cli-installer_osx.pkg
     - put: edge-windows-installer-32
       params:
-        file: winstallers/cf7-cli-installer_win32.zip
+        file: winstallers/cf8-cli-installer_win32.zip
     - put: edge-windows-installer-64
       params:
-        file: winstallers/cf7-cli-installer_winx64.zip
+        file: winstallers/cf8-cli-installer_winx64.zip
 
 - name: integration-installers
   serial: true
@@ -634,7 +717,7 @@ jobs:
       input_mapping:
         installer: edge-deb-installer-64
       params:
-        MAJOR_VERSION: 7
+        MAJOR_VERSION: 8
         ARCH: x86-64
     - task: deb-32
       timeout: 3h
@@ -643,7 +726,7 @@ jobs:
       input_mapping:
         installer: edge-deb-installer-32
       params:
-        MAJOR_VERSION: 7
+        MAJOR_VERSION: 8
         ARCH: i686
     - task: rpm-64
       timeout: 3h
@@ -652,7 +735,7 @@ jobs:
       input_mapping:
         installer: edge-redhat-installer-64
       params:
-        MAJOR_VERSION: 7
+        MAJOR_VERSION: 8
         ARCH: x86-64
     - task: rpm-32
       timeout: 3h
@@ -661,91 +744,6 @@ jobs:
       input_mapping:
         installer: edge-redhat-installer-32
       params:
-        MAJOR_VERSION: 7
+        MAJOR_VERSION: 8
         ARCH: i686
 
-- name: cats
-  serial: true
-  plan:
-  - in_parallel:
-    - get: cli
-      passed:
-      - integration-linux
-      - integration-linux-client-creds
-      - integration-windows
-      - integration-windows-client-creds
-      - integration-legacy
-      - integration-legacy-client-creds
-    - get: cf-acceptance-tests
-      trigger: true
-    - get: cf-deployment-concourse-tasks
-    - get: cf-cli-binaries
-      passed:
-      - integration-linux
-      - integration-linux-client-creds
-      - integration-windows
-      - integration-windows-client-creds
-      - integration-legacy
-      - integration-legacy-client-creds
-      trigger: true
-    - get: cli-ci
-    - get: vars-store
-    - put: bosh-lock
-      resource: gcp-bosh-pool
-      timeout: 2h
-      params:
-        acquire: true
-  - do:
-    - task: cleanup-integration
-      timeout: 3h
-      file: cli-ci/ci/cli-v7/tasks/cleanup-integration.yml
-    - task: config
-      timeout: 3h
-      file: cli-ci/ci/cli-v7/tasks/cats-config.yml
-      params:
-        INCLUDE_V3: true
-        BROKER_START_TIMEOUT: 330
-        CF_PUSH_TIMEOUT: 210
-        DEFAULT_TIMEOUT: 60
-        LONG_CURL_TIMEOUT: 210
-    - task: extract-linux-binary
-      timeout: 3h
-      file: cli-ci/ci/cli-v7/tasks/extract-linux-binary.yml
-    - task: run-tests
-      timeout: 3h
-      file: cf-deployment-concourse-tasks/run-cats-with-provided-cli/task.yml
-      input_mapping:
-        cf-acceptance-tests: cf-acceptance-tests
-        integration-config: cats-config
-        cf-cli: linux-cf-binary
-      params:
-        NODES: 16
-        SKIP_REGEXP: "transparently proxies both reserved"
-        REPORTER_CONFIG_FILE_PATH: ""
-        FLAKE_ATTEMPTS: 2
-      on_failure:
-        put: slack-alert
-        params:
-          channel: '#cli-dev-internal'
-          text: *slack_notification_text
-  ensure:
-    put: gcp-bosh-pool
-    params:
-      release: bosh-lock
-
-- name: deliver-stories
-  serial: true
-  plan:
-  - get: cli
-    passed:
-    - integration-linux
-    - integration-windows
-    - integration-linux-client-creds
-    - integration-windows-client-creds
-    - integration-legacy
-    - integration-legacy-client-creds
-    trigger: true
-  - put: cf-cli-tracker
-    params:
-      repos:
-      - cli

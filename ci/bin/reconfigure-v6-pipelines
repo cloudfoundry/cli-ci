@@ -6,13 +6,6 @@ set -o pipefail
 FLY_TARGET_NAME=${1:-ci}
 echo "Pipeline: $FLY_TARGET_NAME"
 
-check_installed() {
-  if ! command -v $1 > /dev/null 2>&1; then
-    printf "$1 must be installed before running this script!"
-    exit 1
-  fi
-}
-
 configure_pipeline() {
   local name=$1
   local pipeline=$2
@@ -52,27 +45,6 @@ configure_infrastructure_pipeline() {
     -v cf-deployment-version=$cf_deployment_version
 }
 
-configure_bosh_lite_pool_pipeline() {
-  local name=$1
-
-  printf "configuring the $name pipeline...\n"
-
-  fly -t $FLY_TARGET_NAME set-pipeline \
-    -p $name \
-    -c $pipelines_path/cli-dev-bosh-lite/pipeline.yml \
-    -v bosh-lite-dns-zone-name=bosh-lite-pool \
-    -v bosh-lite-gcp-json-key="$(lpass show Shared-CLI/bosh-service-account-gcp-creds --notes | jq -c . )" \
-    -v bosh-lite-pools-github-private-key="$(lpass show Shared-CLI/bosh-lite-pool-github-key --notes)" \
-    -v bosh-lite-project-id=cf-cli \
-    -v bosh-lite-region=us-west1 \
-    -v bosh-lite-storage-bucket=bosh-lites \
-    -v bosh-lite-system-domain-suffix=lite.cli.fun \
-    -v git-email=cf-cli-eng@pivotal.io \
-    -v git-username=cf-cli-eng \
-    -v env-pool-repo=git@github.com:cloudfoundry/cli-pools.git \
-    -v slack-webhook-url="$(lpass show Shared-CLI/Concourse/Concourse\ Credentials --notes | grep -F slack-webhook-url: | cut -d '"' -f2)"
-}
-
 configure_workstation_scheduler_pipeline() {
   local name=$1
   local pipeline=$2
@@ -87,8 +59,7 @@ configure_workstation_scheduler_pipeline() {
     -v workstation-scheduler-gcp-json-key="$(lpass show Shared-CLI/workstation-scheduler-gcp-service-account-key --notes | jq -c . )"
 }
 
-check_installed lpass
-check_installed fly
+./reconfigure-pipeline-prerequisites
 
 # Make sure we're up to date and that we're logged in.
 lpass sync
@@ -105,5 +76,3 @@ higest_compatible_cfd_version="v13.23.0"
 configure_infrastructure_pipeline inf-starbelly starbelly-pipeline baked-potato $pipelines_path/infrastructure/pipeline.yml $higest_compatible_cfd_version
 configure_infrastructure_pipeline inf-tartine tartine-pipeline baked-potato $pipelines_path/infrastructure/pipeline.yml $higest_compatible_cfd_version
 configure_infrastructure_pipeline inf-tropisueno tropisueno-pipeline baked-potato $pipelines_path/infrastructure/pipeline.yml $higest_compatible_cfd_version
-
-configure_bosh_lite_pool_pipeline bosh-lites

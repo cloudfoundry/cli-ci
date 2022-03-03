@@ -136,7 +136,7 @@ jobs:
             dns_zone_name: ((bosh-lite-dns-zone-name))
       - do:
           - task: create-bosh-lite
-            file: capi-ci/ci/bosh-lite/create-bosh-lite.yml
+            file: cli-ci/ci/cli-dev-bosh-lite/tasks/create-bosh-lite.yml
             params:
               GCP_JSON_KEY: ((bosh-lite-gcp-json-key))
               GCP_INSTANCE_TYPE: n2-highmem-8
@@ -185,7 +185,7 @@ jobs:
             on_failure:
               in_parallel:
                 - task: delete-bosh-lite
-                  file: capi-ci/ci/bosh-lite/delete-bosh-lite.yml
+                  file: cli-ci/ci/cli-dev-bosh-lite/tasks/delete-bosh-lite.yml
         on_failure:
           do:
             - in_parallel:
@@ -226,6 +226,7 @@ jobs:
         - get: destroy-bosh-lite-trigger
           version: every
           trigger: true
+        - get: cli-ci
         - get: capi-ci
         - get: bosh-deployment
         - put: deleting-pool
@@ -244,7 +245,7 @@ jobs:
             GCP_PATH: director-state
             USE_ENV_NAMED_SUBDIR: true
         - task: delete-bosh-lite
-          file: capi-ci/ci/bosh-lite/delete-bosh-lite.yml
+          file: cli-ci/ci/cli-dev-bosh-lite/tasks/delete-bosh-lite.yml
         - put: terraform
           params:
             action: destroy
