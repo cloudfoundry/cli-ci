@@ -80,4 +80,5 @@ configure_v8_infrastructure_pipeline inf-arizmendi arizmendi-pipeline v8-pool
 configure_v8_infrastructure_pipeline inf-cliffhouse cliffhouse-pipeline v8-pool
 configure_v8_infrastructure_pipeline inf-garaje garaje-pipeline v8-pool
 configure_v8_infrastructure_pipeline inf-montesacro montesacro-pipeline v8-pool
+configure_v8_infrastructure_pipeline inf-akiko akiko-pipeline v8-pool
 configure_v8_infrastructure_minimum_capi_pipeline inf-chipotle chipotle-pipeline v8-pool-minimum-capi
