@@ -4,4 +4,4 @@
   value:
     name: capi
     version: latest
-    url: ((edge_capi_url))
+    url: https://bosh.io/d/github.com/cloudfoundry/capi-release
