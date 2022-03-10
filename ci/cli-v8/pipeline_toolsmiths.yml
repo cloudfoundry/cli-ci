@@ -319,86 +319,86 @@ jobs:
       params:
         action: claim
   - do:
-    - task: cleanup-integration
-      timeout: 3h
-      # file: cli-ci/ci/cli-v8/tasks-toolsmiths/cleanup-integration.yml
-      config:
-        platform: linux
+    # - task: cleanup-integration
+    #   timeout: 3h
+    #   # file: cli-ci/ci/cli-v8/tasks-toolsmiths/cleanup-integration.yml
+    #   config:
+    #     platform: linux
 
-        image_resource:
-          type: docker-image
-          source:
-            repository: cfcli/cli-base
+    #     image_resource:
+    #       type: docker-image
+    #       source:
+    #         repository: cfcli/cli-base
 
-        inputs:
-        - name: cli
-        - name: cf-cli-binaries
-        - name: vars-store
-        - name: gcp-env
+    #     inputs:
+    #     - name: cli
+    #     - name: cf-cli-binaries
+    #     - name: vars-store
+    #     - name: gcp-env
 
-        outputs:
-        - name: cleanup-integration-outputs
+    #     outputs:
+    #     - name: cleanup-integration-outputs
 
-        params:
-          ARGS:
+    #     params:
+    #       ARGS:
 
-        run:
-          path: bash
-          args:
-          - -c
-          - |
-            set -e
+    #     run:
+    #       path: bash
+    #       args:
+    #       - -c
+    #       - |
+    #         set -e
             
-            ENV=$(cat gcp-env/name)
-            cat gcp-env/metadata > $ENV.json
+    #         ENV=$(cat gcp-env/name)
+    #         cat gcp-env/metadata > $ENV.json
 
-            # curl -L https://github.com/cloudfoundry/bosh-bootloader/releases/download/v8.4.89/bbl-v8.4.89_linux_x86-64 --output /usr/local/bin/bbl && chmod 0755 /usr/local/bin/bbl8
+    #         # curl -L https://github.com/cloudfoundry/bosh-bootloader/releases/download/v8.4.89/bbl-v8.4.89_linux_x86-64 --output /usr/local/bin/bbl && chmod 0755 /usr/local/bin/bbl8
 
-            eval "$(bbl print-env --metadata-file $ENV.json)"
+    #         eval "$(bbl print-env --metadata-file $ENV.json)"
 
-            CERT_DIR=$PWD/cleanup-integration-outputs/cert_dir
-            mkdir -p $CERT_DIR
+    #         CERT_DIR=$PWD/cleanup-integration-outputs/cert_dir
+    #         mkdir -p $CERT_DIR
 
-            # if [[ $ENV == "homeroom" ]]; then
-            #   export CF_INT_PASSWORD=$(bosh int vars-store/ci/infrastructure/$ENV/deployment-vars.yml --path /cf_admin_password)
-            # else
-            #   pushd vars-store/ci/infrastructure/$ENV
-            #     eval "$(bbl print-env)"
-            #   popd
+    #         # if [[ $ENV == "homeroom" ]]; then
+    #         #   export CF_INT_PASSWORD=$(bosh int vars-store/ci/infrastructure/$ENV/deployment-vars.yml --path /cf_admin_password)
+    #         # else
+    #         #   pushd vars-store/ci/infrastructure/$ENV
+    #         #     eval "$(bbl print-env)"
+    #         #   popd
 
-            #   credhub login
-            #   export CF_INT_OIDC_PASSWORD=$(credhub get -n /bosh-$ENV/cf/uaa_oidc_admin_password | bosh interpolate --path /value -)
-            export CF_INT_PASSWORD=$(credhub get -n /bosh-$ENV/cf/cf_admin_password | bosh interpolate --path /value -)
+    #         #   credhub login
+    #         #   export CF_INT_OIDC_PASSWORD=$(credhub get -n /bosh-$ENV/cf/uaa_oidc_admin_password | bosh interpolate --path /value -)
+    #         export CF_INT_PASSWORD=$(credhub get -n /bosh-$ENV/cf/cf_admin_password | bosh interpolate --path /value -)
             
-            # get CA cert for go router
-            credhub get --name /bosh-$ENV/cf/router_ca | bosh interpolate - --path /value/certificate > $CERT_DIR/$ENV.router.ca
-            # fi
+    #         # get CA cert for go router
+    #         credhub get --name /bosh-$ENV/cf/router_ca | bosh interpolate - --path /value/certificate > $CERT_DIR/$ENV.router.ca
+    #         # fi
 
-            set -x
+    #         set -x
 
-            # output password into a temp file for consumption by Windows
-            echo $CF_INT_PASSWORD > cleanup-integration-outputs/cf-password
-            # echo $CF_INT_OIDC_PASSWORD > cleanup-integration-outputs/uaa-oidc-password
+    #         # output password into a temp file for consumption by Windows
+    #         echo $CF_INT_PASSWORD > cleanup-integration-outputs/cf-password
+    #         # echo $CF_INT_OIDC_PASSWORD > cleanup-integration-outputs/uaa-oidc-password
 
-            # get CA certs for load balancer and router
-            # bosh interpolate vars-store/ci/infrastructure/$ENV/bbl-state.json --path /lb/cert > $CERT_DIR/$ENV.lb.cert
+    #         # get CA certs for load balancer and router
+    #         # bosh interpolate vars-store/ci/infrastructure/$ENV/bbl-state.json --path /lb/cert > $CERT_DIR/$ENV.lb.cert
 
-            set -ex
+    #         set -ex
 
-            # domain=$ENV
-            export CF_INT_API="https://api.${ENV}.cf-app.com"
-            export CF_USERNAME=admin
+    #         # domain=$ENV
+    #         export CF_INT_API="https://api.${ENV}.cf-app.com"
+    #         export CF_USERNAME=admin
 
-            export PATH=$GOPATH/bin:$PATH
+    #         export PATH=$GOPATH/bin:$PATH
 
-            pushd cf-cli-binaries
-              tar xvzf cf-cli-binaries.tgz
-              chmod +x cf-cli_linux_x86-64
-              mv cf-cli_linux_x86-64 $GOPATH/bin/cf
-            popd
+    #         pushd cf-cli-binaries
+    #           tar xvzf cf-cli-binaries.tgz
+    #           chmod +x cf-cli_linux_x86-64
+    #           mv cf-cli_linux_x86-64 $GOPATH/bin/cf
+    #         popd
 
-            cd cli
-            bin/cleanup-integration "${ARGS}"
+    #         cd cli
+    #         bin/cleanup-integration "${ARGS}"
     - task: integration
       timeout: 3h
       # file: cli-ci/ci/cli-v8/tasks-toolsmiths/integration-linux.yml
@@ -461,6 +461,8 @@ jobs:
 
               # export CF_INT_OIDC_USERNAME="admin-oidc"
               # export CF_INT_OIDC_PASSWORD=$(credhub get -n /bosh-$ENV/cf/uaa_oidc_admin_password | bosh interpolate --path /value -)
+              export CF_INT_OIDC_USERNAME="admin"
+              export CF_INT_OIDC_PASSWORD=$(credhub get -n /bosh-$ENV/cf/uaa_admin_client_secret | bosh interpolate --path /value -)
               credhub get --name /bosh-$ENV/cf/router_ca | bosh interpolate - --path /value/certificate > $SSL_CERT_DIR/$ENV.router.ca
               # bosh interpolate vars-store/ci/infrastructure/$ENV/bbl-state.json --path /lb/cert > $SSL_CERT_DIR/$ENV.lb.cert
 
@@ -482,7 +484,7 @@ jobs:
             export PATH=$GOPATH/bin:$PATH
 
             bosh -d cf manifest > ${ENV}_cf_deployment.yml
-            bosh -d cf deploy ${ENV}_cf_deployment.yml -n -o cli-ci/ci/infrastructure/operations/use-latest-capi.yml
+            bosh -d cf deploy ${ENV}_cf_deployment.yml -n -o cli-ci/ci/infrastructure/operations/use-edge-capi.yml
 
             pushd cf-cli-binaries
               tar xvzf cf-cli-binaries.tgz
@@ -501,9 +503,9 @@ jobs:
       #   params:
       #     channel: '#cli-dev-internal'
       #     text: *slack_notification_text
-      ensure:
-        task: cleanup-integration
-        file: cli-ci/ci/cli-v8/tasks-toolsmiths/cleanup-integration.yml
+      # ensure:
+      #   task: cleanup-integration
+      #   file: cli-ci/ci/cli-v8/tasks-toolsmiths/cleanup-integration.yml
       params: &integration_params
         # CF_INT_CLIENT_ID: 'potato-face'
         # CF_INT_CLIENT_SECRET: ((client-secret))
