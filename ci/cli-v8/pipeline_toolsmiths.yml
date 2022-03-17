@@ -318,7 +318,6 @@ jobs:
       passed: [build-binaries]
     - get: cli-ci
     - get: cf-deployment
-    # - get: smith-cli
     - get: cf-cli-binaries
       passed: [build-binaries]
       trigger: true
@@ -341,7 +340,7 @@ jobs:
         inputs:
         - name: cli
         - name: cf-cli-binaries
-        - name: vars-store
+        # - name: vars-store
         - name: gcp-env
         - name: cli-ci
         - name: cf-deployment
@@ -386,7 +385,6 @@ jobs:
              -o cf-deployment/operations/test/add-persistent-isolation-segment-diego-cell.yml 
 
             # -o cf-deployment/operations/use-compiled-releases.yml 
-            # -o cf-deployment/operations/test/add-persistent-isolation-segment-diego-cell.yml 
             # -o cf-deployment/operations/test/add-persistent-isolation-segment-diego-cell-bosh-lite.yml 
             # -o cf-deployment/operations/use-internal-lookup-for-route-services.yml 
             # -o cli-ci/ci/infrastructure/operations/add-uaa-client-cf-custom.yml 
@@ -409,8 +407,6 @@ jobs:
 
             export CF_INT_API="https://api.${ENV}.cf-app.com"
             export CF_DIAL_TIMEOUT=15
-            # export CF_INT_CLIENT_ID=$(jq -r '.id' $ENV.json)
-            # export CF_INT_CLIENT_SECRET=$(jq -r '.bosh.bosh_client_secret' $ENV.json)
             # export CF_USERNAME=admin
 
             export GOPATH=$PWD/go
@@ -434,19 +430,19 @@ jobs:
       #     channel: '#cli-dev-internal'
       #     text: *slack_notification_text
       params: &integration_params
-        CF_INT_CLIENT_ID: 'potato-face'
-        CF_INT_CLIENT_SECRET: ((client-secret))
+        # CF_INT_CLIENT_ID: 'potato-face'
+        # CF_INT_CLIENT_SECRET: ((client-secret))
         CF_INT_DOCKER_IMAGE: ((dockerhub-private-image))
         CF_INT_DOCKER_USERNAME: ((dockerhub-username))
         CF_INT_DOCKER_PASSWORD: ((dockerhub-password))
         CF_INT_IGNORE_API_VERSION_CHECK: false
-  # ensure:
-  #   put: gcp-env
-  #   params:
-  #     action: unclaim
-  #     env_file: gcp-env/metadata
-  #   inputs:
-  #   - gcp-env
+  ensure:
+    put: gcp-env
+    params:
+      action: unclaim
+      env_file: gcp-env/metadata
+    inputs:
+    - gcp-env
     
 - name: integration-windows
   serial: true
@@ -515,7 +511,7 @@ jobs:
         inputs:
         - name: cli
         - name: cf-cli-binaries
-        - name: vars-store
+        # - name: vars-store
         - name: gcp-env
         - name: cli-ci
         - name: cf-deployment
@@ -547,27 +543,33 @@ jobs:
 
             cat gcp-env/metadata > $ENV.json
 
-            echo "CF_INT_CLIENT_CREDENTIALS_TEST_MODE=${CF_INT_CLIENT_CREDENTIALS_TEST_MODE}"
-            echo "CF_INT_CLIENT_ID=${CF_INT_CLIENT_ID}"
-            echo "CF_INT_CLIENT_SECRET=${CF_INT_CLIENT_SECRET}"
-
             eval "$(bbl print-env --metadata-file ${ENV}.json)"
 
             bosh -d cf manifest > ${ENV}_cf_deployment.yml
 
-            bosh -d cf deploy ${ENV}_cf_deployment.yml -n \
-             -o cli-ci/ci/infrastructure/operations/use-edge-capi.yml \
-             -o cli-ci/ci/infrastructure/operations/default-app-memory.yml \
-             -o cli-ci/ci/infrastructure/operations/add-oidc-provider.yml \
-             -o cli-ci/ci/infrastructure/operations/add-uaa-client-credentials.yml \
-             -o cf-deployment/operations/test/add-persistent-isolation-segment-diego-cell.yml 
+            bosh interpolate ${ENV}_cf_deployment.yml \
+              -o cli-ci/ci/infrastructure/operations/use-edge-capi.yml \
+              -o cli-ci/ci/infrastructure/operations/default-app-memory.yml \
+              -o cli-ci/ci/infrastructure/operations/add-oidc-provider.yml \
+              -o cli-ci/ci/infrastructure/operations/add-uaa-client-cf-custom.yml \
+              -o cf-deployment/operations/test/add-persistent-isolation-segment-diego-cell.yml \
+              -v client-secret="${CF_INT_CLIENT_SECRET}" \
+              > ./director.yml
+
+            bosh -d cf deploy director.yml -n
+
+            # bosh -d cf deploy ${ENV}_cf_deployment.yml -n \
+            #  -o cli-ci/ci/infrastructure/operations/use-edge-capi.yml \
+            #  -o cli-ci/ci/infrastructure/operations/default-app-memory.yml \
+            #  -o cli-ci/ci/infrastructure/operations/add-oidc-provider.yml \
+            #  -o cli-ci/ci/infrastructure/operations/give-cf-admin-clients-read-scope.yml \
+            #  -o cli-ci/ci/local-integration-env/operations/cli-bosh-lite-uaa-client-credentials.yml \
+            #  -o cf-deployment/operations/test/add-persistent-isolation-segment-diego-cell.yml 
 
             # -o cf-deployment/operations/use-compiled-releases.yml 
             # -o cf-deployment/operations/test/add-persistent-isolation-segment-diego-cell.yml 
             # -o cf-deployment/operations/test/add-persistent-isolation-segment-diego-cell-bosh-lite.yml 
             # -o cf-deployment/operations/use-internal-lookup-for-route-services.yml 
-            # -o cli-ci/ci/infrastructure/operations/add-uaa-client-cf-custom.yml 
-            # -o cli-ci/ci/infrastructure/operations/give-cf-admin-clients-read-scope.yml
 
             credhub login
             export CF_INT_PASSWORD=$(credhub get -n /bosh-$ENV/cf/cf_admin_password | bosh interpolate --path /value -)
@@ -586,8 +588,6 @@ jobs:
 
             export CF_INT_API="https://api.${ENV}.cf-app.com"
             export CF_DIAL_TIMEOUT=15
-            export CF_INT_CLIENT_ID=$(jq -r '.id' ${ENV}.json)
-            export CF_INT_CLIENT_SECRET=$(jq -r '.bosh.bosh_client_secret' ${ENV}.json)
             # export CF_USERNAME=admin
 
             export GOPATH=$PWD/go
@@ -613,13 +613,15 @@ jobs:
       params:
         <<: *integration_params
         CF_INT_CLIENT_CREDENTIALS_TEST_MODE: true
-  # ensure:
-  #   put: gcp-env
-  #   params:
-  #     action: unclaim
-  #     env_file: gcp-env/metadata
-  #   inputs:
-  #   - gcp-env
+        CF_INT_CLIENT_ID: 'potato-face'
+        CF_INT_CLIENT_SECRET: ((client-secret))
+  ensure:
+    put: gcp-env
+    params:
+      action: unclaim
+      env_file: gcp-env/metadata
+    inputs:
+    - gcp-env
 
 - name: integration-windows-client-creds
   serial: true
