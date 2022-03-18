@@ -551,7 +551,7 @@ jobs:
               -o cli-ci/ci/infrastructure/operations/use-edge-capi.yml \
               -o cli-ci/ci/infrastructure/operations/default-app-memory.yml \
               -o cli-ci/ci/infrastructure/operations/add-oidc-provider.yml \
-              -o cli-ci/ci/infrastructure/operations/add-uaa-client-cf-custom.yml \
+              -o cli-ci/ci/infrastructure/operations/add-uaa-client-credentials.yml \
               -o cf-deployment/operations/test/add-persistent-isolation-segment-diego-cell.yml \
               -v client-secret="${CF_INT_CLIENT_SECRET}" \
               > ./director.yml
@@ -615,13 +615,13 @@ jobs:
         CF_INT_CLIENT_CREDENTIALS_TEST_MODE: true
         CF_INT_CLIENT_ID: 'potato-face'
         CF_INT_CLIENT_SECRET: ((client-secret))
-  ensure:
-    put: gcp-env
-    params:
-      action: unclaim
-      env_file: gcp-env/metadata
-    inputs:
-    - gcp-env
+  # ensure:
+  #   put: gcp-env
+  #   params:
+  #     action: unclaim
+  #     env_file: gcp-env/metadata
+  #   inputs:
+  #   - gcp-env
 
 - name: integration-windows-client-creds
   serial: true
