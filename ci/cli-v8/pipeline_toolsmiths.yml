@@ -56,7 +56,7 @@ resources:
   type: git
   source:
     uri: https://github.com/cloudfoundry/cli-ci
-    branch: master
+    branch: toolsmiths
 
 - name: cli
   type: git
@@ -368,8 +368,6 @@ jobs:
             export SSL_CERT_DIR=/tmp/cert_dir
             mkdir -p $SSL_CERT_DIR
 
-            echo "CF_INT_CLIENT_CREDENTIALS_TEST_MODE=${CF_INT_CLIENT_CREDENTIALS_TEST_MODE}"
-
             cat gcp-env/metadata > $ENV.json
 
             eval "$(bbl print-env --metadata-file $ENV.json)"
@@ -441,6 +439,86 @@ jobs:
   plan:
   - in_parallel: *integration_resources
   - do:
+    - task: cleanup-integration
+      timeout: 3h
+      # file: cli-ci/ci/cli-v8/tasks/cleanup-integration.yml
+      config:
+        platform: linux
+
+        image_resource:
+          type: docker-image
+          source:
+            repository: cfcli/cli-base
+
+        inputs:
+        - name: cli
+        - name: cf-cli-binaries
+        - name: gcp-env
+        - name: cli-ci
+        - name: cf-deployment
+        # - name: vars-store
+
+        outputs:
+        - name: cleanup-integration-outputs
+
+        params:
+          ARGS:
+
+        run:
+          path: bash
+          args:
+          - -c
+          - |
+            set -e
+
+            ENV=$(cat gcp-env/name)
+            CERT_DIR=$PWD/cleanup-integration-outputs/cert_dir
+            mkdir -p $CERT_DIR
+
+            cat gcp-env/metadata > $ENV.json
+
+            eval "$(bbl print-env --metadata-file $ENV.json)"
+
+            bosh -d cf manifest > ${ENV}_cf_deployment.yml
+
+            bosh -d cf deploy ${ENV}_cf_deployment.yml -n \
+             -o cli-ci/ci/infrastructure/operations/use-edge-capi.yml \
+             -o cli-ci/ci/infrastructure/operations/default-app-memory.yml \
+             -o cli-ci/ci/infrastructure/operations/add-oidc-provider.yml \
+             -o cf-deployment/operations/test/add-persistent-isolation-segment-diego-cell.yml 
+
+            credhub login
+            export CF_INT_PASSWORD=$(credhub get -n /bosh-$ENV/cf/cf_admin_password | bosh interpolate --path /value -)
+            # export CF_INT_OIDC_USERNAME="admin-oidc"
+            export CF_INT_OIDC_PASSWORD=$(credhub get -n /bosh-$ENV/cf/uaa_oidc_admin_password | bosh interpolate --path /value -)
+
+            credhub get --name /bosh-$ENV/cf/router_ca | bosh interpolate - --path /value/certificate > $CERT_DIR/$ENV.router.ca
+            # bosh interpolate vars-store/ci/infrastructure/$ENV/bbl-state.json --path /lb/cert > $CERT_DIR/$ENV.lb.cert
+
+            echo "Deployed CAPI version:"
+            bosh -d cf releases | grep capi
+
+            set -x
+
+            # output password into a temp file for consumption by Windows
+            echo $CF_INT_PASSWORD > cleanup-integration-outputs/cf-password
+            echo $CF_INT_OIDC_PASSWORD > cleanup-integration-outputs/uaa-oidc-password
+            echo $ENV > cleanup-integration-outputs/env-name
+
+            # # get CA certs for load balancer and router
+            # bosh interpolate vars-store/ci/infrastructure/$ENV/bbl-state.json --path /lb/cert > $CERT_DIR/$ENV.lb.cert
+
+            # set -ex
+
+            # export CF_INT_API="https://api.${ENV}.cf-app.com"
+            # export PATH=$GOPATH/bin:$PATH
+
+            # pushd cf-cli-binaries
+            #   tar xvzf cf-cli-binaries.tgz
+            #   chmod +x cf-cli_linux_x86-64
+            #   mv cf-cli_linux_x86-64 $GOPATH/bin/cf
+            # popd
+
     - task: integration
       timeout: 3h
       # file: cli-ci/ci/cli-v8/tasks-toolsmiths/integration-windows.yml
@@ -452,7 +530,8 @@ jobs:
           path: go/src/code.cloudfoundry.org/cli
         - name: cli-ci
         - name: cf-cli-binaries
-        # - name: cf-credentials
+        - name: cf-credentials
+        - name: gcp-env
 
         params:
           CF_CLI_EXPERIMENTAL: false
@@ -466,16 +545,16 @@ jobs:
         run:
           path: powershell
           args:
-          - cli-ci/ci/cli-v8/tasks/integration-windows.ps1      
+          - cli-ci/ci/cli-v8/tasks/integration-windows-toolsmiths.ps1      
       params:
         <<: *integration_params
-      # input_mapping:
-      #   cf-credentials: cleanup-integration-outputs
-      on_failure:
-        put: slack-alert
-        params:
-          channel: '#cli-dev-internal'
-          text: *slack_notification_text
+      input_mapping:
+        cf-credentials: cleanup-integration-outputs
+      # on_failure:
+      #   put: slack-alert
+      #   params:
+      #     channel: '#cli-dev-internal'
+      #     text: *slack_notification_text
   ensure:
     put: gcp-env
     params:
