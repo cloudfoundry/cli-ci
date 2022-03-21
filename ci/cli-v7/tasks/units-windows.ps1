@@ -4,7 +4,7 @@ trap { $host.SetShouldExit(1) }
 . "$PSScriptRoot\..\..\shared\tasks\windows-setup.ps1"
 
 pushd $Env:ROOT\go\src\code.cloudfoundry.org\cli
-  Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+  Set-ExecutionPolicy RemoteSigned -Scope Process
 
   go version
   ginkgo version
