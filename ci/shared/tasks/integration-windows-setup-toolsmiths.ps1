@@ -7,7 +7,7 @@ trap { $host.SetShouldExit(1) }
 $Env:CF_INT_PASSWORD=(Get-Content $pwd\cf-credentials\cf-password -Raw).trim()
 $Env:CF_INT_OIDC_PASSWORD=(Get-Content $pwd\cf-credentials\uaa-oidc-password -Raw).trim()
 $Env:CF_INT_OIDC_USERNAME="admin-oidc"
-$Env:CF_INT_API=(Get-Content $pwd\cf-credentials\api -Raw).trim()
+$Env:CF_INT_API=(Get-Content $pwd\cf-credentials\cf-api -Raw).trim()
 $Env:CF_DIAL_TIMEOUT=15
 $Env:SKIP_SSL_VALIDATION="false"
 
