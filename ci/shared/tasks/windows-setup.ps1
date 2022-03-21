@@ -6,9 +6,9 @@ $Env:ROOT="$pwd"
 
 $null = New-Item -ItemType Directory -Force -Path $Env:TEMP
 
-Import-Module "C:\ProgramData\chocolatey\helpers\chocolateyProfile.psm1"
-refreshenv
-cd $Env:ROOT
+# Import-Module "C:\ProgramData\chocolatey\helpers\chocolateyProfile.psm1"
+# refreshenv
+# cd $Env:ROOT
 
 if ((Get-Command "choco" -ErrorAction SilentlyContinue) -eq $null) {
   Set-ExecutionPolicy Bypass -Scope Process -Force
