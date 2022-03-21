@@ -6,8 +6,8 @@ inputs:
   path: go/src/code.cloudfoundry.org/cli
 - name: cli-ci
 - name: cf-cli-binaries
-- name: bosh-lock
 - name: cf-credentials
+- name: gcp-env
 
 params:
   CF_CLI_EXPERIMENTAL: false
@@ -21,4 +21,4 @@ params:
 run:
   path: powershell
   args:
-  - cli-ci/ci/cli-v8/tasks/integration-windows-toolsmiths.ps1
+  - cli-ci/ci/cli-v8-toolsmiths/tasks/integration-windows.ps1

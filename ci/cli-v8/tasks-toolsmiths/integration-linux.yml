@@ -9,7 +9,10 @@ image_resource:
 inputs:
 - name: cli
 - name: cf-cli-binaries
-- name: vars-store
+# - name: vars-store
+- name: gcp-env
+- name: cli-ci
+- name: cf-deployment
 
 params:
   CF_CLI_EXPERIMENTAL: false
@@ -33,38 +36,49 @@ run:
     export GOFLAGS="-mod=mod"
     mkdir -p go/src/code.cloudfoundry.org
     ln -s ${PWD}/cli go/src/code.cloudfoundry.org
-    ENV=$(cat bosh-lock/name | cut -d "." -f 1)
+    ENV=$(cat gcp-env/name)
     export SSL_CERT_DIR=/tmp/cert_dir
     mkdir -p $SSL_CERT_DIR
 
-    if [[ $ENV == "homeroom" ]]; then
-      export CF_INT_PASSWORD=$(bosh int vars-store/ci/infrastructure/$ENV/deployment-vars.yml --path /cf_admin_password)
-      export CF_INT_OIDC_USERNAME="admin"
-      export CF_INT_OIDC_PASSWORD=$CF_INT_PASSWORD
-    else
-      pushd vars-store/ci/infrastructure/$ENV
-        eval "$(bbl print-env)"
-      popd
+    echo "CF_INT_CLIENT_CREDENTIALS_TEST_MODE=${CF_INT_CLIENT_CREDENTIALS_TEST_MODE}"
 
-      credhub login
-      export CF_INT_PASSWORD=$(credhub get -n /bosh-$ENV/cf/cf_admin_password | bosh interpolate --path /value -)
+    cat gcp-env/metadata > $ENV.json
 
-      export CF_INT_OIDC_USERNAME="admin-oidc"
-      export CF_INT_OIDC_PASSWORD=$(credhub get -n /bosh-$ENV/cf/uaa_oidc_admin_password | bosh interpolate --path /value -)
-      credhub get --name /bosh-$ENV/cf/router_ca | bosh interpolate - --path /value/certificate > $SSL_CERT_DIR/$ENV.router.ca
-      bosh interpolate vars-store/ci/infrastructure/$ENV/bbl-state.json --path /lb/cert > $SSL_CERT_DIR/$ENV.lb.cert
+    eval "$(bbl print-env --metadata-file $ENV.json)"
 
-      echo "Deployed CAPI version:"
-      bosh -d cf releases | grep capi
-    fi
+    bosh -d cf manifest > ${ENV}_cf_deployment.yml
 
-    export SKIP_SSL_VALIDATION=false
+    bosh -d cf deploy ${ENV}_cf_deployment.yml -n \
+      -o cli-ci/ci/infrastructure/operations/use-edge-capi.yml \
+      -o cli-ci/ci/infrastructure/operations/default-app-memory.yml \
+      -o cli-ci/ci/infrastructure/operations/add-oidc-provider.yml \
+      -o cf-deployment/operations/test/add-persistent-isolation-segment-diego-cell.yml 
+
+    # -o cf-deployment/operations/use-compiled-releases.yml 
+    # -o cf-deployment/operations/test/add-persistent-isolation-segment-diego-cell.yml 
+    # -o cf-deployment/operations/test/add-persistent-isolation-segment-diego-cell-bosh-lite.yml 
+    # -o cf-deployment/operations/use-internal-lookup-for-route-services.yml 
+    # -o cli-ci/ci/infrastructure/operations/add-uaa-client-cf-custom.yml 
+    # -o cli-ci/ci/infrastructure/operations/give-cf-admin-clients-read-scope.yml
+
+    credhub login
+    export CF_INT_PASSWORD=$(credhub get -n /bosh-$ENV/cf/cf_admin_password | bosh interpolate --path /value -)
+    export CF_INT_OIDC_USERNAME="admin-oidc"
+    export CF_INT_OIDC_PASSWORD=$(credhub get -n /bosh-$ENV/cf/uaa_oidc_admin_password | bosh interpolate --path /value -)
+
+    credhub get --name /bosh-$ENV/cf/router_ca | bosh interpolate - --path /value/certificate > $SSL_CERT_DIR/$ENV.router.ca
+    # bosh interpolate vars-store/ci/infrastructure/$ENV/bbl-state.json --path /lb/cert > $SSL_CERT_DIR/$ENV.lb.cert
+
+    echo "Deployed CAPI version:"
+    bosh -d cf releases | grep capi
+
+    # export SKIP_SSL_VALIDATION=false
 
     set -x
 
-    domain=$(cat bosh-lock/name)
-    export CF_INT_API="https://api.${domain}"
+    export CF_INT_API="https://api.${ENV}.cf-app.com"
     export CF_DIAL_TIMEOUT=15
+    # export CF_USERNAME=admin
 
     export GOPATH=$PWD/go
     export PATH=$GOPATH/bin:$PATH
