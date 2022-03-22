@@ -9,21 +9,19 @@ image_resource:
 inputs:
 - name: cli
 - name: cf-cli-binaries
-# - name: vars-store
 - name: gcp-env
 - name: cli-ci
 - name: cf-deployment
 
 params:
   CF_CLI_EXPERIMENTAL: false
-  CF_INT_CLIENT_ID:
-  CF_INT_CLIENT_SECRET:
-  CF_INT_DOCKER_IMAGE:
-  CF_INT_DOCKER_USERNAME:
-  CF_INT_DOCKER_PASSWORD:
-  CF_INT_IGNORE_API_VERSION_CHECK:
+  # CF_INT_CLIENT_ID:
+  # CF_INT_CLIENT_SECRET:
+  # CF_INT_DOCKER_IMAGE:
+  # CF_INT_DOCKER_USERNAME:
+  # CF_INT_DOCKER_PASSWORD:
+  # CF_INT_IGNORE_API_VERSION_CHECK:
   FLAKE_ATTEMPTS: 2
-  #TAGS: 'V7'
   NODES: 16
 
 run:
@@ -40,26 +38,22 @@ run:
     export SSL_CERT_DIR=/tmp/cert_dir
     mkdir -p $SSL_CERT_DIR
 
-    echo "CF_INT_CLIENT_CREDENTIALS_TEST_MODE=${CF_INT_CLIENT_CREDENTIALS_TEST_MODE}"
-
     cat gcp-env/metadata > $ENV.json
 
     eval "$(bbl print-env --metadata-file $ENV.json)"
 
     bosh -d cf manifest > ${ENV}_cf_deployment.yml
 
-    bosh -d cf deploy ${ENV}_cf_deployment.yml -n \
+    bosh interpolate ${ENV}_cf_deployment.yml \
       -o cli-ci/ci/infrastructure/operations/use-edge-capi.yml \
       -o cli-ci/ci/infrastructure/operations/default-app-memory.yml \
       -o cli-ci/ci/infrastructure/operations/add-oidc-provider.yml \
-      -o cf-deployment/operations/test/add-persistent-isolation-segment-diego-cell.yml 
+      -o cli-ci/ci/infrastructure/operations/add-uaa-client-credentials.yml \
+      -o cf-deployment/operations/test/add-persistent-isolation-segment-diego-cell.yml \
+      -v client-secret="${CF_INT_CLIENT_SECRET}" \
+      > ./director.yml
 
-    # -o cf-deployment/operations/use-compiled-releases.yml 
-    # -o cf-deployment/operations/test/add-persistent-isolation-segment-diego-cell.yml 
-    # -o cf-deployment/operations/test/add-persistent-isolation-segment-diego-cell-bosh-lite.yml 
-    # -o cf-deployment/operations/use-internal-lookup-for-route-services.yml 
-    # -o cli-ci/ci/infrastructure/operations/add-uaa-client-cf-custom.yml 
-    # -o cli-ci/ci/infrastructure/operations/give-cf-admin-clients-read-scope.yml
+    bosh -d cf deploy director.yml -n
 
     credhub login
     export CF_INT_PASSWORD=$(credhub get -n /bosh-$ENV/cf/cf_admin_password | bosh interpolate --path /value -)
