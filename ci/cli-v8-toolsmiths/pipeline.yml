@@ -426,7 +426,7 @@ jobs:
           text: *slack_notification_text
       params: &integration_params
         # CF_INT_CLIENT_ID: 'potato-face'
-        CF_INT_CLIENT_SECRET: ((client-secret))
+        # CF_INT_CLIENT_SECRET: ((client-secret))
         CF_INT_DOCKER_IMAGE: ((dockerhub-private-image))
         CF_INT_DOCKER_USERNAME: ((dockerhub-username))
         CF_INT_DOCKER_PASSWORD: ((dockerhub-password))
@@ -579,6 +579,8 @@ jobs:
       params:
         <<: *integration_params
         CF_INT_CLIENT_CREDENTIALS_TEST_MODE: true
+        CF_INT_CLIENT_ID: potato-face
+        CF_INT_CLIENT_SECRET: ((client-secret))
   ensure:
     put: gcp-env
     params:
@@ -598,12 +600,16 @@ jobs:
       params:
         <<: *integration_params
         CF_INT_CLIENT_CREDENTIALS_TEST_MODE: true
+        CF_INT_CLIENT_ID: potato-face
+        CF_INT_CLIENT_SECRET: ((client-secret))
     - task: integration
       timeout: 3h
       file: cli-ci/ci/cli-v8-toolsmiths/tasks/integration-windows.yml
       params:
         <<: *integration_params
         CF_INT_CLIENT_CREDENTIALS_TEST_MODE: true
+        CF_INT_CLIENT_ID: potato-face
+        CF_INT_CLIENT_SECRET: ((client-secret))
       input_mapping:
         cf-credentials: setup-integration-outputs
       on_failure:
@@ -726,11 +732,11 @@ jobs:
       #       go get -u github.com/onsi/ginkgo/ginkgo
 
       #       make integration-tests-full-ci      
-      # on_failure:
-      #   put: slack-alert
-      #   params:
-      #     channel: '#cli-dev-internal'
-      #     text: *slack_notification_text
+      on_failure:
+        put: slack-alert
+        params:
+          channel: '#cli-dev-internal'
+          text: *slack_notification_text
       params: &integration_params
         # CF_INT_DOCKER_IMAGE: ((dockerhub-private-image))
         # CF_INT_DOCKER_USERNAME: ((dockerhub-username))

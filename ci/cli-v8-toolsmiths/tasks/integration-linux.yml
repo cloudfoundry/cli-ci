@@ -44,14 +44,25 @@ run:
 
     bosh -d cf manifest > ${ENV}_cf_deployment.yml
 
-    bosh interpolate ${ENV}_cf_deployment.yml \
-      -o cli-ci/ci/infrastructure/operations/use-edge-capi.yml \
-      -o cli-ci/ci/infrastructure/operations/default-app-memory.yml \
-      -o cli-ci/ci/infrastructure/operations/add-oidc-provider.yml \
-      -o cli-ci/ci/infrastructure/operations/add-uaa-client-credentials.yml \
-      -o cf-deployment/operations/test/add-persistent-isolation-segment-diego-cell.yml \
-      -v client-secret="${CF_INT_CLIENT_SECRET}" \
-      > ./director.yml
+    echo "CF_INT_CLIENT_ID=$CF_INT_CLIENT_ID"
+    
+    if [[ $CF_INT_CLIENT_CREDENTIALS_TEST_MODE != "true" ]]; then
+      bosh interpolate ${ENV}_cf_deployment.yml \
+        -o cli-ci/ci/infrastructure/operations/use-edge-capi.yml \
+        -o cli-ci/ci/infrastructure/operations/default-app-memory.yml \
+        -o cli-ci/ci/infrastructure/operations/add-oidc-provider.yml \
+        -o cf-deployment/operations/test/add-persistent-isolation-segment-diego-cell.yml \
+        > ./director.yml
+    else
+      bosh interpolate ${ENV}_cf_deployment.yml \
+        -o cli-ci/ci/infrastructure/operations/use-edge-capi.yml \
+        -o cli-ci/ci/infrastructure/operations/default-app-memory.yml \
+        -o cli-ci/ci/infrastructure/operations/add-oidc-provider.yml \
+        -o cli-ci/ci/infrastructure/operations/add-uaa-client-credentials.yml \
+        -o cf-deployment/operations/test/add-persistent-isolation-segment-diego-cell.yml \
+        -v client-secret="${CF_INT_CLIENT_SECRET}" \
+        > ./director.yml
+    fi
 
     bosh -d cf deploy director.yml -n
 
@@ -84,11 +95,11 @@ run:
       mv cf-cli_linux_x86-64 $GOPATH/bin/cf
     popd
 
-    if [[ $CF_INT_CLIENT_CREDENTIALS_TEST_MODE != "true" ]]; then
-      CF_INT_CLIENT_ID=""
-      CF_INT_CLIENT_SECRET=""
-    fi
-    
+    # if [[ $CF_INT_CLIENT_CREDENTIALS_TEST_MODE != "true" ]]; then
+    #   CF_INT_CLIENT_ID=""
+    #   CF_INT_CLIENT_SECRET=""
+    # fi
+
     cd $GOPATH/src/code.cloudfoundry.org/cli
     go get -u github.com/onsi/ginkgo/ginkgo
 
