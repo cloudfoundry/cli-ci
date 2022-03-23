@@ -45,7 +45,7 @@ run:
     bosh -d cf manifest > ${ENV}_cf_deployment.yml
 
     echo "CF_INT_CLIENT_ID=$CF_INT_CLIENT_ID"
-    
+
     if [[ $CF_INT_CLIENT_CREDENTIALS_TEST_MODE != "true" ]]; then
       bosh interpolate ${ENV}_cf_deployment.yml \
         -o cli-ci/ci/infrastructure/operations/use-edge-capi.yml \
@@ -77,13 +77,14 @@ run:
     echo "Deployed CAPI version:"
     bosh -d cf releases | grep capi
 
+    # Enable SSL Validation once toolsmiths supports it
     # export SKIP_SSL_VALIDATION=false
 
     set -x
 
     export CF_INT_API="https://api.${ENV}.cf-app.com"
     export CF_DIAL_TIMEOUT=15
-    # export CF_USERNAME=admin
+    export CF_USERNAME=admin
 
     export GOPATH=$PWD/go
     export PATH=$GOPATH/bin:$PATH
