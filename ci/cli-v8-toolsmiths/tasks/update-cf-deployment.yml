@@ -1,0 +1,68 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: cfcli/cli-base
+
+inputs:
+- name: cli
+- name: cf-cli-binaries
+- name: gcp-env
+- name: cli-ci
+- name: cf-deployment
+
+run:
+  path: bash
+  args:
+  - -c
+  - |
+    set -e
+
+    export GOFLAGS="-mod=mod"
+    mkdir -p go/src/code.cloudfoundry.org
+    ln -s ${PWD}/cli go/src/code.cloudfoundry.org
+    ENV=$(cat gcp-env/name)
+    export SSL_CERT_DIR=/tmp/cert_dir
+    mkdir -p $SSL_CERT_DIR
+
+    cat gcp-env/metadata > $ENV.json
+
+    eval "$(bbl print-env --metadata-file $ENV.json)"
+
+    bosh -d cf manifest > ${ENV}_cf_deployment.yml
+
+
+    bosh interpolate ${ENV}_cf_deployment.yml \
+      -o cli-ci/ci/ci/infrastructure/operations/add-dummy-windows-stack.yml
+      -o cli-ci/ci/ci/infrastructure/operations/add-oidc-provider.yml
+      -o cli-ci/ci/ci/infrastructure/operations/add-uaa-client-credentials.yml
+      -o cli-ci/ci/ci/infrastructure/operations/adjust-user-retry-attempts.yml
+      -o cli-ci/ci/ci/infrastructure/operations/cli-isolation-cell-overrides.yml
+      -o cli-ci/ci/ci/infrastructure/operations/default-app-memory.yml
+      -o cli-ci/ci/ci/infrastructure/operations/diego-cell-instances.yml
+      -o cli-ci/ci/ci/infrastructure/operations/doppler-instances.yml
+      -o cli-ci/ci/ci/infrastructure/operations/enable-mysql-audit-logging.yml
+      -o cli-ci/ci/ci/infrastructure/operations/enable-v3-deployments-endpoint.yml
+      -o cli-ci/ci/ci/infrastructure/operations/increase-route-registration-interval.yml
+      -o cli-ci/ci/ci/infrastructure/operations/reduce-async-service-polling.yml
+      -o cli-ci/ci/ci/infrastructure/operations/skip-ssl-override.yml
+      -o cli-ci/ci/ci/infrastructure/operations/uaa-vm_type-override.yml
+      -o cli-ci/ci/ci/infrastructure/operations/use-latest-capi.yml
+      -o cli-ci/ci/infrastructure/operations/use-edge-capi.yml \
+      -o cli-ci/ci/infrastructure/operations/default-app-memory.yml \
+      -o cli-ci/ci/infrastructure/operations/add-oidc-provider.yml \
+      -o cli-ci/ci/infrastructure/operations/add-uaa-client-credentials.yml \
+      -o cf-deployment/operations/test/add-persistent-isolation-segment-diego-cell.yml \
+      -o cf-deployment/operations/use-compiled-releases.yml \
+      -o cf-deployment/operations/use-internal-lookup-for-route-services.yml
+      -o cf-deployment/infrastructure/operations/scale-to-one-az.yml \
+      -v client-secret="${CF_INT_CLIENT_SECRET}" \
+      > ./director.yml
+
+    bosh -d cf deploy director.yml -n
+
+    echo "Deployed CAPI version:"
+    bosh -d cf releases | grep capi
+    
