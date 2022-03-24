@@ -55,9 +55,6 @@ run:
       -o cli-ci/ci/infrastructure/operations/uaa-vm_type-override.yml \
       -o cli-ci/ci/infrastructure/operations/use-latest-capi.yml \
       -o cli-ci/ci/infrastructure/operations/use-edge-capi.yml \
-      -o cli-ci/ci/infrastructure/operations/default-app-memory.yml \
-      -o cli-ci/ci/infrastructure/operations/add-oidc-provider.yml \
-      -o cli-ci/ci/infrastructure/operations/add-uaa-client-credentials.yml \
       -v client-secret="${CF_INT_CLIENT_SECRET}" \
       > ./director.yml
 
