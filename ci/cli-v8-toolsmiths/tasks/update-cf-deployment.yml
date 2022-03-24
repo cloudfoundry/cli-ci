@@ -35,6 +35,10 @@ run:
 
 
     bosh interpolate ${ENV}_cf_deployment.yml \
+      -o cf-deployment/operations/scale-to-one-az.yml \
+      -o cf-deployment/operations/use-compiled-releases.yml \
+      -o cf-deployment/operations/test/add-persistent-isolation-segment-diego-cell.yml \
+      -o cf-deployment/operations/use-internal-lookup-for-route-services.yml \
       -o cli-ci/ci/infrastructure/operations/add-dummy-windows-stack.yml \
       -o cli-ci/ci/infrastructure/operations/add-oidc-provider.yml \
       -o cli-ci/ci/infrastructure/operations/add-uaa-client-credentials.yml \
@@ -54,10 +58,6 @@ run:
       -o cli-ci/ci/infrastructure/operations/default-app-memory.yml \
       -o cli-ci/ci/infrastructure/operations/add-oidc-provider.yml \
       -o cli-ci/ci/infrastructure/operations/add-uaa-client-credentials.yml \
-      -o cf-deployment/operations/test/add-persistent-isolation-segment-diego-cell.yml \
-      -o cf-deployment/operations/use-compiled-releases.yml \
-      -o cf-deployment/operations/use-internal-lookup-for-route-services.yml \
-      -o cf-deployment/operations/scale-to-one-az.yml \
       -v client-secret="${CF_INT_CLIENT_SECRET}" \
       > ./director.yml
 
