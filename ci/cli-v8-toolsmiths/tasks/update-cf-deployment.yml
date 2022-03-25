@@ -33,10 +33,6 @@ run:
 
     bosh -d cf manifest > ${ENV}_cf_deployment.yml
 
-      # -o cf-deployment/operations/scale-to-one-az.yml \
-      # -o cli-ci/ci/infrastructure/operations/add-dummy-windows-stack.yml \
-      # -o cli-ci/ci/infrastructure/operations/enable-mysql-audit-logging.yml \
-
       # -o cli-ci/ci/infrastructure/operations/skip-ssl-override.yml \
       # -o cli-ci/ci/infrastructure/operations/uaa-vm_type-override.yml \
 
@@ -44,6 +40,8 @@ run:
       -o cf-deployment/operations/test/add-persistent-isolation-segment-diego-cell.yml \
       -o cf-deployment/operations/use-internal-lookup-for-route-services.yml \
       -o cf-deployment/operations/use-compiled-releases.yml \
+      -o cli-ci/ci/infrastructure/operations/skip-ssl-override.yml \
+      -o cli-ci/ci/infrastructure/operations/uaa-vm_type-override.yml \
       -o cli-ci/ci/infrastructure/operations/add-dummy-windows-stack.yml \
       -o cli-ci/ci/infrastructure/operations/enable-mysql-audit-logging.yml \
       -o cli-ci/ci/infrastructure/operations/default-app-memory.yml \
