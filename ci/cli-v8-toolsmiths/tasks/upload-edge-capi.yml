@@ -1,0 +1,24 @@
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: relintdockerhubpushbot/cf-deployment-concourse-tasks
+
+inputs:
+  - name: cli-ci
+  - name: gcp-env
+  - name: release-tarball
+  # Input mapping to directory containing .tgz files
+
+run:
+  path: bash
+  args:
+    - -c
+    - |
+      set -eu
+
+      eval "$(bbl print-env --metadata-file gcp-env/metadata)"
+      for filename in release-tarball/*.tgz; do
+        bosh upload-release --sha2 "$filename"
+      done        
