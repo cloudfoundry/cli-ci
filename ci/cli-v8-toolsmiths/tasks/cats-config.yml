@@ -36,16 +36,6 @@ run:
 
     cat gcp-env/metadata > $ENV.json
     eval "$(bbl print-env --metadata-file $ENV.json)"
-    # bosh -d cf manifest > ${ENV}_cf_deployment.yml
-
-    # bosh interpolate ${ENV}_cf_deployment.yml \
-    # -o cli-ci/ci/infrastructure/operations/use-edge-capi.yml \
-    # -o cli-ci/ci/infrastructure/operations/default-app-memory.yml \
-    # -o cli-ci/ci/infrastructure/operations/add-oidc-provider.yml \
-    # -o cf-deployment/operations/test/add-persistent-isolation-segment-diego-cell.yml \
-    # > ./director.yml
-
-    # bosh -d cf deploy director.yml -n            
 
     credhub login
     CF_INT_PASSWORD=$(credhub get -n /bosh-$ENV/cf/cf_admin_password | bosh interpolate --path /value -)

@@ -33,9 +33,6 @@ run:
 
     bosh -d cf manifest > ${ENV}_cf_deployment.yml
 
-      # -o cli-ci/ci/infrastructure/operations/skip-ssl-override.yml \
-      # -o cli-ci/ci/infrastructure/operations/uaa-vm_type-override.yml \
-
     bosh interpolate ${ENV}_cf_deployment.yml \
       -o cf-deployment/operations/test/add-persistent-isolation-segment-diego-cell.yml \
       -o cf-deployment/operations/use-internal-lookup-for-route-services.yml \
