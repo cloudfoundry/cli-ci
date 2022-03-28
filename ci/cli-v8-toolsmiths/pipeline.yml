@@ -298,79 +298,84 @@ jobs:
     - put: gcp-env
       params:
         action: claim
-  - do:
-    - task: create-vars-file
-      file: cli-ci/ci/infrastructure/tasks/create-vars-file.yml
-      params:
-        CLIENT_SECRET: ((client-secret))
-    - task: copy-ops-files
-      file: cli-ci/ci/infrastructure/tasks/combine-inputs.yml
-      input_mapping:
-        input1: cf-deployment
-        input2: cli-ci
-      params:
-        COPY_PATHS:
-          input1/operations/enable-service-discovery.yml
-          input1/operations/scale-to-one-az.yml
-          input1/operations/test/add-persistent-isolation-segment-diego-cell.yml
-          input1/operations/use-compiled-releases.yml
-          input1/operations/use-internal-lookup-for-route-services.yml
-          input2/ci/infrastructure/operations/add-dummy-windows-stack.yml
-          input2/ci/infrastructure/operations/add-oidc-provider.yml
-          input2/ci/infrastructure/operations/add-uaa-client-credentials.yml
-          input2/ci/infrastructure/operations/adjust-user-retry-attempts.yml
-          input2/ci/infrastructure/operations/cli-isolation-cell-overrides.yml
-          input2/ci/infrastructure/operations/default-app-memory.yml
-          input2/ci/infrastructure/operations/diego-cell-instances.yml
-          input2/ci/infrastructure/operations/doppler-instances.yml
-          input2/ci/infrastructure/operations/enable-mysql-audit-logging.yml
-          input2/ci/infrastructure/operations/enable-v3-deployments-endpoint.yml
-          input2/ci/infrastructure/operations/increase-route-registration-interval.yml
-          input2/ci/infrastructure/operations/reduce-async-service-polling.yml
-          input2/ci/infrastructure/operations/skip-ssl-override.yml
-          input2/ci/infrastructure/operations/uaa-vm_type-override.yml
-          input2/ci/infrastructure/operations/use-latest-capi.yml
+  - do: 
+    # - task: create-vars-file
+    #   file: cli-ci/ci/infrastructure/tasks/create-vars-file.yml
+    #   params: &create-vars_params
+    #     CLIENT_SECRET: ((client-secret))
+    # - task: copy-ops-files
+    #   file: cli-ci/ci/infrastructure/tasks/combine-inputs.yml
+    #   input_mapping: &copy-ops-files-inputs
+    #     input1: cf-deployment
+    #     input2: cli-ci
+    #   params:
+    #     COPY_PATHS: &ops-files-copy-paths |
+    #       input1/operations/enable-service-discovery.yml
+    #       input1/operations/scale-to-one-az.yml
+    #       input1/operations/test/add-persistent-isolation-segment-diego-cell.yml
+    #       input1/operations/use-compiled-releases.yml
+    #       input1/operations/use-internal-lookup-for-route-services.yml
+    #       input2/ci/infrastructure/operations/add-dummy-windows-stack.yml
+    #       input2/ci/infrastructure/operations/add-oidc-provider.yml
+    #       input2/ci/infrastructure/operations/add-uaa-client-credentials.yml
+    #       input2/ci/infrastructure/operations/adjust-user-retry-attempts.yml
+    #       input2/ci/infrastructure/operations/cli-isolation-cell-overrides.yml
+    #       input2/ci/infrastructure/operations/default-app-memory.yml
+    #       input2/ci/infrastructure/operations/diego-cell-instances.yml
+    #       input2/ci/infrastructure/operations/doppler-instances.yml
+    #       input2/ci/infrastructure/operations/enable-mysql-audit-logging.yml
+    #       input2/ci/infrastructure/operations/enable-v3-deployments-endpoint.yml
+    #       input2/ci/infrastructure/operations/increase-route-registration-interval.yml
+    #       input2/ci/infrastructure/operations/reduce-async-service-polling.yml
+    #       input2/ci/infrastructure/operations/skip-ssl-override.yml
+    #       input2/ci/infrastructure/operations/uaa-vm_type-override.yml
+    #       input2/ci/infrastructure/operations/use-latest-capi.yml
     - task: upload-edge-capi
       file: cli-ci/ci/cli-v8-toolsmiths/tasks/upload-edge-capi.yml
-      input_mapping:
+      input_mapping: &upload-edge-capi-input
         release-tarball: edge-capi-release
-    - task: redeploy-cf
-      file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
-      input_mapping:
-        toolsmiths-env: gcp-env
-        vars-files: vars_path
-        ops-files: combine_inputs_output
-      params:
-        OPS_FILES:
-          add-persistent-isolation-segment-diego-cell.yml
-          use-compiled-releases.yml
-          use-latest-capi.yml
-          cli-isolation-cell-overrides.yml
-          default-app-memory.yml
-          skip-ssl-override.yml
-          scale-to-one-az.yml
-          diego-cell-instances.yml
-          doppler-instances.yml
-          uaa-vm_type-override.yml
-          add-uaa-client-credentials.yml
-          add-dummy-windows-stack.yml
-          reduce-async-service-polling.yml
-          add-oidc-provider.yml
-          adjust-user-retry-attempts.yml
-          enable-v3-deployments-endpoint.yml
-          enable-mysql-audit-logging.yml
-          use-internal-lookup-for-route-services.yml
-          enable-service-discovery.yml
-          increase-route-registration-interval.yml
-        VARS_FILES: vars.yml
+    - task: update-cf-deployment
+      timeout: 3h
+      file: cli-ci/ci/cli-v8-toolsmiths/tasks/update-cf-deployment.yml
+      params: 
+        CF_INT_CLIENT_SECRET: ((client-secret))
+    # - task: redeploy-cf
+    #   file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
+    #   input_mapping: &redeploy-cf-inputs
+    #     toolsmiths-env: gcp-env
+    #     vars-files: vars_path
+    #     ops-files: combine_inputs_output
+    #   params:
+    #     OPS_FILES: &redeploy-cf-ops-files |
+    #       add-persistent-isolation-segment-diego-cell.yml
+    #       use-compiled-releases.yml
+    #       use-latest-capi.yml
+    #       cli-isolation-cell-overrides.yml
+    #       default-app-memory.yml
+    #       skip-ssl-override.yml
+    #       scale-to-one-az.yml
+    #       diego-cell-instances.yml
+    #       doppler-instances.yml
+    #       uaa-vm_type-override.yml
+    #       add-uaa-client-credentials.yml
+    #       add-dummy-windows-stack.yml
+    #       reduce-async-service-polling.yml
+    #       add-oidc-provider.yml
+    #       adjust-user-retry-attempts.yml
+    #       enable-v3-deployments-endpoint.yml
+    #       enable-mysql-audit-logging.yml
+    #       use-internal-lookup-for-route-services.yml
+    #       enable-service-discovery.yml
+    #       increase-route-registration-interval.yml
+    #     VARS_FILES: vars.yml
     - task: integration
       timeout: 3h
       file: cli-ci/ci/cli-v8-toolsmiths/tasks/integration-linux.yml
-      on_failure:
-        put: slack-alert
-        params:
-          channel: '#cli-dev-internal'
-          text: *slack_notification_text
+      # on_failure:
+      #   put: slack-alert
+      #   params:
+      #     channel: '#cli-dev-internal'
+      #     text: *slack_notification_text
       params: &integration_params
         CF_INT_DOCKER_IMAGE: ((dockerhub-private-image))
         CF_INT_DOCKER_USERNAME: ((dockerhub-username))
@@ -388,12 +393,34 @@ jobs:
   serial: true
   plan:
   - in_parallel: *integration_resources
-  - do:
+  - do: 
+    # - task: create-vars-file
+    #   file: cli-ci/ci/infrastructure/tasks/create-vars-file.yml
+    #   params: *create-vars_params
+    # - task: copy-ops-files
+    #   file: cli-ci/ci/infrastructure/tasks/combine-inputs.yml
+    #   input_mapping: *copy-ops-files-inputs
+    #   params:
+    #     COPY_PATHS: *ops-files-copy-paths
+    - task: upload-edge-capi
+      file: cli-ci/ci/cli-v8-toolsmiths/tasks/upload-edge-capi.yml
+      input_mapping: 
+        release-tarball: edge-capi-release
+    # - task: redeploy-cf
+    #   file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
+    #   input_mapping: *redeploy-cf-inputs
+    #   params:
+    #     OPS_FILES: *redeploy-cf-ops-files
+    - task: update-cf-deployment
+      timeout: 3h
+      file: cli-ci/ci/cli-v8-toolsmiths/tasks/update-cf-deployment.yml
+      params: 
+        CF_INT_CLIENT_SECRET: ((client-secret))
     - task: setup-integration
       timeout: 3h
       file: cli-ci/ci/cli-v8-toolsmiths/tasks/setup-integration.yml
-      params:
-        CF_INT_CLIENT_SECRET: ((client-secret))
+      # params:
+      #   CF_INT_CLIENT_SECRET: ((client-secret))
     - task: integration
       timeout: 3h
       file: cli-ci/ci/cli-v8-toolsmiths/tasks/integration-windows.yml
@@ -419,6 +446,27 @@ jobs:
   plan:
   - in_parallel: *integration_resources
   - do:
+    # - task: create-vars-file
+    #   file: cli-ci/ci/infrastructure/tasks/create-vars-file.yml
+    #   params: *create-vars_params
+    # - task: copy-ops-files
+    #   file: cli-ci/ci/infrastructure/tasks/combine-inputs.yml
+    #   input_mapping: *copy-ops-files-inputs
+    #   params:
+    #     COPY_PATHS: *ops-files-copy-paths
+    - task: upload-edge-capi
+      file: cli-ci/ci/cli-v8-toolsmiths/tasks/upload-edge-capi.yml
+      input_mapping: *upload-edge-capi-input
+    - task: update-cf-deployment
+      timeout: 3h
+      file: cli-ci/ci/cli-v8-toolsmiths/tasks/update-cf-deployment.yml
+      params: 
+        CF_INT_CLIENT_SECRET: ((client-secret))
+    # - task: redeploy-cf
+    #   file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
+    #   input_mapping: *redeploy-cf-inputs
+    #   params:
+    #     OPS_FILES: *redeploy-cf-ops-files
     - task: integration
       timeout: 3h
       file: cli-ci/ci/cli-v8-toolsmiths/tasks/integration-linux.yml      
@@ -445,6 +493,27 @@ jobs:
   plan:
   - in_parallel: *integration_resources
   - do:
+    # - task: create-vars-file
+    #   file: cli-ci/ci/infrastructure/tasks/create-vars-file.yml
+    #   params: *create-vars_params
+    # - task: copy-ops-files
+    #   file: cli-ci/ci/infrastructure/tasks/combine-inputs.yml
+    #   input_mapping: *copy-ops-files-inputs
+    #   params:
+    #     COPY_PATHS: *ops-files-copy-paths
+    - task: upload-edge-capi
+      file: cli-ci/ci/cli-v8-toolsmiths/tasks/upload-edge-capi.yml
+      input_mapping: *upload-edge-capi-input
+    - task: update-cf-deployment
+      timeout: 3h
+      file: cli-ci/ci/cli-v8-toolsmiths/tasks/update-cf-deployment.yml
+      params: 
+        CF_INT_CLIENT_SECRET: ((client-secret))
+    # - task: redeploy-cf
+    #   file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
+    #   input_mapping: *redeploy-cf-inputs
+    #   params:
+    #     OPS_FILES: *redeploy-cf-ops-files
     - task: setup-integration
       timeout: 3h
       file: cli-ci/ci/cli-v8-toolsmiths/tasks/setup-integration.yml
@@ -479,11 +548,12 @@ jobs:
 - name: integration-linux-minimum-capi
   serial: true
   plan:
-  - in_parallel: &integration_resources
+  - in_parallel:
     - get: cli
       passed: [build-binaries]
     - get: cli-ci
     - get: cf-deployment
+    - get: cf-deployment-concourse-tasks
     - get: cf-cli-binaries
       passed: [build-binaries]
       trigger: true
@@ -491,6 +561,24 @@ jobs:
       params:
         action: claim
   - do:
+    # - task: create-vars-file
+    #   file: cli-ci/ci/infrastructure/tasks/create-vars-file.yml
+    #   params: *create-vars_params
+    # - task: copy-ops-files
+    #   file: cli-ci/ci/infrastructure/tasks/combine-inputs.yml
+    #   input_mapping: *copy-ops-files-inputs
+    #   params:
+    #     COPY_PATHS: *ops-files-copy-paths
+    # - task: redeploy-cf
+    #   file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
+    #   input_mapping: *redeploy-cf-inputs
+    #   params:
+    #     OPS_FILES: *redeploy-cf-ops-files
+    - task: update-cf-deployment
+      timeout: 3h
+      file: cli-ci/ci/cli-v8-toolsmiths/tasks/update-cf-deployment.yml
+      params: 
+        CF_INT_CLIENT_SECRET: ((client-secret))
     - task: integration
       timeout: 3h
       file: cli-ci/ci/cli-v8-toolsmiths/tasks/integration-linux.yml      
@@ -539,212 +627,30 @@ jobs:
       params:
         action: claim
   - do:
-    - task: create-vars-file
-      file: cli-ci/ci/infrastructure/tasks/create-vars-file.yml
-      params:
-        CLIENT_SECRET: ((client-secret))
-    - task: copy-ops-files
-      file: cli-ci/ci/infrastructure/tasks/combine-inputs.yml
-      input_mapping:
-        input1: cf-deployment
-        input2: cli-ci
-      params:
-        COPY_PATHS:
-          input1/operations/enable-service-discovery.yml
-          input1/operations/scale-to-one-az.yml
-          input1/operations/test/add-persistent-isolation-segment-diego-cell.yml
-          input1/operations/use-compiled-releases.yml
-          input1/operations/use-internal-lookup-for-route-services.yml
-          input2/ci/infrastructure/operations/add-dummy-windows-stack.yml
-          input2/ci/infrastructure/operations/add-oidc-provider.yml
-          input2/ci/infrastructure/operations/add-uaa-client-credentials.yml
-          input2/ci/infrastructure/operations/adjust-user-retry-attempts.yml
-          input2/ci/infrastructure/operations/cli-isolation-cell-overrides.yml
-          input2/ci/infrastructure/operations/default-app-memory.yml
-          input2/ci/infrastructure/operations/diego-cell-instances.yml
-          input2/ci/infrastructure/operations/doppler-instances.yml
-          input2/ci/infrastructure/operations/enable-mysql-audit-logging.yml
-          input2/ci/infrastructure/operations/enable-v3-deployments-endpoint.yml
-          input2/ci/infrastructure/operations/increase-route-registration-interval.yml
-          input2/ci/infrastructure/operations/reduce-async-service-polling.yml
-          input2/ci/infrastructure/operations/skip-ssl-override.yml
-          input2/ci/infrastructure/operations/uaa-vm_type-override.yml
-          input2/ci/infrastructure/operations/use-latest-capi.yml
+    # - task: create-vars-file
+    #   file: cli-ci/ci/infrastructure/tasks/create-vars-file.yml
+    #   params: *create-vars_params
+    # - task: copy-ops-files
+    #   file: cli-ci/ci/infrastructure/tasks/combine-inputs.yml
+    #   input_mapping: *copy-ops-files-inputs
+    #   params:
+    #     COPY_PATHS: *ops-files-copy-paths
     - task: upload-edge-capi
       file: cli-ci/ci/cli-v8-toolsmiths/tasks/upload-edge-capi.yml
-      # config:
-      #   platform: linux
-
-      #   image_resource:
-      #     type: docker-image
-      #     source:
-      #       repository: relintdockerhubpushbot/cf-deployment-concourse-tasks
-
-      #   inputs:
-      #     - name: cli-ci
-      #     - name: release-tarball
-      #     - name: gcp-env
-      #     # Input mapping to directory containing .tgz files
-
-      #   run:
-      #     path: bash
-      #     args:
-      #       - -c
-      #       - |
-      #         set -eu
-
-      #         eval "$(bbl print-env --metadata-file gcp-env/metadata)"
-      #         for filename in release-tarball/*.tgz; do
-      #           bosh upload-release --sha2 "$filename"
-      #         done        
-      input_mapping:
-        release-tarball: edge-capi-release
-    - task: redeploy-cf
-      file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
-      input_mapping:
-        toolsmiths-env: gcp-env
-        vars-files: vars_path
-        ops-files: combine_inputs_output
-      params:
-        OPS_FILES:
-          add-persistent-isolation-segment-diego-cell.yml
-          use-compiled-releases.yml
-          use-latest-capi.yml
-          cli-isolation-cell-overrides.yml
-          default-app-memory.yml
-          skip-ssl-override.yml
-          scale-to-one-az.yml
-          diego-cell-instances.yml
-          doppler-instances.yml
-          uaa-vm_type-override.yml
-          add-uaa-client-credentials.yml
-          add-dummy-windows-stack.yml
-          reduce-async-service-polling.yml
-          add-oidc-provider.yml
-          adjust-user-retry-attempts.yml
-          enable-v3-deployments-endpoint.yml
-          enable-mysql-audit-logging.yml
-          use-internal-lookup-for-route-services.yml
-          enable-service-discovery.yml
-          increase-route-registration-interval.yml
-        VARS_FILES: vars.yml
+      input_mapping: *upload-edge-capi-input
+    - task: update-cf-deployment
+      timeout: 3h
+      file: cli-ci/ci/cli-v8-toolsmiths/tasks/update-cf-deployment.yml
+      params: 
+        CF_INT_CLIENT_SECRET: ((client-secret))
+    # - task: redeploy-cf
+    #   file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
+    #   input_mapping: *redeploy-cf-inputs
+    #   params:
+    #     OPS_FILES: *redeploy-cf-ops-files
     - task: config
       timeout: 3h
-      file: cli-ci/ci/cli-v8/tasks-toolsmiths/cats-config.yml
-      # config:
-      #   platform: linux
-
-      #   image_resource:
-      #     type: docker-image
-      #     source:
-      #       repository: relintdockerhubpushbot/cf-deployment-concourse-tasks
-
-      #   inputs:
-      #     - name: cf-cli-binaries
-      #     - name: gcp-env
-      #     - name: cli-ci
-      #     - name: cf-deployment
-
-      #   outputs:
-      #     - name: cats-config
-
-      #   params:
-      #     INCLUDE_V3:
-      #     BROKER_START_TIMEOUT:
-      #     CF_PUSH_TIMEOUT:
-      #     DEFAULT_TIMEOUT:
-      #     LONG_CURL_TIMEOUT:
-
-      #   run:
-      #     path: bash
-      #     args:
-      #     - -c
-      #     - |
-      #       set -eu
-
-      #       ENV=`cat gcp-env/name`
-      #       DOMAIN="${ENV}.cf-app.com"
-      #       API="api.${DOMAIN}"
-      #       CF_INT_USERNAME="admin"
-
-      #       cat gcp-env/metadata > $ENV.json
-      #       eval "$(bbl print-env --metadata-file $ENV.json)"
-      #       # bosh -d cf manifest > ${ENV}_cf_deployment.yml
-
-      #       # bosh interpolate ${ENV}_cf_deployment.yml \
-      #       # -o cf-deployment/operations/test/add-persistent-isolation-segment-diego-cell.yml \
-      #       # -o cf-deployment/operations/use-internal-lookup-for-route-services.yml \
-      #       # -o cf-deployment/operations/enable-service-discovery.yml \
-      #       # -o cli-ci/ci/infrastructure/operations/use-latest-capi.yml \
-      #       # -o cli-ci/ci/infrastructure/operations/default-app-memory.yml \
-      #       # -o cli-ci/ci/infrastructure/operations/add-oidc-provider.yml \
-      #       # -o cli-ci/ci/infrastructure/operations/cli-isolation-cell-overrides.yml \
-      #       # -o cli-ci/ci/infrastructure/operations/increase-route-registration-interval.yml \
-      #       # -o cli-ci/ci/infrastructure/operations/skip-ssl-override.yml \
-      #       # -o cli-ci/ci/infrastructure/operations/adjust-user-retry-attempts.yml \
-      #       # -o cli-ci/ci/infrastructure/operations/diego-cell-instances.yml \
-      #       # -o cli-ci/ci/infrastructure/operations/doppler-instances.yml \
-      #       #  > ./director.yml
-
-      #       # bosh -d cf deploy director.yml -n            
-
-      #       credhub login
-      #       CF_INT_PASSWORD=$(credhub get -n /bosh-$ENV/cf/cf_admin_password | bosh interpolate --path /value -)
-
-      #       cat << EOF | jq -S . > cats-config/integration_config.json
-      #       {
-      #         "admin_password": "${CF_INT_PASSWORD}",
-      #         "admin_user": "${CF_INT_USERNAME}",
-      #         "api": "${API}",
-      #         "apps_domain": "${DOMAIN}",
-      #         "backend" : "diego",
-      #         "broker_start_timeout": ${BROKER_START_TIMEOUT},
-      #         "cf_push_timeout": ${CF_PUSH_TIMEOUT},
-      #         "default_timeout": ${DEFAULT_TIMEOUT},
-      #         "long_curl_timeout": ${LONG_CURL_TIMEOUT},
-      #         "skip_ssl_validation": true,
-      #         "use_http": true,
-      #         "include_apps": true,
-      #         "include_backend_compatibility": false,
-      #         "include_container_networking": true,
-      #         "include_detect": true,
-      #         "include_docker": true,
-      #         "include_internet_dependent": true,
-      #         "include_isolation_segments": true,
-      #         "isolation_segment_name": "persistent_isolation_segment",
-      #         "include_private_docker_registry": false,
-      #         "include_route_services": true,
-      #         "include_routing": true,
-      #         "include_routing_isolation_segments": false,
-      #         "include_security_groups": true,
-      #         "include_services": true,
-      #         "include_service_discovery": true,
-      #         "include_service_instance_sharing": true,
-      #         "include_ssh": true,
-      #         "include_sso": false,
-      #         "include_tasks": true,
-      #         "include_tcp_routing": true,
-      #         "include_v3": ${INCLUDE_V3},
-      #         "include_zipkin": true
-      #       }
-      #       EOF
-
-      #       bindir=${PWD}/bin
-      #       mkdir -p ${bindir}
-      #       export PATH=${bindir}:$PATH
-
-      #       pushd cf-cli-binaries
-      #         tar xvf cf-cli-binaries.tgz
-      #         chmod +x cf-cli_linux_x86-64
-      #         ln -s ${PWD}/cf-cli_linux_x86-64 ${bindir}/cf
-      #       popd
-
-      #       export CF_USERNAME=${CF_INT_USERNAME}
-      #       export CF_PASSWORD=${CF_INT_PASSWORD}
-      #       cf api ${API} --skip-ssl-validation
-      #       cf auth
-      #       cf enable-feature-flag diego_docker
-      #       cf enable-feature-flag service_instance_sharing
+      file: cli-ci/ci/cli-v8-toolsmiths/tasks/cats-config.yml
       params:
         INCLUDE_V3: true
         BROKER_START_TIMEOUT: 330
@@ -808,66 +714,24 @@ jobs:
       params:
         action: claim    
   - do:
-    - task: create-vars-file
-      file: cli-ci/ci/infrastructure/tasks/create-vars-file.yml
-      params:
-        CLIENT_SECRET: ((client-secret))
-    - task: copy-ops-files
-      file: cli-ci/ci/infrastructure/tasks/combine-inputs.yml
-      input_mapping:
-        input1: cf-deployment
-        input2: cli-ci
-      params:
-        COPY_PATHS:
-          input1/operations/enable-service-discovery.yml
-          input1/operations/scale-to-one-az.yml
-          input1/operations/test/add-persistent-isolation-segment-diego-cell.yml
-          input1/operations/use-compiled-releases.yml
-          input1/operations/use-internal-lookup-for-route-services.yml
-          input2/ci/infrastructure/operations/add-dummy-windows-stack.yml
-          input2/ci/infrastructure/operations/add-oidc-provider.yml
-          input2/ci/infrastructure/operations/add-uaa-client-credentials.yml
-          input2/ci/infrastructure/operations/adjust-user-retry-attempts.yml
-          input2/ci/infrastructure/operations/cli-isolation-cell-overrides.yml
-          input2/ci/infrastructure/operations/default-app-memory.yml
-          input2/ci/infrastructure/operations/diego-cell-instances.yml
-          input2/ci/infrastructure/operations/doppler-instances.yml
-          input2/ci/infrastructure/operations/enable-mysql-audit-logging.yml
-          input2/ci/infrastructure/operations/enable-v3-deployments-endpoint.yml
-          input2/ci/infrastructure/operations/increase-route-registration-interval.yml
-          input2/ci/infrastructure/operations/reduce-async-service-polling.yml
-          input2/ci/infrastructure/operations/skip-ssl-override.yml
-          input2/ci/infrastructure/operations/uaa-vm_type-override.yml
-          input2/ci/infrastructure/operations/use-latest-capi.yml
-    - task: redeploy-cf
-      file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
-      input_mapping:
-        toolsmiths-env: gcp-env
-        vars-files: vars_path
-        ops-files: combine_inputs_output
-      params:
-        OPS_FILES:
-          add-persistent-isolation-segment-diego-cell.yml
-          use-compiled-releases.yml
-          use-latest-capi.yml
-          cli-isolation-cell-overrides.yml
-          default-app-memory.yml
-          skip-ssl-override.yml
-          scale-to-one-az.yml
-          diego-cell-instances.yml
-          doppler-instances.yml
-          uaa-vm_type-override.yml
-          add-uaa-client-credentials.yml
-          add-dummy-windows-stack.yml
-          reduce-async-service-polling.yml
-          add-oidc-provider.yml
-          adjust-user-retry-attempts.yml
-          enable-v3-deployments-endpoint.yml
-          enable-mysql-audit-logging.yml
-          use-internal-lookup-for-route-services.yml
-          enable-service-discovery.yml
-          increase-route-registration-interval.yml
-        VARS_FILES: vars.yml
+    # - task: create-vars-file
+    #   file: cli-ci/ci/infrastructure/tasks/create-vars-file.yml
+    #   params: *create-vars_params
+    # - task: copy-ops-files
+    #   file: cli-ci/ci/infrastructure/tasks/combine-inputs.yml
+    #   input_mapping: *copy-ops-files-inputs
+    #   params:
+    #     COPY_PATHS: *ops-files-copy-paths
+    # - task: redeploy-cf
+    #   file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
+    #   input_mapping: *redeploy-cf-inputs
+    #   params:
+    #     OPS_FILES: *redeploy-cf-ops-files
+    - task: update-cf-deployment
+      timeout: 3h
+      file: cli-ci/ci/cli-v8-toolsmiths/tasks/update-cf-deployment.yml
+      params: 
+        CF_INT_CLIENT_SECRET: ((client-secret))
     - task: config
       timeout: 3h
       file: cli-ci/ci/cli-v8-toolsmiths/tasks/cats-config.yml
