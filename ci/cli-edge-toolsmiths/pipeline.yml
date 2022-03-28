@@ -36,7 +36,7 @@ resources:
   icon: console
   source:
     uri: https://github.com/cloudfoundry/cli
-    branch: v8
+    branch: master
 
 - name: cf-cli-binaries
   type: s3
@@ -758,4 +758,3 @@ jobs:
       params:
         MAJOR_VERSION: 8
         ARCH: i686
-
