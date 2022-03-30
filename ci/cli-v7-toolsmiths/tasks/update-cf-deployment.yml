@@ -55,10 +55,10 @@ run:
       -v client-secret="${CF_INT_CLIENT_SECRET}" \
       > ./director.yml
 
+    echo "version is ======================= $LEGACY_VERSION"
     if [[ $LEGACY_VERSION != "" ]]; then
       echo "Using legacy capi====================== $LEGACY_VERSION"
-      bosh upload-release --sha1 453186b5d6ea976aa3ff21d8d75766a652271c3b \
-        https://bosh.io/d/github.com/cloudfoundry/capi-release?v=$LEGACY_VERSION
+      bosh upload-release https://bosh.io/d/github.com/cloudfoundry/capi-release?v=$LEGACY_VERSION
 
       bosh interpolate director.yml \
       -o cli-ci/ci/cli-v7-toolsmiths/tasks/use-legacy-capi.yml \
