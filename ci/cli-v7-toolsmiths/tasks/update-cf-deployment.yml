@@ -36,7 +36,7 @@ run:
     bosh interpolate ${ENV}_cf_deployment.yml \
       -o cf-deployment/operations/test/add-persistent-isolation-segment-diego-cell.yml \
       -o cf-deployment/operations/use-internal-lookup-for-route-services.yml \
-      -o cli-ci/ci/cli-v7-toolsmiths/tasks/use-compiled-releases.yml \
+      -o cli-ci/ci/cli-v7-toolsmiths/tasks/compiled-releases.yml \
       -o cli-ci/ci/infrastructure/operations/add-dummy-windows-stack.yml \
       -o cli-ci/ci/infrastructure/operations/enable-mysql-audit-logging.yml \
       -o cli-ci/ci/infrastructure/operations/default-app-memory.yml \
