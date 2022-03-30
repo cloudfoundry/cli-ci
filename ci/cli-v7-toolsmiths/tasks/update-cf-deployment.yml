@@ -13,6 +13,9 @@ inputs:
 - name: cli-ci
 - name: cf-deployment
 
+params:
+  CF_LEGACY:
+
 run:
   path: bash
   args:
@@ -36,7 +39,7 @@ run:
     bosh interpolate ${ENV}_cf_deployment.yml \
       -o cf-deployment/operations/test/add-persistent-isolation-segment-diego-cell.yml \
       -o cf-deployment/operations/use-internal-lookup-for-route-services.yml \
-      -o cli-ci/ci/cli-v7-toolsmiths/tasks/compiled-releases.yml \
+      -o cf-deployment/operations/use-compiled-releases.yml \
       -o cli-ci/ci/infrastructure/operations/add-dummy-windows-stack.yml \
       -o cli-ci/ci/infrastructure/operations/enable-mysql-audit-logging.yml \
       -o cli-ci/ci/infrastructure/operations/default-app-memory.yml \
@@ -51,6 +54,16 @@ run:
       -o cli-ci/ci/infrastructure/operations/adjust-user-retry-attempts.yml \
       -v client-secret="${CF_INT_CLIENT_SECRET}" \
       > ./director.yml
+
+    if [[ $CF_LEGACY == "true" ]]; then
+      echo "Using legacy capi======================"
+      bosh upload-release --sha1 453186b5d6ea976aa3ff21d8d75766a652271c3b \
+        https://bosh.io/d/github.com/cloudfoundry/capi-release?v=1.95.0
+
+      bosh interpolate director.yml \
+      -o cli-ci/ci/cli-v7-toolsmiths/tasks/use-legacy-capi.yml \
+      > ./director.yml
+    fi
 
     bosh -d cf deploy director.yml -n
 
