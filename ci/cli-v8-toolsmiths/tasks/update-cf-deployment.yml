@@ -49,6 +49,7 @@ run:
       -o cli-ci/ci/infrastructure/operations/increase-route-registration-interval.yml \
       -o cli-ci/ci/infrastructure/operations/reduce-async-service-polling.yml \
       -o cli-ci/ci/infrastructure/operations/adjust-user-retry-attempts.yml \
+      -o cli-ci/ci/infrastructure/operations/use-latest-capi.yml \
       -v client-secret="${CF_INT_CLIENT_SECRET}" \
       > ./director.yml
 
