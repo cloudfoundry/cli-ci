@@ -14,7 +14,7 @@ inputs:
 - name: cf-deployment
 
 params:
-  CF_LEGACY:
+  LEGACY_VERSION:
 
 run:
   path: bash
@@ -55,16 +55,17 @@ run:
       -v client-secret="${CF_INT_CLIENT_SECRET}" \
       > ./director.yml
 
-    if [[ $CF_LEGACY == "true" ]]; then
-      echo "Using legacy capi======================"
+    if [[ $LEGACY_VERSION != "" ]]; then
+      echo "Using legacy capi====================== $LEGACY_VERSION"
       bosh upload-release --sha1 453186b5d6ea976aa3ff21d8d75766a652271c3b \
-        https://bosh.io/d/github.com/cloudfoundry/capi-release?v=1.95.0
+        https://bosh.io/d/github.com/cloudfoundry/capi-release?v=$LEGACY_VERSION
 
       bosh interpolate director.yml \
       -o cli-ci/ci/cli-v7-toolsmiths/tasks/use-legacy-capi.yml \
-      > ./director1.yml
+      -v version="${LEGACY_VERSION}" \
+      > ./updated-director.yml
 
-      cp director1.yml director.yml
+      cp updated-director.yml director.yml
     fi
 
     bosh -d cf deploy director.yml -n

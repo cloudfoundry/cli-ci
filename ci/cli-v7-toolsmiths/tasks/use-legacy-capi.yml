@@ -1,7 +1,7 @@
 ---
 - type: replace
   path: /releases/name=capi/version
-  value: "1.95.0"
+  value: ((version))
 
 - type: remove
   path: /releases/name=capi/url?
