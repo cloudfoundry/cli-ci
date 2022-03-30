@@ -62,7 +62,9 @@ run:
 
       bosh interpolate director.yml \
       -o cli-ci/ci/cli-v7-toolsmiths/tasks/use-legacy-capi.yml \
-      > ./director.yml
+      > ./director1.yml
+
+      cp director1.yml director.yml
     fi
 
     bosh -d cf deploy director.yml -n
