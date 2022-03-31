@@ -61,6 +61,7 @@ run:
 
       bosh interpolate director.yml \
       -o cli-ci/ci/cli-v7-toolsmiths/tasks/use-legacy-capi.yml \
+      -o cli-ci/ci/infrastructure/operations/skip-ssl-override.yml \
       -v version="${LEGACY_VERSION}" \
       > ./legacy-director.yml
 
