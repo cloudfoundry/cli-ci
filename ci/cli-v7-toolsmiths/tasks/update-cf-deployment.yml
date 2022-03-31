@@ -62,6 +62,7 @@ run:
 
       bosh interpolate director.yml \
       -o cf-deployment/operations/scale-to-one-az.yml \
+      -o cf-deployment/operations/experimental/fast-deploy-with-downtime-and-danger.yml \
       -o cli-ci/ci/cli-v7-toolsmiths/tasks/use-legacy-capi.yml \
       -o cli-ci/ci/infrastructure/operations/skip-ssl-override.yml \
       -v version="${LEGACY_VERSION}" \
