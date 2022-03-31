@@ -59,9 +59,11 @@ run:
     if [[ $LEGACY_VERSION != "" ]]; then
       bosh upload-release https://bosh.io/d/github.com/cloudfoundry/capi-release?v=$LEGACY_VERSION
 
+      # -o cli-ci/ci/infrastructure/operations/skip-ssl-override.yml \
+
       bosh interpolate director.yml \
       -o cli-ci/ci/cli-v7-toolsmiths/tasks/use-legacy-capi.yml \
-      -o cli-ci/ci/infrastructure/operations/skip-ssl-override.yml \
+      -o cf-deployment/operations/scale-to-one-az.yml \
       -v version="${LEGACY_VERSION}" \
       > ./legacy-director.yml
 
