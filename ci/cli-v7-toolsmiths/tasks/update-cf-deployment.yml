@@ -68,7 +68,7 @@ run:
 
       # cp legacy-director.yml director.yml
 
-      bosh -d cf delete-deployment
+      bosh -d cf delete-deployment -n
 
       bosh deploy legacy-director.yml -n
     else
