@@ -62,11 +62,14 @@ run:
       bosh upload-release https://bosh.io/d/github.com/cloudfoundry/capi-release?v=$LEGACY_VERSION
 
 
+        # input1/operations/use-internal-lookup-for-route-services.yml
+        # input2/ci/infrastructure/operations/enable-mysql-audit-logging.yml
+      # -o cli-ci/ci/infrastructure/operations/skip-ssl-override.yml \
+
       bosh interpolate director.yml \
       -o cf-deployment/operations/scale-to-one-az.yml \
       -o cf-deployment/operations/experimental/fast-deploy-with-downtime-and-danger.yml \
       -o cli-ci/ci/cli-v7-toolsmiths/tasks/use-legacy-capi.yml \
-      -o cli-ci/ci/infrastructure/operations/skip-ssl-override.yml \
       -o cli-ci/ci/infrastructure/operations/uaa-vm_type-override.yml \
       -v version="${LEGACY_VERSION}" \
       > ./legacy-director.yml
