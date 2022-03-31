@@ -57,6 +57,7 @@ run:
 
     echo "legacy version is ======================= $LEGACY_VERSION"
     echo "before http_proxy ====================== $http_proxy & $HTTP_PROXY"
+    echo "before https_proxy ====================== $https_proxy & $HTTPS_PROXY"
     if [[ $LEGACY_VERSION != "" ]]; then
       bosh upload-release https://bosh.io/d/github.com/cloudfoundry/capi-release?v=$LEGACY_VERSION
 
@@ -66,6 +67,7 @@ run:
       -o cf-deployment/operations/experimental/fast-deploy-with-downtime-and-danger.yml \
       -o cli-ci/ci/cli-v7-toolsmiths/tasks/use-legacy-capi.yml \
       -o cli-ci/ci/infrastructure/operations/skip-ssl-override.yml \
+      -o cli-ci/ci/infrastructure/operations/uaa-vm_type-override.yml \
       -v version="${LEGACY_VERSION}" \
       > ./legacy-director.yml
 
@@ -81,6 +83,7 @@ run:
     bosh -d cf deploy director.yml -n
     
     echo "after http_proxy ====================== $http_proxy & $HTTP_PROXY"
+    echo "before https_proxy ====================== $https_proxy & $HTTPS_PROXY"
 
     echo "Deployed CAPI version:"
     bosh -d cf releases | grep capi
