@@ -53,24 +53,20 @@ run:
       -v client-secret="${CF_INT_CLIENT_SECRET}" \
       > ./director.yml
 
-    echo "legacy version is ======================= $LEGACY_VERSION"
     if [[ $LEGACY_VERSION != "" ]]; then
+      echo "Legacy capi version is $LEGACY_VERSION"
       bosh upload-release https://bosh.io/d/github.com/cloudfoundry/capi-release?v=$LEGACY_VERSION
 
       bosh interpolate director.yml \
       -o cf-deployment/operations/scale-to-one-az.yml \
+      -o cf-deployment/operations/experimental/fast-deploy-with-downtime-and-danger.yml \
       -o cli-ci/ci/cli-v7-toolsmiths/tasks/use-legacy-capi.yml \
-      -o cli-ci/ci/infrastructure/operations/skip-ssl-override.yml \
+      -o cli-ci/ci/infrastructure/operations/uaa-vm_type-override.yml \
       -v version="${LEGACY_VERSION}" \
       > ./legacy-director.yml
 
-      echo "Legacy capi interpolate complete ====================== "
-
       cp legacy-director.yml director.yml
-
       bosh -d cf delete-deployment -n
-
-      # bosh deploy legacy-director.yml -n
     fi
 
     bosh -d cf deploy director.yml -n

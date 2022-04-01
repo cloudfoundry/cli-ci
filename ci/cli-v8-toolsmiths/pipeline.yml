@@ -462,8 +462,9 @@ jobs:
     - task: update-cf-deployment
       timeout: 3h
       file: cli-ci/ci/cli-v8-toolsmiths/tasks/update-cf-deployment.yml
-      params: 
+      params: &integration_legacy_cf_params
         CF_INT_CLIENT_SECRET: ((client-secret))
+        LEGACY_VERSION: "1.109.0" 
     - task: integration
       timeout: 3h
       file: cli-ci/ci/cli-v8-toolsmiths/tasks/integration-linux.yml      
@@ -589,8 +590,7 @@ jobs:
     - task: update-cf-deployment
       timeout: 3h
       file: cli-ci/ci/cli-v8-toolsmiths/tasks/update-cf-deployment.yml
-      params: 
-        CF_INT_CLIENT_SECRET: ((client-secret))
+      params: *integration_legacy_cf_params
     - task: config
       timeout: 3h
       file: cli-ci/ci/cli-v8-toolsmiths/tasks/cats-config.yml
