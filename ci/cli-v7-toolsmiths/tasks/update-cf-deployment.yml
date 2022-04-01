@@ -31,9 +31,7 @@ run:
     mkdir -p $SSL_CERT_DIR
 
     cat gcp-env/metadata > $ENV.json
-
     eval "$(bbl print-env --metadata-file $ENV.json)"
-
     bosh -d cf manifest > ${ENV}_cf_deployment.yml
 
     bosh interpolate ${ENV}_cf_deployment.yml \
@@ -55,16 +53,9 @@ run:
       -v client-secret="${CF_INT_CLIENT_SECRET}" \
       > ./director.yml
 
-    echo "legacy version is ======================= $LEGACY_VERSION"
-    echo "before http_proxy ====================== $http_proxy & $HTTP_PROXY"
-    echo "before https_proxy ====================== $https_proxy & $HTTPS_PROXY"
     if [[ $LEGACY_VERSION != "" ]]; then
+      echo "Legacy capi version is $LEGACY_VERSION"
       bosh upload-release https://bosh.io/d/github.com/cloudfoundry/capi-release?v=$LEGACY_VERSION
-
-
-        # input1/operations/use-internal-lookup-for-route-services.yml
-        # input2/ci/infrastructure/operations/enable-mysql-audit-logging.yml
-      # -o cli-ci/ci/infrastructure/operations/skip-ssl-override.yml \
 
       bosh interpolate director.yml \
       -o cf-deployment/operations/scale-to-one-az.yml \
@@ -74,19 +65,11 @@ run:
       -v version="${LEGACY_VERSION}" \
       > ./legacy-director.yml
 
-      echo "Legacy capi interpolate complete ====================== "
-
       cp legacy-director.yml director.yml
-
       bosh -d cf delete-deployment -n
-
-      # bosh deploy legacy-director.yml -n
     fi
 
     bosh -d cf deploy director.yml -n
-    
-    echo "after http_proxy ====================== $http_proxy & $HTTP_PROXY"
-    echo "before https_proxy ====================== $https_proxy & $HTTPS_PROXY"
 
     echo "Deployed CAPI version:"
     bosh -d cf releases | grep capi

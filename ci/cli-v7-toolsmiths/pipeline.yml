@@ -11,11 +11,6 @@ resource_types:
   source:
     repository: cftoolsmiths/toolsmiths-envs-resource
 
-# - name: bosh-deployment
-#   type: docker-image
-#   source:
-#     repository: cloudfoundry/bosh-deployment-resource
-
 resources:
 - name: gcp-env
   type: pcf-pool
@@ -31,18 +26,11 @@ resources:
     private_key: ((bosh-lite-pools-github-private-key))
     tag_filter: v*
 
-- name: cf-deployment-legacy
-  type: git
-  source:
-    uri: git@github.com:cloudfoundry/cf-deployment.git
-    private_key: ((bosh-lite-pools-github-private-key))
-    tag_filter: v13.5.0
-
 - name: cli-ci
   type: git
   source:
     uri: https://github.com/cloudfoundry/cli-ci
-    branch: master
+    branch: toolsmiths
 
 - name: cf-deployment-concourse-tasks
   type: git
@@ -191,34 +179,11 @@ resources:
     versioned_file: master/cf7-cli-installer_edge_winx64.zip
     region_name: us-west-1
 
-# - name: gcp-bosh-pool
-#   type: pool
-#   source:
-#     uri: git@github.com:cloudfoundry/cli-pools
-#     private_key: ((cli-pools-github-private-key))
-#     branch: master
-#     pool: mashed-potato
-
-# - name: legacy-gcp-bosh-pool
-#   type: pool
-#   source:
-#     uri: git@github.com:cloudfoundry/cli-pools
-#     private_key: ((cli-pools-github-private-key))
-#     branch: master
-#     pool: hasselback-potato
-
 - name: slack-alert
   type: slack-notification
   icon: slack
   source:
     url: ((slack-webhook-url))
-
-# - name: vars-store
-#   type: git
-#   source:
-#     uri: git@github.com:cloudfoundry/cli-private
-#     private_key: ((cli-private-github-private-key))
-#     branch: master
 
 # values for this already exist in last pass, blocked on
 # blocked on https://github.com/concourse/concourse/issues/1407
@@ -353,20 +318,18 @@ jobs:
   - do:
     - task: update-cf-deployment
       timeout: 3h
-      file: cli-ci/ci/cli-v8-toolsmiths/tasks/update-cf-deployment.yml
+      file: cli-ci/ci/cli-v7-toolsmiths/tasks/update-cf-deployment.yml
       params: 
         CF_INT_CLIENT_SECRET: ((client-secret))
     - task: integration
       timeout: 3h
       file: cli-ci/ci/cli-v8-toolsmiths/tasks/integration-linux.yml
-      # on_failure:
-      #   put: slack-alert
-      #   params:
-      #     channel: '#cli-dev-internal'
-      #     text: *slack_notification_text
+      on_failure:
+        put: slack-alert
+        params:
+          channel: '#cli-dev-internal'
+          text: *slack_notification_text
       params: &integration_params
-        # CF_INT_CLIENT_ID: 'potato-face'
-        # CF_INT_CLIENT_SECRET: ((client-secret))
         CF_INT_DOCKER_IMAGE: ((dockerhub-private-image))
         CF_INT_DOCKER_USERNAME: ((dockerhub-username))
         CF_INT_DOCKER_PASSWORD: ((dockerhub-password))
@@ -386,17 +349,17 @@ jobs:
   - do:
     - task: update-cf-deployment
       timeout: 3h
-      file: cli-ci/ci/cli-v8-toolsmiths/tasks/update-cf-deployment.yml
+      file: cli-ci/ci/cli-v7-toolsmiths/tasks/update-cf-deployment.yml
       params: 
         CF_INT_CLIENT_SECRET: ((client-secret))
     - task: integration
       timeout: 3h
       file: cli-ci/ci/cli-v8-toolsmiths/tasks/integration-linux.yml
-      # on_failure:
-      #   put: slack-alert
-      #   params:
-      #     channel: '#cli-dev-internal'
-      #     text: *slack_notification_text
+      on_failure:
+        put: slack-alert
+        params:
+          channel: '#cli-dev-internal'
+          text: *slack_notification_text
       params:
         <<: *integration_params
         CF_INT_CLIENT_CREDENTIALS_TEST_MODE: true
@@ -417,7 +380,7 @@ jobs:
   - do:
     - task: update-cf-deployment
       timeout: 3h
-      file: cli-ci/ci/cli-v8-toolsmiths/tasks/update-cf-deployment.yml
+      file: cli-ci/ci/cli-v7-toolsmiths/tasks/update-cf-deployment.yml
       params: 
         CF_INT_CLIENT_SECRET: ((client-secret))
     - task: setup-integration
@@ -430,11 +393,11 @@ jobs:
         <<: *integration_params
       input_mapping:
         cf-credentials: setup-integration-outputs
-      # on_failure:
-      #   put: slack-alert
-      #   params:
-      #     channel: '#cli-dev-internal'
-      #     text: *slack_notification_text
+      on_failure:
+        put: slack-alert
+        params:
+          channel: '#cli-dev-internal'
+          text: *slack_notification_text
   ensure:
     put: gcp-env
     params:
@@ -450,7 +413,7 @@ jobs:
   - do:
     - task: update-cf-deployment
       timeout: 3h
-      file: cli-ci/ci/cli-v8-toolsmiths/tasks/update-cf-deployment.yml
+      file: cli-ci/ci/cli-v7-toolsmiths/tasks/update-cf-deployment.yml
       params: 
         CF_INT_CLIENT_SECRET: ((client-secret))
     - task: setup-integration
@@ -466,11 +429,11 @@ jobs:
         CF_INT_CLIENT_SECRET: ((client-secret))
       input_mapping:
         cf-credentials: setup-integration-outputs
-      # on_failure:
-      #   put: slack-alert
-      #   params:
-      #     channel: '#cli-dev-internal'
-      #     text: *slack_notification_text
+      on_failure:
+        put: slack-alert
+        params:
+          channel: '#cli-dev-internal'
+          text: *slack_notification_text
   ensure:
     put: gcp-env
     params:
@@ -489,29 +452,28 @@ jobs:
       passed: [build-binaries]
       trigger: true
     - get: cli-ci
-    - get: cf-deployment-legacy
+    - get: cf-deployment
     - put: gcp-env
       params:
         action: claim
   - do:
     - task: update-cf-deployment
       timeout: 3h
-      input_mapping:
-        cf-deployment: cf-deployment-legacy
-      file: cli-ci/ci/cli-v8-toolsmiths/tasks/update-cf-deployment.yml
-      params: 
+      file: cli-ci/ci/cli-v7-toolsmiths/tasks/update-cf-deployment.yml
+      params: &integration_legacy_cf_params
         CF_INT_CLIENT_SECRET: ((client-secret))
+        LEGACY_VERSION: "1.95.0"      
     - task: integration
       timeout: 3h
       file: cli-ci/ci/cli-v8-toolsmiths/tasks/integration-linux.yml
       params:
         <<: *integration_params
         NODES: 12
-      # on_failure:
-      #   put: slack-alert
-      #   params:
-      #     channel: '#cli-dev-internal'
-      #     text: *slack_notification_text
+      on_failure:
+        put: slack-alert
+        params:
+          channel: '#cli-dev-internal'
+          text: *slack_notification_text
   ensure:
     put: gcp-env
     params:
@@ -527,11 +489,8 @@ jobs:
   - do:
     - task: update-cf-deployment
       timeout: 3h
-      file: cli-ci/ci/cli-v8-toolsmiths/tasks/update-cf-deployment.yml
-      params: 
-        CF_INT_CLIENT_SECRET: ((client-secret))
-      input_mapping:
-        cf-deployment: cf-deployment-legacy        
+      file: cli-ci/ci/cli-v7-toolsmiths/tasks/update-cf-deployment.yml
+      params: *integration_legacy_cf_params
     - task: integration
       timeout: 3h
       file: cli-ci/ci/cli-v8-toolsmiths/tasks/integration-linux.yml
@@ -541,11 +500,11 @@ jobs:
         CF_INT_CLIENT_CREDENTIALS_TEST_MODE: true
         CF_INT_CLIENT_ID: potato-face
         CF_INT_CLIENT_SECRET: ((client-secret))
-      # on_failure:
-      #   put: slack-alert
-      #   params:
-      #     channel: '#cli-dev-internal'
-      #     text: *slack_notification_text
+      on_failure:
+        put: slack-alert
+        params:
+          channel: '#cli-dev-internal'
+          text: *slack_notification_text
   ensure:
     put: gcp-env
     params:
@@ -747,7 +706,7 @@ jobs:
   - do:
     - task: update-cf-deployment
       timeout: 3h
-      file: cli-ci/ci/cli-v8-toolsmiths/tasks/update-cf-deployment.yml
+      file: cli-ci/ci/cli-v7-toolsmiths/tasks/update-cf-deployment.yml
       params: 
         CF_INT_CLIENT_SECRET: ((client-secret))
     - task: config
