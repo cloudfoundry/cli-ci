@@ -24,8 +24,6 @@ run:
     mkdir -p go/src/code.cloudfoundry.org
     ln -s ${PWD}/cli go/src/code.cloudfoundry.org
     ENV=$(cat gcp-env/name)
-    export SSL_CERT_DIR=/tmp/cert_dir
-    mkdir -p $SSL_CERT_DIR
 
     cat gcp-env/metadata > $ENV.json
 
