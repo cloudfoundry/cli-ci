@@ -26,6 +26,13 @@ resources:
     private_key: ((bosh-lite-pools-github-private-key))
     tag_filter: v*
 
+- name: cf-deployment-legacy
+  type: git
+  source:
+    uri: git@github.com:cloudfoundry/cf-deployment.git
+    private_key: ((bosh-lite-pools-github-private-key))
+    tag_filter: v13.5.0    
+
 - name: cli-ci
   type: git
   source:
@@ -452,20 +459,76 @@ jobs:
       passed: [build-binaries]
       trigger: true
     - get: cli-ci
-    - get: cf-deployment
+    - get: cf-deployment-legacy
+    - get: cf-deployment-concourse-tasks
     - put: gcp-env
       params:
         action: claim
   - do:
-    - task: update-cf-deployment
-      timeout: 3h
-      file: cli-ci/ci/cli-v7-toolsmiths/tasks/update-cf-deployment.yml
-      params: &integration_legacy_cf_params
-        CF_INT_CLIENT_SECRET: ((client-secret))
-        LEGACY_VERSION: "1.95.0"      
+    - task: create-vars-file
+      file: cli-ci/ci/infrastructure/tasks/create-vars-file.yml
+      params:
+        CLIENT_SECRET: ((client-secret))
+    - task: copy-ops-files
+      file: cli-ci/ci/infrastructure/tasks/combine-inputs.yml
+      input_mapping:
+        input1: cf-deployment-legacy
+        input2: cli-ci
+      params:
+        COPY_PATHS:
+          input1/operations/scale-to-one-az.yml
+          input1/operations/test/add-persistent-isolation-segment-diego-cell.yml
+          input1/operations/use-compiled-releases.yml
+          input1/operations/use-internal-lookup-for-route-services.yml
+          input2/ci/infrastructure/operations/add-dummy-windows-stack.yml
+          input2/ci/infrastructure/operations/add-oidc-provider.yml
+          input2/ci/infrastructure/operations/add-uaa-client-credentials.yml
+          input2/ci/infrastructure/operations/add-uaa-client-cf-custom.yml
+          input2/ci/infrastructure/operations/adjust-user-retry-attempts.yml
+          input2/ci/infrastructure/operations/cli-isolation-cell-overrides.yml
+          input2/ci/infrastructure/operations/default-app-memory.yml
+          input2/ci/infrastructure/operations/diego-cell-instances.yml
+          input2/ci/infrastructure/operations/doppler-instances.yml
+          input2/ci/infrastructure/operations/enable-v3-deployments-endpoint.yml
+          input2/ci/infrastructure/operations/give-cf-admin-clients-read-scope.yml
+          input2/ci/infrastructure/operations/reduce-async-service-polling.yml
+          input2/ci/infrastructure/operations/skip-ssl-override.yml
+          input2/ci/infrastructure/operations/uaa-vm_type-override.yml
+    - task: delete-cf
+      file: cli-ci/ci/cli-v8-toolsmiths/tasks/delete-cf.yml
+    - task: deploy-cf
+      file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
+      params:
+        OPS_FILES:
+          add-persistent-isolation-segment-diego-cell.yml
+          use-compiled-releases.yml
+          cli-isolation-cell-overrides.yml
+          default-app-memory.yml
+          skip-ssl-override.yml
+          scale-to-one-az.yml
+          diego-cell-instances.yml
+          doppler-instances.yml
+          uaa-vm_type-override.yml
+          add-uaa-client-credentials.yml
+          add-dummy-windows-stack.yml
+          reduce-async-service-polling.yml
+          add-oidc-provider.yml
+          adjust-user-retry-attempts.yml
+          enable-v3-deployments-endpoint.yml
+          give-cf-admin-clients-read-scope.yml
+          add-uaa-client-cf-custom.yml
+          use-internal-lookup-for-route-services.yml
+        VARS_FILES: vars.yml
+      input_mapping:
+        toolsmiths-env: gcp-env          
+        vars-files: vars_path
+        ops-files: combine_inputs_output
+        cf-deployment: cf-deployment-legacy
     - task: integration
       timeout: 3h
       file: cli-ci/ci/cli-v8-toolsmiths/tasks/integration-linux.yml
+      input_mapping:
+        cf-deployment: cf-deployment-legacy
       params:
         <<: *integration_params
         NODES: 12
@@ -487,13 +550,70 @@ jobs:
   plan:
   - in_parallel: *integration_legacy_resources
   - do:
-    - task: update-cf-deployment
-      timeout: 3h
-      file: cli-ci/ci/cli-v7-toolsmiths/tasks/update-cf-deployment.yml
-      params: *integration_legacy_cf_params
+    - task: create-vars-file
+      file: cli-ci/ci/infrastructure/tasks/create-vars-file.yml
+      params:
+        CLIENT_SECRET: ((client-secret))
+    - task: copy-ops-files
+      file: cli-ci/ci/infrastructure/tasks/combine-inputs.yml
+      input_mapping:
+        input1: cf-deployment-legacy
+        input2: cli-ci
+      params:
+        COPY_PATHS:
+          input1/operations/scale-to-one-az.yml
+          input1/operations/test/add-persistent-isolation-segment-diego-cell.yml
+          input1/operations/use-compiled-releases.yml
+          input1/operations/use-internal-lookup-for-route-services.yml
+          input2/ci/infrastructure/operations/add-dummy-windows-stack.yml
+          input2/ci/infrastructure/operations/add-oidc-provider.yml
+          input2/ci/infrastructure/operations/add-uaa-client-credentials.yml
+          input2/ci/infrastructure/operations/add-uaa-client-cf-custom.yml
+          input2/ci/infrastructure/operations/adjust-user-retry-attempts.yml
+          input2/ci/infrastructure/operations/cli-isolation-cell-overrides.yml
+          input2/ci/infrastructure/operations/default-app-memory.yml
+          input2/ci/infrastructure/operations/diego-cell-instances.yml
+          input2/ci/infrastructure/operations/doppler-instances.yml
+          input2/ci/infrastructure/operations/enable-v3-deployments-endpoint.yml
+          input2/ci/infrastructure/operations/give-cf-admin-clients-read-scope.yml
+          input2/ci/infrastructure/operations/reduce-async-service-polling.yml
+          input2/ci/infrastructure/operations/skip-ssl-override.yml
+          input2/ci/infrastructure/operations/uaa-vm_type-override.yml
+    - task: delete-cf
+      file: cli-ci/ci/cli-v8-toolsmiths/tasks/delete-cf.yml
+    - task: deploy-cf
+      file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
+      params:
+        OPS_FILES:
+          add-persistent-isolation-segment-diego-cell.yml
+          use-compiled-releases.yml
+          cli-isolation-cell-overrides.yml
+          default-app-memory.yml
+          skip-ssl-override.yml
+          scale-to-one-az.yml
+          diego-cell-instances.yml
+          doppler-instances.yml
+          uaa-vm_type-override.yml
+          add-uaa-client-credentials.yml
+          add-dummy-windows-stack.yml
+          reduce-async-service-polling.yml
+          add-oidc-provider.yml
+          adjust-user-retry-attempts.yml
+          enable-v3-deployments-endpoint.yml
+          give-cf-admin-clients-read-scope.yml
+          add-uaa-client-cf-custom.yml
+          use-internal-lookup-for-route-services.yml
+        VARS_FILES: vars.yml
+      input_mapping:
+        toolsmiths-env: gcp-env          
+        vars-files: vars_path
+        ops-files: combine_inputs_output
+        cf-deployment: cf-deployment-legacy
     - task: integration
       timeout: 3h
       file: cli-ci/ci/cli-v8-toolsmiths/tasks/integration-linux.yml
+      input_mapping:
+        cf-deployment: cf-deployment-legacy
       params:
         <<: *integration_params
         NODES: 12
