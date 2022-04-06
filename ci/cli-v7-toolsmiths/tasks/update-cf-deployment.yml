@@ -13,6 +13,9 @@ inputs:
 - name: cli-ci
 - name: cf-deployment
 
+params:
+  LEGACY_VERSION:
+
 run:
   path: bash
   args:
@@ -28,9 +31,7 @@ run:
     mkdir -p $SSL_CERT_DIR
 
     cat gcp-env/metadata > $ENV.json
-
     eval "$(bbl print-env --metadata-file $ENV.json)"
-
     bosh -d cf manifest > ${ENV}_cf_deployment.yml
 
     bosh interpolate ${ENV}_cf_deployment.yml \
@@ -49,7 +50,6 @@ run:
       -o cli-ci/ci/infrastructure/operations/increase-route-registration-interval.yml \
       -o cli-ci/ci/infrastructure/operations/reduce-async-service-polling.yml \
       -o cli-ci/ci/infrastructure/operations/adjust-user-retry-attempts.yml \
-      -o cli-ci/ci/infrastructure/operations/use-latest-capi.yml \
       -v client-secret="${CF_INT_CLIENT_SECRET}" \
       > ./director.yml
 
