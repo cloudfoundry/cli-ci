@@ -85,3 +85,4 @@ configure_v8_infrastructure_pipeline inf-picapica picapica-pipeline v8-pool
 configure_v8_infrastructure_pipeline inf-cajica cajica-pipeline v8-pool
 configure_v8_infrastructure_pipeline inf-nari nari-pipeline v8-pool
 configure_v8_infrastructure_minimum_capi_pipeline inf-chipotle chipotle-pipeline v8-pool-minimum-capi
+configure_v8_infrastructure_pipeline inf-panera panera-pipeline v8-pool
