@@ -94,3 +94,4 @@ run:
     cf api ${API} --skip-ssl-validation
     cf auth
     cf enable-feature-flag diego_docker
+    cf enable-feature-flag service_instance_sharing
