@@ -171,7 +171,7 @@ resources:
     uri: git@github.com:cloudfoundry/cli-pools
     private_key: ((cli-pools-github-private-key))
     branch: master
-    pool: mashed-potato
+    pool: v8-pool
 
 - name: legacy-gcp-bosh-pool
   type: pool
@@ -179,7 +179,7 @@ resources:
     uri: git@github.com:cloudfoundry/cli-pools
     private_key: ((cli-pools-github-private-key))
     branch: master
-    pool: v8-pool
+    pool: v8-pool-minimum-capi
 
 - name: slack-alert
   type: slack-notification
