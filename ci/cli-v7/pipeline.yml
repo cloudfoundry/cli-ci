@@ -706,7 +706,7 @@ jobs:
         INCLUDE_V3: true
         BROKER_START_TIMEOUT: 330
         CF_PUSH_TIMEOUT: 210
-        DEFAULT_TIMEOUT: 60
+        DEFAULT_TIMEOUT: 120
         LONG_CURL_TIMEOUT: 210
     - task: extract-linux-binary
       timeout: 3h
