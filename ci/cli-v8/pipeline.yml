@@ -52,6 +52,16 @@ resources:
     branch: main
     uri: https://github.com/cloudfoundry/cf-deployment-concourse-tasks.git
 
+- name: cf-acceptance-tests-min
+  type: git
+  icon: github-box
+  source:
+    branch: cf16.11
+    uri: https://github.com/cloudfoundry/cf-acceptance-tests.git
+    ignore_paths:
+    - ci/*.yml
+    - .envrc
+
 - name: cf-acceptance-tests-rc
   type: git
   icon: github-box
@@ -488,7 +498,7 @@ jobs:
         INCLUDE_V3: true
         BROKER_START_TIMEOUT: 330
         CF_PUSH_TIMEOUT: 210
-        DEFAULT_TIMEOUT: 60
+        DEFAULT_TIMEOUT: 120
         LONG_CURL_TIMEOUT: 210
     - task: extract-linux-binary
       timeout: 3h
@@ -526,7 +536,7 @@ jobs:
       - integration-windows
       - integration-windows-client-creds
       - integration-linux-minimum-capi
-    - get: cf-acceptance-tests-rc
+    - get: cf-acceptance-tests-min
       trigger: true
     - get: cf-deployment-concourse-tasks
     - get: cf-cli-binaries
@@ -564,7 +574,7 @@ jobs:
       timeout: 3h
       file: cf-deployment-concourse-tasks/run-cats-with-provided-cli/task.yml
       input_mapping:
-        cf-acceptance-tests: cf-acceptance-tests-rc
+        cf-acceptance-tests: cf-acceptance-tests-min
         integration-config: cats-config
         cf-cli: linux-cf-binary
       params:
