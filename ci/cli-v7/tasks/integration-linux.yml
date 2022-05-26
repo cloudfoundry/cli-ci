@@ -32,7 +32,6 @@ run:
     set -e
 
     export GOFLAGS="-mod=mod"
-    export GODEBUG="x509ignoreCN=0"
     mkdir -p go/src/code.cloudfoundry.org
     ln -s ${PWD}/cli go/src/code.cloudfoundry.org
     ENV=$(cat bosh-lock/name | cut -d "." -f 1)
