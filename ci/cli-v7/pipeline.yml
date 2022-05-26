@@ -179,7 +179,7 @@ resources:
     uri: git@github.com:cloudfoundry/cli-pools
     private_key: ((cli-pools-github-private-key))
     branch: master
-    pool: hasselback-potato
+    pool: v8-pool
 
 - name: slack-alert
   type: slack-notification
