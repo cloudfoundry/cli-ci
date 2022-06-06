@@ -71,8 +71,7 @@ Get-Env-Info
 
 $Env:RUN_ID=(openssl rand -hex 16)
 $Env:GOFLAGS = "-mod=mod"
-$Env:GODEBUG = "x509sha1=1"
 
 if ((Get-Command "ginkgo" -ErrorAction SilentlyContinue) -eq $null) {
-	go get -v -u github.com/onsi/ginkgo/ginkgo
+	go install -v -u github.com/onsi/ginkgo/ginkgo
 }
