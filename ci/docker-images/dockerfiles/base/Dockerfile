@@ -5,6 +5,8 @@ RUN go version
 # used to ensure we avoid a Git security CVE (https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-19604)
 RUN apt update && apt upgrade -y
 
+ENV GO111MODULE=off
+
 # used by coverage utilities
 RUN go get golang.org/x/tools/cmd/cover
 
