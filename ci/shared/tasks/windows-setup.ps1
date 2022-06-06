@@ -73,5 +73,5 @@ $Env:RUN_ID=(openssl rand -hex 16)
 $Env:GOFLAGS = "-mod=mod"
 
 if ((Get-Command "ginkgo" -ErrorAction SilentlyContinue) -eq $null) {
-	go install -v -u github.com/onsi/ginkgo/ginkgo
+	go install -v github.com/onsi/ginkgo/ginkgo
 }
