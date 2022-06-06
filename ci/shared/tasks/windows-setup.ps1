@@ -18,7 +18,7 @@ refreshenv
 cd $Env:ROOT
 
 if ((Get-Command "go" -ErrorAction SilentlyContinue) -eq $null) {
-  choco install --no-progress -r -y golang --version 1.17.6 --force
+  choco install --no-progress -r -y golang --version 1.18.3 --force
 }
 
 if ((Get-Command "git" -ErrorAction SilentlyContinue) -eq $null) {
