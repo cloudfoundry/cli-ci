@@ -28,7 +28,7 @@ run:
 
     go version
 
-    go get -u github.com/onsi/ginkgo/ginkgo
+    go install github.com/onsi/ginkgo/ginkgo
     ginkgo version
 
     # we actually want the grep to exit 1 (i.e., no matches found) here
