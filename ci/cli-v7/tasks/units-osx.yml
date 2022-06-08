@@ -16,6 +16,7 @@ run:
     export GOPATH=$PWD/gopath
     export PATH=$GOPATH/bin:$PATH
     export GOFLAGS="-mod=mod"
+    export GODEBUG="x509sha1=1"
 
     cd $GOPATH/src/code.cloudfoundry.org/cli
 
