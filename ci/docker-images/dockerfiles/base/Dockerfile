@@ -5,17 +5,14 @@ RUN go version
 # used to ensure we avoid a Git security CVE (https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-19604)
 RUN apt update && apt upgrade -y
 
-# for `go get..`  
-ENV GO111MODULE=off
-
 # used by coverage utilities
-RUN go get golang.org/x/tools/cmd/cover
+RUN go install golang.org/x/tools/cmd/cover@latest
 
 # used by go-bindata
-RUN go get github.com/shuLhan/go-bindata
+RUN go install github.com/shuLhan/go-bindata/...
 
 # used to set the icon when build binaries for windows
-RUN go get github.com/akavel/rsrc
+RUN go install github.com/akavel/rsrc@latest
 
 RUN sed -i -e 's/httpredir.debian.org/ftp.us.debian.org/' /etc/apt/sources.list
 
