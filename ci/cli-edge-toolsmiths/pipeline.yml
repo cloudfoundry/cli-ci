@@ -246,14 +246,14 @@ jobs:
         params:
           channel: '#cli-dev-internal'
           text: *slack_notification_text
-    # - task: units-osx
-    #   timeout: 3h
-    #   file: cli-ci/ci/cli-v7/tasks/units-osx.yml
-    #   on_failure:
-    #     put: slack-alert
-    #     params:
-    #       channel: '#cli-dev-internal'
-    #       text: *slack_notification_text
+    - task: units-osx
+      timeout: 3h
+      file: cli-ci/ci/cli-v7/tasks/units-osx.yml
+      on_failure:
+        put: slack-alert
+        params:
+          channel: '#cli-dev-internal'
+          text: *slack_notification_text
     - task: units-windows
       timeout: 3h
       file: cli-ci/ci/cli-v7/tasks/units-windows.yml
