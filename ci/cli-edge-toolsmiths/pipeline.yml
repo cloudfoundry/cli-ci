@@ -36,7 +36,7 @@ resources:
   type: git
   source:
     uri: https://github.com/cloudfoundry/cli-ci
-    branch: golang1.18
+    branch: master
 
 - name: cli
   type: git
