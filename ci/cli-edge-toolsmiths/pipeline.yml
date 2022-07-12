@@ -5,23 +5,32 @@ resource_types:
   source:
     repository: cfcommunity/slack-notification-resource
     tag: latest
+- name: pcf-pool
+  type: docker-image
+  source:
+    repository: cftoolsmiths/toolsmiths-envs-resource
 
 resources:
-- name: gcp-bosh-pool
-  type: pool
+- name: gcp-env
+  type: pcf-pool
   source:
-    uri: git@github.com:cloudfoundry/cli-pools
-    private_key: ((cli-pools-github-private-key))
-    branch: master
-    pool: v8-pool
+    api_token: ((toolsmiths-api-token))
+    hostname: environments.toolsmiths.cf-app.com
+    pool_name: cf-deployment
 
-- name: gcp-bosh-pool-minimum-capi
-  type: pool
+- name: cf-deployment
+  type: git
   source:
-    uri: git@github.com:cloudfoundry/cli-pools
-    private_key: ((cli-pools-github-private-key))
-    branch: master
-    pool: v8-pool-minimum-capi
+    uri: git@github.com:cloudfoundry/cf-deployment.git
+    private_key: ((bosh-lite-pools-github-private-key))
+    tag_filter: v*
+
+- name: cf-deployment-min-capi
+  type: git
+  source:
+    uri: git@github.com:cloudfoundry/cf-deployment.git
+    private_key: ((bosh-lite-pools-github-private-key))
+    tag_filter: v16.11.0
 
 - name: cli-ci
   type: git
@@ -52,16 +61,6 @@ resources:
     branch: main
     uri: https://github.com/cloudfoundry/cf-deployment-concourse-tasks.git
 
-- name: cf-acceptance-tests-min
-  type: git
-  icon: github-box
-  source:
-    branch: cf16.11
-    uri: https://github.com/cloudfoundry/cf-acceptance-tests.git
-    ignore_paths:
-    - ci/*.yml
-    - .envrc
-
 - name: cf-acceptance-tests-rc
   type: git
   icon: github-box
@@ -72,18 +71,21 @@ resources:
     - ci/*.yml
     - .envrc
 
+- name: cf-acceptance-tests-min
+  type: git
+  icon: github-box
+  source:
+    branch: cf16.11
+    uri: https://github.com/cloudfoundry/cf-acceptance-tests.git
+    ignore_paths:
+    - ci/*.yml
+    - .envrc
+
 - name: slack-alert
   type: slack-notification
   icon: slack
   source:
     url: ((slack-webhook-url))
-
-- name: vars-store
-  type: git
-  source:
-    uri: git@github.com:cloudfoundry/cli-private
-    private_key: ((cli-private-github-private-key))
-    branch: master
 
 - name: edge-linux-binary-32
   type: s3
@@ -209,6 +211,12 @@ resources:
   source:
     repository: fedora
 
+- name: edge-capi-release
+  type: s3
+  source:
+    bucket: capi-releases
+    regexp: capi-(.*)-.*-.*.tgz
+
 jobs:
 - name: units
   serial: true
@@ -298,166 +306,255 @@ jobs:
     - get: cli
       passed: [build-binaries]
     - get: cli-ci
+    - get: cf-deployment
     - get: cf-cli-binaries
       passed: [build-binaries]
       trigger: true
-    - get: vars-store
-    - put: bosh-lock
-      resource: gcp-bosh-pool
+    - get: edge-capi-release
+    - get: cf-deployment-concourse-tasks
+    - put: gcp-env
       params:
-        acquire: true
-  - do:
-    - task: cleanup-integration
+        action: claim
+  - do: 
+    - task: upload-edge-capi
+      file: cli-ci/ci/cli-v8-toolsmiths/tasks/upload-edge-capi.yml
+      input_mapping: &upload-edge-capi-input
+        release-tarball: edge-capi-release
+    - task: update-cf-deployment
       timeout: 3h
-      file: cli-ci/ci/cli-v8/tasks/cleanup-integration.yml
+      file: cli-ci/ci/cli-v8-toolsmiths/tasks/update-cf-deployment.yml
+      params: 
+        CF_INT_CLIENT_SECRET: ((client-secret))
     - task: integration
       timeout: 3h
-      file: cli-ci/ci/cli-v8/tasks/integration-linux.yml
+      file: cli-ci/ci/cli-v8-toolsmiths/tasks/integration-linux.yml
       on_failure:
         put: slack-alert
         params:
           channel: '#cli-dev-internal'
           text: *slack_notification_text
-      ensure:
-        task: cleanup-integration
-        file: cli-ci/ci/cli-v8/tasks/cleanup-integration.yml
       params: &integration_params
-        CF_INT_CLIENT_ID: 'potato-face'
-        CF_INT_CLIENT_SECRET: ((client-secret))
         CF_INT_DOCKER_IMAGE: ((dockerhub-private-image))
         CF_INT_DOCKER_USERNAME: ((dockerhub-username))
         CF_INT_DOCKER_PASSWORD: ((dockerhub-password))
         CF_INT_IGNORE_API_VERSION_CHECK: false
   ensure:
-    put: gcp-bosh-pool
+    put: gcp-env
     params:
-      release: bosh-lock
-
+      action: unclaim
+      env_file: gcp-env/metadata
+    inputs:
+    - gcp-env
+    
 - name: integration-windows
   serial: true
   plan:
   - in_parallel: *integration_resources
-  - do:
-    - task: cleanup-integration
+  - do: 
+    - task: upload-edge-capi
+      file: cli-ci/ci/cli-v8-toolsmiths/tasks/upload-edge-capi.yml
+      input_mapping: *upload-edge-capi-input
+    - task: update-cf-deployment
       timeout: 3h
-      file: cli-ci/ci/cli-v8/tasks/cleanup-integration.yml
+      file: cli-ci/ci/cli-v8-toolsmiths/tasks/update-cf-deployment.yml
+      params: 
+        CF_INT_CLIENT_SECRET: ((client-secret))
+    - task: setup-integration
+      timeout: 3h
+      file: cli-ci/ci/cli-v8-toolsmiths/tasks/setup-integration.yml
     - task: integration
       timeout: 3h
-      file: cli-ci/ci/cli-v8/tasks/integration-windows.yml
+      file: cli-ci/ci/cli-v8-toolsmiths/tasks/integration-windows.yml
       params:
         <<: *integration_params
       input_mapping:
-        cf-credentials: cleanup-integration-outputs
+        cf-credentials: setup-integration-outputs
       on_failure:
         put: slack-alert
         params:
           channel: '#cli-dev-internal'
           text: *slack_notification_text
-      ensure:
-        task: cleanup-integration
-        file: cli-ci/ci/cli-v8/tasks/cleanup-integration.yml
   ensure:
-    put: gcp-bosh-pool
+    put: gcp-env
     params:
-      release: bosh-lock
+      action: unclaim
+      env_file: gcp-env/metadata
+    inputs:
+    - gcp-env
 
 - name: integration-linux-client-creds
   serial: true
   plan:
   - in_parallel: *integration_resources
   - do:
-    - task: cleanup-integration
+    - task: upload-edge-capi
+      file: cli-ci/ci/cli-v8-toolsmiths/tasks/upload-edge-capi.yml
+      input_mapping: *upload-edge-capi-input
+    - task: update-cf-deployment
       timeout: 3h
-      file: cli-ci/ci/cli-v8/tasks/cleanup-integration.yml
+      file: cli-ci/ci/cli-v8-toolsmiths/tasks/update-cf-deployment.yml
+      params: 
+        CF_INT_CLIENT_SECRET: ((client-secret))
     - task: integration
       timeout: 3h
-      file: cli-ci/ci/cli-v8/tasks/integration-linux.yml
+      file: cli-ci/ci/cli-v8-toolsmiths/tasks/integration-linux.yml      
       on_failure:
         put: slack-alert
         params:
           channel: '#cli-dev-internal'
           text: *slack_notification_text
-      ensure:
-        task: cleanup-integration
-        file: cli-ci/ci/cli-v8/tasks/cleanup-integration.yml
       params:
         <<: *integration_params
         CF_INT_CLIENT_CREDENTIALS_TEST_MODE: true
+        CF_INT_CLIENT_ID: potato-face
+        CF_INT_CLIENT_SECRET: ((client-secret))
   ensure:
-    put: gcp-bosh-pool
+    put: gcp-env
     params:
-      release: bosh-lock
+      action: unclaim
+      env_file: gcp-env/metadata
+    inputs:
+    - gcp-env
 
 - name: integration-windows-client-creds
   serial: true
   plan:
   - in_parallel: *integration_resources
   - do:
-    - task: cleanup-integration
+    - task: upload-edge-capi
+      file: cli-ci/ci/cli-v8-toolsmiths/tasks/upload-edge-capi.yml
+      input_mapping: *upload-edge-capi-input
+    - task: update-cf-deployment
       timeout: 3h
-      file: cli-ci/ci/cli-v8/tasks/cleanup-integration.yml
-    - task: integration
+      file: cli-ci/ci/cli-v8-toolsmiths/tasks/update-cf-deployment.yml
+      params: 
+        CF_INT_CLIENT_SECRET: ((client-secret))
+    - task: setup-integration
       timeout: 3h
-      file: cli-ci/ci/cli-v8/tasks/integration-windows.yml
+      file: cli-ci/ci/cli-v8-toolsmiths/tasks/setup-integration.yml
       params:
         <<: *integration_params
         CF_INT_CLIENT_CREDENTIALS_TEST_MODE: true
+        CF_INT_CLIENT_ID: potato-face
+        CF_INT_CLIENT_SECRET: ((client-secret))
+    - task: integration
+      timeout: 3h
+      file: cli-ci/ci/cli-v8-toolsmiths/tasks/integration-windows.yml
+      params:
+        <<: *integration_params
+        CF_INT_CLIENT_CREDENTIALS_TEST_MODE: true
+        CF_INT_CLIENT_ID: potato-face
+        CF_INT_CLIENT_SECRET: ((client-secret))
       input_mapping:
-        cf-credentials: cleanup-integration-outputs
+        cf-credentials: setup-integration-outputs
       on_failure:
         put: slack-alert
         params:
           channel: '#cli-dev-internal'
           text: *slack_notification_text
-      ensure:
-        task: cleanup-integration
-        file: cli-ci/ci/cli-v8/tasks/cleanup-integration.yml
   ensure:
-    put: gcp-bosh-pool
+    put: gcp-env
     params:
-      release: bosh-lock
+      action: unclaim
+      env_file: gcp-env/metadata
+    inputs:
+    - gcp-env
 
 - name: integration-linux-minimum-capi
   serial: true
   plan:
-  - in_parallel: &integration_resources
+  - in_parallel:
     - get: cli
       passed: [build-binaries]
     - get: cli-ci
+    - get: cf-deployment-min-capi
+    - get: cf-deployment-concourse-tasks
     - get: cf-cli-binaries
       passed: [build-binaries]
       trigger: true
-    - get: vars-store
-    - put: bosh-lock
-      resource: gcp-bosh-pool-minimum-capi
+    - put: gcp-env
       params:
-        acquire: true
+        action: claim
   - do:
-    - task: cleanup-integration
-      timeout: 3h
-      file: cli-ci/ci/cli-v8/tasks/cleanup-integration.yml
+    - task: create-vars-file
+      file: cli-ci/ci/infrastructure/tasks/create-vars-file.yml
+      params:
+        CLIENT_SECRET: ((client-secret))
+    - task: copy-ops-files
+      file: cli-ci/ci/infrastructure/tasks/combine-inputs.yml
+      input_mapping:
+        input1: cf-deployment-min-capi
+        input2: cli-ci
+      params:
+        COPY_PATHS:
+          input1/operations/scale-to-one-az.yml
+          input1/operations/test/add-persistent-isolation-segment-diego-cell.yml
+          input1/operations/use-compiled-releases.yml
+          input1/operations/use-internal-lookup-for-route-services.yml
+          input2/ci/infrastructure/operations/add-dummy-windows-stack.yml
+          input2/ci/infrastructure/operations/add-oidc-provider.yml
+          input2/ci/infrastructure/operations/add-uaa-client-credentials.yml
+          input2/ci/infrastructure/operations/add-uaa-client-cf-custom.yml
+          input2/ci/infrastructure/operations/adjust-user-retry-attempts.yml
+          input2/ci/infrastructure/operations/cli-isolation-cell-overrides.yml
+          input2/ci/infrastructure/operations/default-app-memory.yml
+          input2/ci/infrastructure/operations/diego-cell-instances.yml
+          input2/ci/infrastructure/operations/doppler-instances.yml
+          input2/ci/infrastructure/operations/enable-v3-deployments-endpoint.yml
+          input2/ci/infrastructure/operations/give-cf-admin-clients-read-scope.yml
+          input2/ci/infrastructure/operations/reduce-async-service-polling.yml
+          input2/ci/infrastructure/operations/skip-ssl-override.yml
+          input2/ci/infrastructure/operations/uaa-vm_type-override.yml
+    - task: delete-cf
+      file: cli-ci/ci/cli-v8-toolsmiths/tasks/delete-cf.yml
+    - task: deploy-cf
+      file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
+      params:
+        OPS_FILES:
+          add-persistent-isolation-segment-diego-cell.yml
+          use-compiled-releases.yml
+          cli-isolation-cell-overrides.yml
+          default-app-memory.yml
+          skip-ssl-override.yml
+          scale-to-one-az.yml
+          diego-cell-instances.yml
+          doppler-instances.yml
+          uaa-vm_type-override.yml
+          add-uaa-client-credentials.yml
+          add-dummy-windows-stack.yml
+          reduce-async-service-polling.yml
+          add-oidc-provider.yml
+          adjust-user-retry-attempts.yml
+          enable-v3-deployments-endpoint.yml
+          give-cf-admin-clients-read-scope.yml
+          add-uaa-client-cf-custom.yml
+          use-internal-lookup-for-route-services.yml
+        VARS_FILES: vars.yml
+      input_mapping:
+        toolsmiths-env: gcp-env          
+        vars-files: vars_path
+        ops-files: combine_inputs_output
+        cf-deployment: cf-deployment-min-capi
     - task: integration
       timeout: 3h
-      file: cli-ci/ci/cli-v8/tasks/integration-linux.yml
+      file: cli-ci/ci/cli-v8-toolsmiths/tasks/integration-linux.yml      
+      params: &integration_params
+        CF_INT_IGNORE_API_VERSION_CHECK: false
+      input_mapping:
+        cf-deployment: cf-deployment-min-capi
       on_failure:
         put: slack-alert
         params:
           channel: '#cli-dev-internal'
           text: *slack_notification_text
-      ensure:
-        task: cleanup-integration
-        file: cli-ci/ci/cli-v8/tasks/cleanup-integration.yml
-      params: &integration_params
-        CF_INT_CLIENT_ID: 'potato-face'
-        CF_INT_CLIENT_SECRET: ((client-secret))
-        CF_INT_DOCKER_IMAGE: ((dockerhub-private-image))
-        CF_INT_DOCKER_USERNAME: ((dockerhub-username))
-        CF_INT_DOCKER_PASSWORD: ((dockerhub-password))
-        CF_INT_IGNORE_API_VERSION_CHECK: false
   ensure:
-    put: gcp-bosh-pool-minimum-capi
+    put: gcp-env
     params:
-      release: bosh-lock
+      action: unclaim
+      env_file: gcp-env/metadata
+    inputs:
+    - gcp-env
+
 - name: cats
   serial: true
   plan:
@@ -481,19 +578,24 @@ jobs:
       - integration-linux-minimum-capi
       trigger: true
     - get: cli-ci
-    - get: vars-store
-    - put: bosh-lock
-      resource: gcp-bosh-pool
+    - get: cf-deployment
+    - get: edge-capi-release
+    - put: gcp-env
       timeout: 2h
       params:
-        acquire: true
+        action: claim
   - do:
-    - task: cleanup-integration
+    - task: upload-edge-capi
+      file: cli-ci/ci/cli-v8-toolsmiths/tasks/upload-edge-capi.yml
+      input_mapping: *upload-edge-capi-input
+    - task: update-cf-deployment
       timeout: 3h
-      file: cli-ci/ci/cli-v8/tasks/cleanup-integration.yml
+      file: cli-ci/ci/cli-v8-toolsmiths/tasks/update-cf-deployment.yml
+      params: 
+        CF_INT_CLIENT_SECRET: ((client-secret))
     - task: config
       timeout: 3h
-      file: cli-ci/ci/cli-v8/tasks/cats-config.yml
+      file: cli-ci/ci/cli-v8-toolsmiths/tasks/cats-config.yml
       params:
         INCLUDE_V3: true
         BROKER_START_TIMEOUT: 330
@@ -521,9 +623,12 @@ jobs:
           channel: '#cli-dev-internal'
           text: *slack_notification_text
   ensure:
-    put: gcp-bosh-pool
+    put: gcp-env
     params:
-      release: bosh-lock
+      action: unclaim
+      env_file: gcp-env/metadata
+    inputs:
+    - gcp-env
 
 - name: cats-minimum-capi
   serial: true
@@ -548,24 +653,81 @@ jobs:
       - integration-linux-minimum-capi
       trigger: true
     - get: cli-ci
-    - get: vars-store
-    - put: bosh-lock
-      resource: gcp-bosh-pool-minimum-capi
+    - get: cf-deployment-min-capi
+    - put: gcp-env
       timeout: 2h
       params:
-        acquire: true
+        action: claim    
   - do:
-    - task: cleanup-integration
-      timeout: 3h
-      file: cli-ci/ci/cli-v8/tasks/cleanup-integration.yml
+    - task: create-vars-file
+      file: cli-ci/ci/infrastructure/tasks/create-vars-file.yml
+      params:
+        CLIENT_SECRET: ((client-secret))
+    - task: copy-ops-files
+      file: cli-ci/ci/infrastructure/tasks/combine-inputs.yml
+      input_mapping:
+        input1: cf-deployment-min-capi
+        input2: cli-ci
+      params:
+        COPY_PATHS:
+          input1/operations/scale-to-one-az.yml
+          input1/operations/test/add-persistent-isolation-segment-diego-cell.yml
+          input1/operations/use-compiled-releases.yml
+          input1/operations/use-internal-lookup-for-route-services.yml
+          input2/ci/infrastructure/operations/add-dummy-windows-stack.yml
+          input2/ci/infrastructure/operations/add-oidc-provider.yml
+          input2/ci/infrastructure/operations/add-uaa-client-credentials.yml
+          input2/ci/infrastructure/operations/add-uaa-client-cf-custom.yml
+          input2/ci/infrastructure/operations/adjust-user-retry-attempts.yml
+          input2/ci/infrastructure/operations/cli-isolation-cell-overrides.yml
+          input2/ci/infrastructure/operations/default-app-memory.yml
+          input2/ci/infrastructure/operations/diego-cell-instances.yml
+          input2/ci/infrastructure/operations/doppler-instances.yml
+          input2/ci/infrastructure/operations/enable-v3-deployments-endpoint.yml
+          input2/ci/infrastructure/operations/give-cf-admin-clients-read-scope.yml
+          input2/ci/infrastructure/operations/reduce-async-service-polling.yml
+          input2/ci/infrastructure/operations/skip-ssl-override.yml
+          input2/ci/infrastructure/operations/uaa-vm_type-override.yml
+    - task: delete-cf
+      file: cli-ci/ci/cli-v8-toolsmiths/tasks/delete-cf.yml
+    - task: deploy-cf
+      file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
+      params:
+        OPS_FILES:
+          add-persistent-isolation-segment-diego-cell.yml
+          use-compiled-releases.yml
+          cli-isolation-cell-overrides.yml
+          default-app-memory.yml
+          skip-ssl-override.yml
+          scale-to-one-az.yml
+          diego-cell-instances.yml
+          doppler-instances.yml
+          uaa-vm_type-override.yml
+          add-uaa-client-credentials.yml
+          add-dummy-windows-stack.yml
+          reduce-async-service-polling.yml
+          add-oidc-provider.yml
+          adjust-user-retry-attempts.yml
+          enable-v3-deployments-endpoint.yml
+          give-cf-admin-clients-read-scope.yml
+          add-uaa-client-cf-custom.yml
+          use-internal-lookup-for-route-services.yml
+        VARS_FILES: vars.yml
+      input_mapping:
+        toolsmiths-env: gcp-env          
+        vars-files: vars_path
+        ops-files: combine_inputs_output
+        cf-deployment: cf-deployment-min-capi
     - task: config
       timeout: 3h
-      file: cli-ci/ci/cli-v8/tasks/cats-config.yml
+      file: cli-ci/ci/cli-v8-toolsmiths/tasks/cats-config.yml
+      input_mapping:
+        cf-deployment: cf-deployment-min-capi
       params:
         INCLUDE_V3: true
         BROKER_START_TIMEOUT: 330
         CF_PUSH_TIMEOUT: 210
-        DEFAULT_TIMEOUT: 60
+        DEFAULT_TIMEOUT: 120
         LONG_CURL_TIMEOUT: 210
     - task: extract-linux-binary
       timeout: 3h
@@ -588,9 +750,12 @@ jobs:
           channel: '#cli-dev-internal'
           text: *slack_notification_text
   ensure:
-    put: gcp-bosh-pool-minimum-capi
+    put: gcp-env
     params:
-      release: bosh-lock
+      action: unclaim
+      env_file: gcp-env/metadata
+    inputs:
+    - gcp-env
 
 - name: create-installers
   serial: true
@@ -722,4 +887,3 @@ jobs:
       params:
         MAJOR_VERSION: 8
         ARCH: i686
-

@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+set -e
+set -o pipefail
+
+FLY_TARGET_NAME=${1:-ci}
+echo "Pipeline: $FLY_TARGET_NAME"
+
+pipelines_path=$(cd $(dirname $0)/.. && pwd)
+
+configure_bosh_lite_pool_pipeline() {
+  printf "configuring the bosh-lites pipeline...\n"
+
+  fly -t $FLY_TARGET_NAME set-pipeline \
+    -p bosh-lites \
+    -c $pipelines_path/cli-dev-bosh-lite/pipeline.yml \
+    -v bosh-lite-dns-zone-name=bosh-lite-pool \
+    -v bosh-lite-gcp-json-key="$(lpass show Shared-CLI/bosh-service-account-gcp-creds --notes | jq -c . )" \
+    -v bosh-lite-pools-github-private-key="$(lpass show Shared-CLI/bosh-lite-pool-github-key --notes)" \
+    -v bosh-lite-project-id=cf-cli \
+    -v bosh-lite-region=us-west1 \
+    -v bosh-lite-storage-bucket=bosh-lites \
+    -v bosh-lite-system-domain-suffix=lite.cli.fun \
+    -v git-email=cf-cli-eng@pivotal.io \
+    -v git-username=cf-cli-eng \
+    -v env-pool-repo=git@github.com:cloudfoundry/cli-pools.git \
+    -v slack-webhook-url="$(lpass show Shared-CLI/Concourse/Concourse\ Credentials --notes | grep -F slack-webhook-url: | cut -d '"' -f2)"
+}
+
+./reconfigure-pipeline-prerequisites
+configure_bosh_lite_pool_pipeline

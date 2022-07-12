@@ -1,0 +1,51 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: cfcli/cli-base
+
+inputs:
+- name: cli
+- name: cf-cli-binaries
+- name: gcp-env
+- name: cli-ci
+- name: cf-deployment
+
+outputs:
+- name: setup-integration-outputs
+
+params:
+  ARGS:
+
+run:
+  path: bash
+  args:
+  - -c
+  - |
+    set -e
+
+    ENV=$(cat gcp-env/name)
+    CERT_DIR=$PWD/setup-integration-outputs/cert_dir
+    mkdir -p $CERT_DIR
+
+    cat gcp-env/metadata > $ENV.json
+
+    eval "$(bbl print-env --metadata-file $ENV.json)"
+
+    credhub login
+    export CF_INT_PASSWORD=$(credhub get -n /bosh-$ENV/cf/cf_admin_password | bosh interpolate --path /value -)
+    export CF_INT_OIDC_PASSWORD=$(credhub get -n /bosh-$ENV/cf/uaa_oidc_admin_password | bosh interpolate --path /value -)
+
+    credhub get --name /bosh-$ENV/cf/router_ca | bosh interpolate - --path /value/certificate > $CERT_DIR/$ENV.router.ca
+
+    echo "Deployed CAPI version:"
+    bosh -d cf releases | grep capi
+
+    set -x
+
+    # output password into a temp file for consumption by Windows
+    echo $CF_INT_PASSWORD > setup-integration-outputs/cf-password
+    echo $CF_INT_OIDC_PASSWORD > setup-integration-outputs/uaa-oidc-password
+    

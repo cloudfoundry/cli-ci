@@ -7,9 +7,10 @@ image_resource:
     repository: relintdockerhubpushbot/cf-deployment-concourse-tasks
 
 inputs:
-  - name: bosh-lock
   - name: cf-cli-binaries
-  - name: vars-store
+  - name: gcp-env
+  - name: cli-ci
+  - name: cf-deployment
 
 outputs:
   - name: cats-config
@@ -28,15 +29,13 @@ run:
   - |
     set -eu
 
-    DOMAIN=`cat bosh-lock/name`
+    ENV=`cat gcp-env/name`
+    DOMAIN="${ENV}.cf-app.com"
     API="api.${DOMAIN}"
     CF_INT_USERNAME="admin"
 
-    ENV=$(cat bosh-lock/name | cut -d "." -f 1)
-
-    pushd vars-store/ci/infrastructure/$ENV
-      eval "$(bbl print-env)"
-    popd
+    cat gcp-env/metadata > $ENV.json
+    eval "$(bbl print-env --metadata-file $ENV.json)"
 
     credhub login
     CF_INT_PASSWORD=$(credhub get -n /bosh-$ENV/cf/cf_admin_password | bosh interpolate --path /value -)

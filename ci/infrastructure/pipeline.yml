@@ -115,6 +115,7 @@ jobs:
       SYSTEM_DOMAIN: ((stack-name)).cli.fun
       OPS_FILES:
         add-persistent-isolation-segment-diego-cell.yml
+        add-lb-ca-cert.yml
         use-compiled-releases.yml
         cli-isolation-cell-overrides.yml
         default-app-memory.yml

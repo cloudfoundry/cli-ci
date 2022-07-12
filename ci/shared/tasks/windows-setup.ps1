@@ -6,10 +6,6 @@ $Env:ROOT="$pwd"
 
 $null = New-Item -ItemType Directory -Force -Path $Env:TEMP
 
-Import-Module "C:\ProgramData\chocolatey\helpers\chocolateyProfile.psm1"
-refreshenv
-cd $Env:ROOT
-
 if ((Get-Command "choco" -ErrorAction SilentlyContinue) -eq $null) {
   Set-ExecutionPolicy Bypass -Scope Process -Force
   [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
@@ -22,7 +18,7 @@ refreshenv
 cd $Env:ROOT
 
 if ((Get-Command "go" -ErrorAction SilentlyContinue) -eq $null) {
-  choco install --no-progress -r -y golang --version 1.17.6 --force
+  choco install --no-progress -r -y golang --version 1.18.3 --force
 }
 
 if ((Get-Command "git" -ErrorAction SilentlyContinue) -eq $null) {
@@ -77,5 +73,5 @@ $Env:RUN_ID=(openssl rand -hex 16)
 $Env:GOFLAGS = "-mod=mod"
 
 if ((Get-Command "ginkgo" -ErrorAction SilentlyContinue) -eq $null) {
-	go get -v -u github.com/onsi/ginkgo/ginkgo
+	go install -v github.com/onsi/ginkgo/ginkgo
 }
