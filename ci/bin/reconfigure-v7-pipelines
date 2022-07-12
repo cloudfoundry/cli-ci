@@ -65,6 +65,5 @@ pipelines_path=$(cd $(dirname $0)/.. && pwd)
 configure_pipeline v7 $pipelines_path/cli-v7/pipeline.yml
 
 configure_v7_infrastructure_pipeline inf-nopa nopa-pipeline mashed-potato
-configure_v7_infrastructure_pipeline inf-zerozero zerozero-pipeline mashed-potato
 configure_v7_infrastructure_pipeline inf-zuni zuni-pipeline mashed-potato
 configure_v7_infrastructure_pipeline inf-mourad mourad-pipeline hasselback-potato "v13.5.0"

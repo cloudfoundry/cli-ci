@@ -10,10 +10,12 @@ resource_types:
   source:
     repository: ljfranklin/terraform-resource
     tag: latest
+
 - name: bosh-deployment
   type: docker-image
   source:
     repository: cloudfoundry/bosh-deployment-resource
+
 - name: cron-resource
   type: docker-image
   source:
