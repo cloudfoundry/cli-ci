@@ -45,6 +45,7 @@ run:
 
     set -x
 
+    cf enable route_sharing
     # output password into a temp file for consumption by Windows
     echo $CF_INT_PASSWORD > setup-integration-outputs/cf-password
     echo $CF_INT_OIDC_PASSWORD > setup-integration-outputs/uaa-oidc-password

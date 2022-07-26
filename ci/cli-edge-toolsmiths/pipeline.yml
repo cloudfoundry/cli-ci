@@ -315,7 +315,7 @@ jobs:
     - put: gcp-env
       params:
         action: claim
-  - do: 
+  - do:
     - task: upload-edge-capi
       file: cli-ci/ci/cli-v8-toolsmiths/tasks/upload-edge-capi.yml
       input_mapping: &upload-edge-capi-input
@@ -323,7 +323,7 @@ jobs:
     - task: update-cf-deployment
       timeout: 3h
       file: cli-ci/ci/cli-v8-toolsmiths/tasks/update-cf-deployment.yml
-      params: 
+      params:
         CF_INT_CLIENT_SECRET: ((client-secret))
     - task: integration
       timeout: 3h
