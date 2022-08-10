@@ -45,8 +45,12 @@ run:
 
     set -x
 
-    cf enable-feature-flag route_sharing
     # output password into a temp file for consumption by Windows
     echo $CF_INT_PASSWORD > setup-integration-outputs/cf-password
     echo $CF_INT_OIDC_PASSWORD > setup-integration-outputs/uaa-oidc-password
     
+    export CF_USERNAME=${CF_INT_USERNAME}
+    export CF_PASSWORD=${CF_INT_PASSWORD}
+    cf api ${API} --skip-ssl-validation
+    cf auth
+    cf enable-feature-flag route_sharing

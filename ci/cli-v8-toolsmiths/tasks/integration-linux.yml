@@ -79,5 +79,8 @@ run:
     cd $GOPATH/src/code.cloudfoundry.org/cli
     go install github.com/onsi/ginkgo/ginkgo@v1.16.4
 
+    export CF_PASSWORD=${CF_INT_PASSWORD}
+    cf api ${CF_INT_API} --skip-ssl-validation
+    cf auth
     cf enable-feature-flag route_sharing
     make integration-tests-full-ci
