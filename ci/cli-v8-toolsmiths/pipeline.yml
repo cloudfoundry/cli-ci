@@ -547,6 +547,7 @@ jobs:
           text: *slack_notification_text
       params: &integration_params
         CF_INT_IGNORE_API_VERSION_CHECK: false
+        CF_INT_MIN_CAPI: true
   ensure:
     put: gcp-env
     params:
