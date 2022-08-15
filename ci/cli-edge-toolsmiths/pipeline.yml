@@ -540,6 +540,7 @@ jobs:
       file: cli-ci/ci/cli-v8-toolsmiths/tasks/integration-linux.yml      
       params: &integration_params
         CF_INT_IGNORE_API_VERSION_CHECK: false
+        CF_INT_MIN_CAPI: true
       input_mapping:
         cf-deployment: cf-deployment-min-capi
       on_failure:
