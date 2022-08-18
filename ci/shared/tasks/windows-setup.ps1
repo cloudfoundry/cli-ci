@@ -45,6 +45,10 @@ if ((Get-Command "make" -ErrorAction SilentlyContinue) -eq $null) {
   choco install --no-progress -r -y make --force
 }
 
+if ((Get-Command "cf" -ErrorAction SilentlyContinue) -eq $null) {
+  choco install --no-progress -r -y cloudfoundry-cli --force
+}
+
 Import-Module "C:\ProgramData\chocolatey\helpers\chocolateyProfile.psm1"
 refreshenv
 cd $Env:ROOT
