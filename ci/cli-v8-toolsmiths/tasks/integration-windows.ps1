@@ -5,6 +5,7 @@ $ErrorActionPreference = "Stop"
 cd $Env:GOPATH\src\code.cloudfoundry.org\cli
 
 $CF_PASSWORD=${CF_INT_PASSWORD}
+echo "CF_INT_API============: $CF_INT_API"
 cf8.exe api $CF_INT_API --skip-ssl-validation
 cf8.exe auth
 cf8.exe enable-feature-flag route_sharing

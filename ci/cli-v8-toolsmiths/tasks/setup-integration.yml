@@ -36,7 +36,7 @@ run:
 
     credhub login
     export CF_INT_PASSWORD=$(credhub get -n /bosh-$ENV/cf/cf_admin_password | bosh interpolate --path /value -)
-    export CF_INT_OIDC_PASSWORD=$(credhub get -n /bosh-$ENV/cf/uaa_oidc_admin_password | bosh interpolate --path /value -)
+    # export CF_INT_OIDC_PASSWORD=$(credhub get -n /bosh-$ENV/cf/uaa_oidc_admin_password | bosh interpolate --path /value -)
 
     credhub get --name /bosh-$ENV/cf/router_ca | bosh interpolate - --path /value/certificate > $CERT_DIR/$ENV.router.ca
 
@@ -47,4 +47,4 @@ run:
 
     # output password into a temp file for consumption by Windows
     echo $CF_INT_PASSWORD > setup-integration-outputs/cf-password
-    echo $CF_INT_OIDC_PASSWORD > setup-integration-outputs/uaa-oidc-password
+    # echo $CF_INT_OIDC_PASSWORD > setup-integration-outputs/uaa-oidc-password
