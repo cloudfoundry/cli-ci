@@ -5,9 +5,9 @@ $ErrorActionPreference = "Stop"
 cd $Env:GOPATH\src\code.cloudfoundry.org\cli
 
 $CF_PASSWORD=$Env:CF_INT_PASSWORD
-cf8.exe api $Env:CF_INT_API --skip-ssl-validation
-cf8.exe auth
-cf8.exe enable-feature-flag route_sharing
+cf.exe api $Env:CF_INT_API --skip-ssl-validation
+cf.exe auth admin $Env:CF_INT_PASSWORD
+cf.exe enable-feature-flag route_sharing
 
 ginkgo.exe -r `
 	-nodes=16 `
