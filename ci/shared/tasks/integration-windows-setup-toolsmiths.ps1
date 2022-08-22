@@ -19,3 +19,5 @@ pushd $pwd\cf-cli-binaries
 	7z x cf-cli-binaries.tar -y
 	Move-Item -Path $pwd\cf-cli_winx64.exe  -Destination ..\cf.exe -Force
 popd
+
+echo "CF_INT_API=====1=======: ${CF_INT_API}"
