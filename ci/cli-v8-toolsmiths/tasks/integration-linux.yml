@@ -4,7 +4,8 @@ platform: linux
 image_resource:
   type: docker-image
   source:
-    repository: cfcli/cli-base:latest
+    repository: cfcli/cli-base
+    tag: latest
 
 inputs:
 - name: cli
