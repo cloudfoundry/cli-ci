@@ -59,7 +59,7 @@ run:
       bosh -d cf releases | grep capi
     fi
 
-    export SKIP_SSL_VALIDATION=false
+    export SKIP_SSL_VALIDATION=true
 
     set -x
 
