@@ -1,0 +1,12 @@
+---
+- type: replace
+  path: /releases/name=diego/version
+  value: "2.66.0"
+
+- type: replace
+  path: /releases/name=diego/url?
+  value: "https://bosh.io/d/github.com/cloudfoundry/diego-release?v=2.66.0"
+
+- type: replace
+  path: /releases/name=diego/sha1?
+  value: "baa7cd6e499e9b8c0cc7535910a69d9a7e5fc5c3"
