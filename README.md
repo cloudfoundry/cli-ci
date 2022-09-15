@@ -17,4 +17,4 @@ May 21st, 2020
 # CLI Concourse
 
 ## Setup MacOS Concourse worker
-These steps have been moved to [cli-private](https://github.com/cloudfoundry/cli-private/blob/master/mac-worker-setup.md)
+These steps have been moved to [cli-private](https://github.com/cloudfoundry/cli-private/blob/main/mac-worker-setup.md)

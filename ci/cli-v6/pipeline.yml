@@ -184,7 +184,7 @@ resources:
   source:
     uri: git@github.com:cloudfoundry/cli-private
     private_key: ((cli-private-github-private-key))
-    branch: master
+    branch: main
 
 - name: ubuntu-64-image
   type: registry-image

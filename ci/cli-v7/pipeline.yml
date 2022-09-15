@@ -192,7 +192,7 @@ resources:
   source:
     uri: git@github.com:cloudfoundry/cli-private
     private_key: ((cli-private-github-private-key))
-    branch: master
+    branch: main
 
 # values for this already exist in last pass, blocked on
 # blocked on https://github.com/concourse/concourse/issues/1407

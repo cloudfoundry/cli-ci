@@ -34,7 +34,7 @@ resources:
   source:
     uri: git@github.com:cloudfoundry/cli-private
     private_key: ((cli-private-github-private-key))
-    branch: master
+    branch: main
     paths:
     - ci/infrastructure/((stack-name))/bbl-state.json
 - name: gcp-bosh-pool
