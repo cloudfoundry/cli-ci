@@ -73,6 +73,3 @@ configure_pipeline docker-images $pipelines_path/docker-images/pipeline.yml
 configure_workstation_scheduler_pipeline cli-workstation-scheduler $pipelines_path/workstation-scheduler/cli-pipeline.yml
 
 higest_compatible_cfd_version="v13.23.0"
-configure_infrastructure_pipeline inf-starbelly starbelly-pipeline baked-potato $pipelines_path/infrastructure/pipeline.yml $higest_compatible_cfd_version
-configure_infrastructure_pipeline inf-tartine tartine-pipeline baked-potato $pipelines_path/infrastructure/pipeline.yml $higest_compatible_cfd_version
-configure_infrastructure_pipeline inf-tropisueno tropisueno-pipeline baked-potato $pipelines_path/infrastructure/pipeline.yml $higest_compatible_cfd_version
