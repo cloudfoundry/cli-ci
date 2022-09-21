@@ -526,7 +526,7 @@ jobs:
         cf-deployment: cf-deployment-legacy
     - task: integration
       timeout: 3h
-      file: cli-ci/ci/cli-v8-toolsmiths/tasks/integration-linux.yml
+      file: cli-ci/ci/cli-v7-toolsmiths/tasks/integration-linux.yml
       input_mapping:
         cf-deployment: cf-deployment-legacy
       params:
@@ -611,7 +611,7 @@ jobs:
         cf-deployment: cf-deployment-legacy
     - task: integration
       timeout: 3h
-      file: cli-ci/ci/cli-v8-toolsmiths/tasks/integration-linux.yml
+      file: cli-ci/ci/cli-v7-toolsmiths/tasks/integration-linux.yml
       input_mapping:
         cf-deployment: cf-deployment-legacy
       params:
