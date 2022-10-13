@@ -11,7 +11,7 @@ resources:
   type: git
   source:
     uri: https://github.com/cloudfoundry/cli-plugin-repo
-    branch: master
+    branch: main
 
 - name: cli-plugin-repo-pws
   type: cf
