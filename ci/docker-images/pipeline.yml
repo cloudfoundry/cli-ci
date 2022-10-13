@@ -36,7 +36,7 @@ resources:
   type: git
   source:
     uri: https://github.com/bosh-packages/cf-cli-release
-    branch: master
+    branch: main
     paths: [ci/cli-release-base/Dockerfile]
 
 - name: cf-cli-base-image
