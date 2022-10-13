@@ -27,7 +27,7 @@ resources:
   type: git
   source:
     uri: https://github.com/cloudfoundry/cli-ci
-    branch: master
+    branch: main
 
 - name: cf-acceptance-tests
   type: git

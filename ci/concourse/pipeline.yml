@@ -19,4 +19,4 @@ resources:
   icon: &git-icon github
   source:
     uri: https://github.com/cloudfoundry/cli-ci
-    branch: master
+    branch: main
