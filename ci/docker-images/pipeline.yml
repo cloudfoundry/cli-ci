@@ -21,7 +21,7 @@ resources:
   type: git
   source:
     uri: https://github.com/cloudfoundry/cli-ci
-    branch: master
+    branch: main
     paths: [ci/docker-images/dockerfiles/base/Dockerfile]
 
 
@@ -29,7 +29,7 @@ resources:
   type: git
   source:
     uri: https://github.com/cloudfoundry/cli-ci
-    branch: master
+    branch: main
     paths: [ci/docker-images/dockerfiles/package/Dockerfile]
 
 - name: cf-cli-release-base-dockerfile

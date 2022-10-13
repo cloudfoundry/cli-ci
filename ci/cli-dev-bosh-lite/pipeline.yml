@@ -33,7 +33,7 @@ resources:
   - name: cli-ci
     type: git
     source:
-      branch: master
+      branch: main
       uri: https://github.com/cloudfoundry/cli-ci
   - name: capi-ci
     type: git
