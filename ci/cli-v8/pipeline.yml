@@ -34,7 +34,7 @@ resources:
   icon: console
   source:
     uri: https://github.com/cloudfoundry/cli
-    branch: master
+    branch: main
 
 - name: cf-cli-binaries
   type: s3
