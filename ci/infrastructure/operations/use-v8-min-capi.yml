@@ -1,0 +1,11 @@
+---
+- type: replace
+  path: /releases/name=capi/version
+  value: "1.109.0"
+
+- type: replace
+  path: /releases/name=diego/url?
+  value: "https://bosh.io/d/github.com/cloudfoundry/capi-release?v=1.109.0"
+
+- type: remove
+  path: /releases/name=capi/sha1?
