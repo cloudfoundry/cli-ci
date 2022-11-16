@@ -1,0 +1,9 @@
+{
+    "recommendations": [
+        "gitpod.gitpod-remote-ssh",
+        "ms-vsliveshare.vsliveshare",
+        "redhat.vscode-yaml",
+        "vscodevim.vim",
+        "ms-vscode.makefile-tools"
+    ]
+}
