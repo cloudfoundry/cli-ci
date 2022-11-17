@@ -4,7 +4,7 @@
   value: ((capi_version))
 
 - type: replace
-  path: /releases/name=diego/url?
+  path: /releases/name=capi/url?
   value: "https://bosh.io/d/github.com/cloudfoundry/capi-release?v=((capi_version))"
 
 - type: remove
