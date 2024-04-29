@@ -15,23 +15,25 @@ check_installed() {
 configure_pipeline() {
   local name=$1
   local pipeline=$2
+
+  printf "configuring the $name pipeline...\n\n"
+  printf "*********************************************************\n"
+  printf "NOTE: Please make sure you are logged into vault...\n"
+  printf "*********************************************************\n"
+
   printf "configuring the $name pipeline...\n"
 
-  fly -t ci set-pipeline \
+  export VAULT_ADDR=https://tpe-vault-rock.eng.vmware.com
+    fly -t ci set-pipeline \
     -p $name \
     -c $pipeline \
-    -l <(lpass show 'Shared-CLI/Release Process/release-pipeline-concourse-credentials-dev.yml' --notes) \
-    --var="username=$(lpass show 'Shared-CLI/CF CLI Dockerhub' --username)" \
-    --var="password=$(lpass show 'Shared-CLI/CF CLI Dockerhub' --password)" \
+    -v dockerhub-username="$(vault kv get -mount='secret_devex' -field='cff-dockerhub-username' 'cli')" \
+    -v dockerhub-password="$(vault kv get -mount='secret_devex' -field='cff-dockerhub-password' 'cli')" \
     --var="cli-version=$cli_version" \
     --var="cli-branch=$cli_branch" \
     --var="cli-current-major=8"
 }
-check_installed lpass
+check_installed vault
 check_installed fly
-
-# Make sure we're up to date and that we're logged in.
-lpass sync
-
 
 configure_pipeline cf-cli-v$1-docker-image pipeline.yml

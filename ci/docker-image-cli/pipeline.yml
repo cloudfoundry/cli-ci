@@ -19,8 +19,8 @@ resources:
   source:
     repository: cloudfoundry/cli
     tag: ((cli-version))
-    username: ((username))
-    password: ((password))
+    username: ((dockerhub-username))
+    password: ((dockerhub-password))
 
 jobs:
 - name: cf-cli-((cli-version))
