@@ -44,7 +44,6 @@ resources:
   source:
     repository: cfcli/cli-base
     username: ((dockerhub-username))
-    email: ((dockerhub-email))
     password: ((dockerhub-password))
 
 - name: cf-cli-package-image
@@ -52,7 +51,6 @@ resources:
   source:
     repository: cfcli/cli-package
     username: ((dockerhub-username))
-    email: ((dockerhub-email))
     password: ((dockerhub-password))
 
 - name: cf-cli-release-base-image
@@ -60,7 +58,6 @@ resources:
   source:
     repository: cfcli/cli-release-base
     username: ((dockerhub-username))
-    email: ((dockerhub-email))
     password: ((dockerhub-password))
 
 - name: weekly
