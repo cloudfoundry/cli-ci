@@ -44,7 +44,6 @@ resources:
   - name: bosh-deployment
     type: git
     source:
-      branch: master
       uri: git@github.com:cloudfoundry/bosh-deployment.git
       private_key: ((bosh-lite-pools-github-private-key))
   - name: ready-pool
